@@ -1,0 +1,30 @@
+spring:
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    serialization:
+      write-dates-as-timestamps: false
+  mvc:
+    async:
+      request-timeout: 600000
+  datasource:
+    platform: postgres
+    url: jdbc:postgresql://192.168.1.121:5432/devdb?useSSL=false
+    username: renmy
+    password: renmy
+    driverClassName: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.spatial.dialect.postgis.PostgisPG9Dialect
+    show-sql: true
+    hibernate:
+      use-new-id-generator-mappings: false
+    properties:
+      hibernate:
+        hbm2ddl.auto: update
+    thymeleaf:
+      cache: false
+geoserver:
+  url: http://192.168.1.121:8765/geoserver/web/
+  username: admin
+  passwd: geoserver
+
