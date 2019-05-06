@@ -5,11 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
@@ -17,16 +13,19 @@ import java.io.Serializable;
 @Data
 public class TaskTemplateNode implements Serializable {
 
-  private static final long serialVersionUID = -786012220672885609L;
+    private static final long serialVersionUID = -786012220672885609L;
 
-  @Id
-  @GenericGenerator(name = "id", strategy = "uuid")
-  @GeneratedValue(generator = "id")
-  @ApiModelProperty(value = "id")
-  private String id;
+    @Id
+    @GenericGenerator(name = "id", strategy = "uuid")
+    @GeneratedValue(generator = "id")
+    @ApiModelProperty(value = "id")
+    private String id;
 
-  @ApiModelProperty(value = "任务模板节点名称")
-  private String taskTemplateNodeName;
+    @ApiModelProperty(value = "任务模板节点名称")
+    private String taskTemplateNodeName;
 
-  @JsonIgnore @ManyToOne private TaskTemplate taskTemplate;
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "task_template_id")
+    private TaskTemplate taskTemplate;
 }

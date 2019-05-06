@@ -52,8 +52,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <geotools.version>17.3</geotools.version>
         <postgresql.version>42.2.5</postgresql.version>
-        <quartz.version>2.3.1</quartz.version>
-        <swagger.version>2.9.2</swagger.version>
+        <swagger.version>2.5.0</swagger.version>
+        <jaxb-api.version>2.3.0</jaxb-api.version>
         <gdal.version>2.4.0</gdal.version>
         <junit.version>4.12</junit.version>
         <geoserver-manager.version>1.7.0</geoserver-manager.version>
@@ -77,18 +77,18 @@
     </properties>
 
     <dependencies>
-        <dependency>
+        <!--<dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-        <dependency>
+        </dependency>-->
+       <!-- <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency>
-        <dependency>
+        </dependency>-->
+      <!--  <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -234,6 +234,13 @@
             <artifactId>springfox-swagger-ui</artifactId>
             <version>${swagger.version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>${jaxb-api.version}</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/it.geosolutions/geoserver-manager -->
         <dependency>
             <groupId>it.geosolutions</groupId>
@@ -344,12 +351,6 @@
             <artifactId>hibernate-spatial</artifactId>
             <version>${hibernate.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.quartz-scheduler/quartz -->
-        <dependency>
-            <groupId>org.quartz-scheduler</groupId>
-            <artifactId>quartz</artifactId>
-            <version>${quartz.version}</version>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/com.thetransactioncompany/cors-filter -->
         <dependency>
             <groupId>com.thetransactioncompany</groupId>
@@ -408,7 +409,7 @@
                             <outputDirectory>target/classes</outputDirectory>
                             <useDefaultDelimiters>false</useDefaultDelimiters>
                             <delimiters>
-                                <delimiter>#</delimiter>
+                                <delimiter>@</delimiter>
                             </delimiters>
                             <resources>
                                 <resource>
@@ -441,6 +442,18 @@
             <id>test</id>
             <properties>
                 <spring.profiles.active>test</spring.profiles.active>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <spring.profiles.active>prod</spring.profiles.active>
+            </properties>
+        </profile>
+        <profile>
+            <id>my</id>
+            <properties>
+                <spring.profiles.active>my</spring.profiles.active>
             </properties>
         </profile>
     </profiles>

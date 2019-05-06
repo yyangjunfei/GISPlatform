@@ -1,3 +1,5 @@
+server:
+  port: 8090
 spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
@@ -9,7 +11,7 @@ spring:
       request-timeout: 600000
   datasource:
     platform: postgres
-    url: jdbc:postgresql://192.168.1.121:5432/devdb?useSSL=false
+    url: jdbc:postgresql://192.168.1.121:5432/renmydb?useSSL=false
     username: renmy
     password: renmy
     driverClassName: org.postgresql.Driver
@@ -23,8 +25,15 @@ spring:
         hbm2ddl.auto: update
     thymeleaf:
       cache: false
+  security:
+    user:
+      name: user
+      password: user
 geoserver:
   url: http://192.168.1.121:8765/geoserver/web/
   username: admin
   passwd: geoserver
+
+swagger:
+  enable: true
 
