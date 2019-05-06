@@ -1,38 +1,53 @@
 package cc.wanshan.gisdev.controller.plot;
 
-import cc.wanshan.gisdev.common.enums.ResultCode;
 import cc.wanshan.gisdev.entity.Result;
-import cc.wanshan.gisdev.utils.JsonUtils;
-import cc.wanshan.gisdev.utils.ResultUtil;
-import com.alibaba.fastjson.JSONObject;
+import cc.wanshan.gisdev.service.plot.PlotService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-@Api(value = "PlotController", tags = "标绘管理接口")
+@Api(value = "PlotController", tags = "PlotController")
 @RestController
 @RequestMapping("/rest/plot")
 @EnableAutoConfiguration
 public class PlotController {
 
-  private static Logger LOG = LoggerFactory.getLogger(PlotController.class);
+    private static Logger LOG = LoggerFactory.getLogger(PlotController.class);
 
-  @ApiOperation(value = "增加标绘", notes = "增加标绘")
-  @PostMapping
-  public Result add(@RequestBody String jsonString) {
+    @Autowired
+    private PlotService plotService;
 
-    LOG.info("增加标绘");
-    if (!JsonUtils.validate(jsonString)) {
-      return ResultUtil.error(ResultCode.PARAM_NOT_JSON);
+    @ApiOperation(value = "增加标绘", notes = "增加标绘")
+    @PostMapping
+    public Result add(@RequestBody String jsonString) {
+
+        LOG.info("增加标绘");
+        return plotService.save(jsonString);
     }
-    JSONObject jsonStr = JSONObject.parseObject(jsonString);
 
-    return null;
-  }
+    @ApiOperation(value = "修改标绘", notes = "修改标绘")
+    @PutMapping
+    public Result upload(@RequestBody String jsonString) {
+
+        LOG.info("修改标绘");
+        return plotService.update(jsonString);
+    }
+
+    @ApiOperation(value = "删除标绘", notes = "删除标绘")
+    @DeleteMapping("/{type}/{id}")
+    public Result deleteById(@PathVariable String type, @PathVariable String id) {
+        LOG.info("删除标绘");
+        return plotService.deleteById(type, id);
+    }
+
+    @ApiOperation(value = "查询标绘", notes = "查询标绘")
+    @GetMapping("/findAll")
+    public Result findAll(@RequestParam String type) {
+        LOG.info("查询标绘");
+        return plotService.findAll(type);
+    }
 }

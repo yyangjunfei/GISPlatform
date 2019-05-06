@@ -1,5 +1,3 @@
-server:
-  port: 8090
 spring:
   profiles:
-    active: dev
+    active: @spring.profiles.active@

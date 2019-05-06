@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,58 +18,59 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Api(value = "TaskTemplateController", tags = "任务模板接口")
+@Api(value = "TaskTemplateController", tags = "TaskTemplateController")
 @RestController
 @EnableAutoConfiguration
-@CrossOrigin
-@RequestMapping(value = "/rest/task/template")
+@RequestMapping("/rest/task/template")
 public class TaskTemplateController {
-  private static Logger LOG = LoggerFactory.getLogger(TaskTemplateController.class);
 
-  @Autowired private TaskTemplateService taskTemplateService;
+    private static Logger LOG = LoggerFactory.getLogger(TaskTemplateController.class);
 
-  @ApiOperation(value = "create", notes = "任务模板创建")
-  @PostMapping
-  public Result create(@RequestBody TaskTemplate taskTemplate) {
+    @Autowired
+    private TaskTemplateService taskTemplateService;
 
-    LOG.info("任务模板创建");
+    @ApiOperation(value = "create", notes = "任务模板创建")
+    @PostMapping
+    public Result create(@RequestBody TaskTemplate taskTemplate) {
 
-    return taskTemplateService.save(taskTemplate);
-  }
+        LOG.info("任务模板创建");
 
-  @ApiOperation(value = "findAll", notes = "任务模板列表查询全部")
-  @GetMapping
-  public Result findAll() {
+        return taskTemplateService.save(taskTemplate);
+    }
 
-    LOG.info("任务模板列表查询全部");
+    @ApiOperation(value = "findAll", notes = "任务模板列表查询全部")
+    @GetMapping
+    public Result findAll() {
 
-    return taskTemplateService.findAll();
-  }
+        LOG.info("任务模板列表查询全部");
 
-  @ApiOperation(value = "findById", notes = "任务模板根据id查询")
-  @GetMapping(value = "/{id}")
-  public Result findById(@PathVariable String id) {
+        return taskTemplateService.findAll();
+    }
 
-    LOG.info("任务模板根据id查询");
+    @ApiOperation(value = "findById", notes = "任务模板根据id查询")
+    @GetMapping("/{id}")
+    public Result findById(@PathVariable String id) {
 
-    return taskTemplateService.findById(id);
-  }
+        LOG.info("任务模板根据id查询");
 
-  @ApiOperation(value = "update", notes = "任务模板修改 ")
-  @PutMapping
-  public Result update(@RequestBody TaskTemplate taskTemplate) {
+        return taskTemplateService.findById(id);
+    }
 
-    LOG.info("任务模板修改");
+    @ApiOperation(value = "update", notes = "任务模板修改 ")
+    @PutMapping
+    public Result update(@RequestBody TaskTemplate taskTemplate) {
 
-    return taskTemplateService.update(taskTemplate);
-  }
+        LOG.info("任务模板修改");
 
-  @ApiOperation(value = "delete", notes = "任务模板列表根据ID删除 ")
-  @DeleteMapping(value = "/{id}")
-  public void delete(@PathVariable String id) {
+        return taskTemplateService.update(taskTemplate);
+    }
 
-    LOG.info("任务模板列表根据ID删除");
+    @ApiOperation(value = "delete", notes = "任务模板列表根据ID删除 ")
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable String id) {
 
-    taskTemplateService.delete(id);
-  }
+        LOG.info("任务模板列表根据ID删除");
+
+        taskTemplateService.delete(id);
+    }
 }

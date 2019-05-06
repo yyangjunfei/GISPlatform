@@ -1,10 +1,10 @@
-package cc.wanshan.gisdev.dao;
+package cc.wanshan.gisdev.dao.plot;
 
-import cc.wanshan.gisdev.entity.TasktTemplate.TaskTemplate;
+import cc.wanshan.gisdev.entity.plot.PlotPolygon;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public interface TaskTemplateRepository extends JpaRepository<TaskTemplate, String>, JpaSpecificationExecutor<TaskTemplate> {
+public interface PlotPolygonRepository extends JpaRepository<PlotPolygon, String>, JpaSpecificationExecutor<PlotPolygon> {
 }

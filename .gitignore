@@ -1,6 +1,8 @@
 HELP.md
 /target/
 !.mvn/wrapper/maven-wrapper.jar
+target/*
+
 
 ### STS ###
 .apt_generated
@@ -38,7 +40,5 @@ logs/
 .mvn
 mvnw
 mvnw.cmd
-##gitigcore
 
-### target ###
-target/*
+

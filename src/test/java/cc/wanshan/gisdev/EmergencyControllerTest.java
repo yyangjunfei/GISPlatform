@@ -23,53 +23,53 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 public class EmergencyControllerTest {
 
-  @Autowired private WebApplicationContext context;
-  private MockMvc mockMvc;
+    @Autowired
+    private WebApplicationContext context;
+    private MockMvc mockMvc;
 
-  @Before
-  public void setupMockMvc() {
-    mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
-  }
-
-  @Test
-  public void testCreate() {
-
-    String jsonStr =
-        "{"
-            + "\"emergencyName\":\"应急1\","
-            + "\"createTime\":\"2019-04-08\","
-            + "\"geometry\":{\"type\":\"Point\",\"coordinates\":[109.4897800000,36.5852900000]}"
-            + "}";
-
-    try {
-      mockMvc
-          .perform(
-              MockMvcRequestBuilders.post("/rest/emergency")
-                  .contentType(MediaType.APPLICATION_JSON_UTF8)
-                  .content(jsonStr))
-          .andDo(print())
-          .andExpect(status().isOk())
-          .andReturn()
-          .getResponse()
-          .getContentAsString();
-    } catch (Exception e) {
-      e.printStackTrace();
+    @Before
+    public void setupMockMvc() {
+        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
     }
-  }
 
-  @Test
-  public void testFindAll() {
-    try {
-      mockMvc
-          .perform(MockMvcRequestBuilders.get("/rest/emergency"))
-          .andDo(print())
-          .andExpect(status().isOk())
-          .andExpect(jsonPath("$.code", is(0)))
-          .andReturn()
-          .getResponse()
-          .getContentAsString();
-    } catch (Exception e) {
-      e.printStackTrace();
+    @Test
+    public void testCreate() {
+
+        String jsonStr =
+                "{"
+                        + "\"emergencyName\":\"应急1\","
+                        + "\"createTime\":\"2018-11-11\","
+                        + "\"geometry\":{\"type\":\"Point\",\"coordinates\":[68.9487800066,64.2225908800]}"
+                        + "}";
+        try {
+            mockMvc
+                    .perform(
+                            MockMvcRequestBuilders.post("/rest/emergency")
+                                    .contentType(MediaType.APPLICATION_JSON_UTF8)
+                                    .content(jsonStr))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andReturn()
+                    .getResponse()
+                    .getContentAsString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-  }
+
+    @Test
+    public void testFindAll() {
+        try {
+            mockMvc
+                    .perform(MockMvcRequestBuilders.get("/rest/emergency"))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.code", is(0)))
+                    .andReturn()
+                    .getResponse()
+                    .getContentAsString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

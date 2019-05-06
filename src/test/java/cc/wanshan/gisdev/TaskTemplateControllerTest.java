@@ -30,67 +30,65 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 public class TaskTemplateControllerTest {
 
-  @Autowired private WebApplicationContext context;
-  private MockMvc mockMvc;
+    @Autowired
+    private WebApplicationContext context;
+    private MockMvc mockMvc;
 
-  @Before
-  public void setupMockMvc() {
-    mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
-  }
-
-  @Test
-  public void testCreate() {
-
-    TaskTemplate taskTemplate = new TaskTemplate();
-    taskTemplate.setTaskTemplateName("任务模板1");
-    taskTemplate.setCreateTime(new Date(System.currentTimeMillis()));
-
-    List<TaskTemplateNode> taskTemplateNodeList = Lists.newArrayList();
-
-    TaskTemplateNode taskTemplateNode1 = new TaskTemplateNode();
-    taskTemplateNode1.setTaskTemplateNodeName("任务节点1：步骤1");
-    TaskTemplateNode taskTemplateNode2 = new TaskTemplateNode();
-    taskTemplateNode2.setTaskTemplateNodeName("任务节点2：步骤2");
-    TaskTemplateNode taskTemplateNode3 = new TaskTemplateNode();
-    taskTemplateNode3.setTaskTemplateNodeName("任务节点3：步骤3");
-
-    taskTemplateNodeList.add(taskTemplateNode1);
-    taskTemplateNodeList.add(taskTemplateNode2);
-    taskTemplateNodeList.add(taskTemplateNode3);
-
-    taskTemplate.setTaskTemplateNodeList(taskTemplateNodeList);
-
-    String jsonStr = JSONObject.toJSONString(taskTemplate);
-
-    try {
-      mockMvc
-          .perform(
-              MockMvcRequestBuilders.post("/rest/task/template")
-                  .contentType(MediaType.APPLICATION_JSON_UTF8)
-                  .content(jsonStr))
-          .andDo(print())
-          .andExpect(status().isOk())
-          .andReturn()
-          .getResponse()
-          .getContentAsString();
-    } catch (Exception e) {
-      e.printStackTrace();
+    @Before
+    public void setupMockMvc() {
+        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
     }
-  }
 
-  @Test
-  public void testFindAll() {
-    try {
-      mockMvc
-          .perform(MockMvcRequestBuilders.get("/rest/task/template"))
-          .andDo(print())
-          .andExpect(status().isOk())
-          .andExpect(jsonPath("$.code", is(0)))
-          .andReturn()
-          .getResponse()
-          .getContentAsString();
-    } catch (Exception e) {
-      e.printStackTrace();
+    @Test
+    public void testCreate() {
+
+        TaskTemplate taskTemplate = new TaskTemplate();
+        taskTemplate.setTaskTemplateName("任务模板1");
+        taskTemplate.setCreateTime(new Date(System.currentTimeMillis()));
+
+        List<TaskTemplateNode> taskTemplateNodeList = Lists.newArrayList();
+
+        TaskTemplateNode taskTemplateNode1 = new TaskTemplateNode();
+        taskTemplateNode1.setTaskTemplateNodeName("任务节点1：步骤1");
+        TaskTemplateNode taskTemplateNode2 = new TaskTemplateNode();
+        taskTemplateNode2.setTaskTemplateNodeName("任务节点2：步骤2");
+
+        taskTemplateNodeList.add(taskTemplateNode1);
+        taskTemplateNodeList.add(taskTemplateNode2);
+
+        taskTemplate.setTaskTemplateNodeList(taskTemplateNodeList);
+
+        String jsonStr = JSONObject.toJSONString(taskTemplate);
+
+        try {
+            mockMvc
+                    .perform(
+                            MockMvcRequestBuilders.post("/rest/task/template")
+                                    .contentType(MediaType.APPLICATION_JSON_UTF8)
+                                    .content(jsonStr))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andReturn()
+                    .getResponse()
+                    .getContentAsString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-  }
+
+    @Test
+    public void testFindAll() {
+        try {
+            mockMvc
+                    .perform(MockMvcRequestBuilders.get("/rest/task/template"))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.code", is(0)))
+                    .andReturn()
+                    .getResponse()
+                    .getContentAsString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
