@@ -6,6 +6,7 @@ import cc.wanshan.gisdev.utils.GeotoolsUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.vividsolutions.jts.geom.Geometry;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -19,6 +20,7 @@ import java.io.Serializable;
 @Entity
 @Table
 @Data
+@ApiModel(value = "标绘点", description = "PlotPoint")
 public class PlotPoint extends Plot implements Serializable, PlotFactory<Plot> {
 
     @Id

@@ -29,11 +29,12 @@ spring:
     user:
       name: user
       password: user
+# geoserver服务配置
 geoserver:
   url: http://192.168.1.121:8765/geoserver/web/
   username: admin
   passwd: geoserver
-
+# swagger 显示判断
 swagger:
   enable: true
 

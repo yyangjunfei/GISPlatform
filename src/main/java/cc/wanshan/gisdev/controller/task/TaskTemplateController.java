@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Api(value = "TaskTemplateController", tags = "TaskTemplateController")
+@Api(value = "TaskTemplateController", tags = "任务模板接口")
 @RestController
 @EnableAutoConfiguration
 @RequestMapping("/rest/task/template")
@@ -29,7 +29,7 @@ public class TaskTemplateController {
     @Autowired
     private TaskTemplateService taskTemplateService;
 
-    @ApiOperation(value = "create", notes = "任务模板创建")
+    @ApiOperation(value = "任务模板创建", notes = "任务模板创建")
     @PostMapping
     public Result create(@RequestBody TaskTemplate taskTemplate) {
 
@@ -38,7 +38,7 @@ public class TaskTemplateController {
         return taskTemplateService.save(taskTemplate);
     }
 
-    @ApiOperation(value = "findAll", notes = "任务模板列表查询全部")
+    @ApiOperation(value = "任务模板列表查询全部", notes = "任务模板列表查询全部")
     @GetMapping
     public Result findAll() {
 
@@ -47,7 +47,7 @@ public class TaskTemplateController {
         return taskTemplateService.findAll();
     }
 
-    @ApiOperation(value = "findById", notes = "任务模板根据id查询")
+    @ApiOperation(value = "任务模板根据id查询", notes = "任务模板根据id查询")
     @GetMapping("/{id}")
     public Result findById(@PathVariable String id) {
 
@@ -56,7 +56,7 @@ public class TaskTemplateController {
         return taskTemplateService.findById(id);
     }
 
-    @ApiOperation(value = "update", notes = "任务模板修改 ")
+    @ApiOperation(value = "任务模板修改", notes = "任务模板修改 ")
     @PutMapping
     public Result update(@RequestBody TaskTemplate taskTemplate) {
 
@@ -65,7 +65,7 @@ public class TaskTemplateController {
         return taskTemplateService.update(taskTemplate);
     }
 
-    @ApiOperation(value = "delete", notes = "任务模板列表根据ID删除 ")
+    @ApiOperation(value = "任务模板列表根据ID删除", notes = "任务模板列表根据ID删除 ")
     @DeleteMapping("/{id}")
     public void delete(@PathVariable String id) {
 

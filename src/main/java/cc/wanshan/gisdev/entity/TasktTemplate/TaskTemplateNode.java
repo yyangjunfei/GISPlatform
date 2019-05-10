@@ -1,16 +1,23 @@
 package cc.wanshan.gisdev.entity.TasktTemplate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.io.Serializable;
 
 @Entity
 @Table
 @Data
+@ApiModel(value = "任务模板节点", description = "TaskTemplateNode")
 public class TaskTemplateNode implements Serializable {
 
     private static final long serialVersionUID = -786012220672885609L;

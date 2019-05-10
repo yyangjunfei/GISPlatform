@@ -6,6 +6,7 @@ import cc.wanshan.gisdev.utils.GeotoolsUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.vividsolutions.jts.geom.Geometry;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -20,6 +21,7 @@ import java.sql.Date;
 @Entity
 @Table
 @Data
+@ApiModel(value = "应急", description = "Emergency")
 public class Emergency implements Serializable, EmergencyFactory<Emergency> {
 
     private static final long serialVersionUID = -6216790072833036579L;

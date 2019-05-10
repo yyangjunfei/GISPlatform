@@ -8,6 +8,7 @@ import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -35,10 +36,10 @@ public class Swagger2Config {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("spring-boot 集成 swagger 开发和使用")
+                .title("接口管理")
                 .description("用于自动生成REST API说明文档")
-//                .termsOfServiceUrl("www.test@test.com")
-//                .contact(new Contact("WS", "www.test.com", "test@test.com"))
+                .termsOfServiceUrl("www.test@test.com")
+                .contact(new Contact("WS", "www.test.com", "test@test.com"))
                 .version("1.0.0")
                 .build();
     }

@@ -31,18 +31,20 @@
             <id>osgeo</id>
             <name>Open Source Geospatial Foundation Repository</name>
             <url>http://download.osgeo.org/webdav/geotools/</url>
-        </repository>
-        <repository>
             <snapshots>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
             </snapshots>
-            <id>opengeo</id>
-            <name>OpenGeo Maven Repository</name>
-            <url>http://repo.opengeo.org</url>
         </repository>
         <repository>
             <id>GeoSolutions</id>
+            <name>geosolutions repository</name>
             <url>http://maven.geo-solutions.it/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
         </repository>
     </repositories>
 
@@ -50,9 +52,10 @@
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <geotools.version>17.3</geotools.version>
+        <geotools.version>18.5</geotools.version>
         <postgresql.version>42.2.5</postgresql.version>
-        <swagger.version>2.5.0</swagger.version>
+        <swagger.version>2.9.2</swagger.version>
+        <swagger-bootstrap-ui.version>1.9.3</swagger-bootstrap-ui.version>
         <jaxb-api.version>2.3.0</jaxb-api.version>
         <gdal.version>2.4.0</gdal.version>
         <junit.version>4.12</junit.version>
@@ -60,8 +63,9 @@
         <lombok.version>1.16.22</lombok.version>
         <commons-lang3.version>3.8.1</commons-lang3.version>
         <guava.version>23.0</guava.version>
-        <fastjson.version>1.2.57</fastjson.version>
+        <fastjson.version>1.2.58</fastjson.version>
         <jts.version>1.13</jts.version>
+        <locationtech.version>1.16.1</locationtech.version>
         <httpclient.version>4.5.8</httpclient.version>
         <poi.version>4.1.0</poi.version>
         <ant.version>1.10.5</ant.version>
@@ -70,21 +74,25 @@
         <javacsv.version>2.0</javacsv.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>
         <commons-io.version>2.6</commons-io.version>
+        <commons-validator.version>1.6</commons-validator.version>
+        <commons-codec.version>1.12</commons-codec.version>
+        <commons-httpclient.version>3.1</commons-httpclient.version>
         <joda-time.version>2.10.1</joda-time.version>
+        <jdom2.version>2.0.6</jdom2.version>
         <cors-filter.version>2.6</cors-filter.version>
         <thumbnailator.version>0.4.8</thumbnailator.version>
         <hibernate.version>5.3.9.Final</hibernate.version>
     </properties>
 
     <dependencies>
-        <!--<dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>-->
-       <!-- <dependency>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency>-->
+        </dependency>
       <!--  <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
@@ -173,6 +181,31 @@
             <version>${geotools.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.geotools.ogc</groupId>
+            <artifactId>net.opengis.ows</artifactId>
+            <version>${geotools.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.geotools.ogc</groupId>
+            <artifactId>net.opengis.wfs</artifactId>
+            <version>${geotools.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.geotools.ogc</groupId>
+            <artifactId>net.opengis.wcs</artifactId>
+            <version>${geotools.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-imageio-ext-gdal</artifactId>
+            <version>${geotools.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-process-geometry</artifactId>
+            <version>${geotools.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-process-raster</artifactId>
             <version>${geotools.version}</version>
@@ -208,7 +241,6 @@
             <version>${geotools.version}</version>
         </dependency>
 
-
         <!-- https://mvnrepository.com/artifact/org.apache.ant/ant -->
         <dependency>
             <groupId>org.apache.ant</groupId>
@@ -229,10 +261,17 @@
             <version>${swagger.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui -->
-        <dependency>
+        <!--<dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
             <version>${swagger.version}</version>
+        </dependency>-->
+
+        <!-- https://mvnrepository.com/artifact/com.github.xiaoymin/swagger-bootstrap-ui -->
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>swagger-bootstrap-ui</artifactId>
+            <version>${swagger-bootstrap-ui.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
         <dependency>
@@ -333,11 +372,35 @@
             <artifactId>commons-io</artifactId>
             <version>${commons-io.version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/commons-validator/commons-validator -->
+        <dependency>
+            <groupId>commons-validator</groupId>
+            <artifactId>commons-validator</artifactId>
+            <version>${commons-validator.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>${commons-codec.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/commons-httpclient/commons-httpclient -->
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>${commons-httpclient.version}</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/joda-time/joda-time -->
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
             <version>${joda-time.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.jdom/jdom2 -->
+        <dependency>
+            <groupId>org.jdom</groupId>
+            <artifactId>jdom2</artifactId>
+            <version>${jdom2.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
         <dependency>
