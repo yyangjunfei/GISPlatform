@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Api(value = "EmergencyController", tags = "EmergencyController")
+@Api(value = "EmergencyController", tags = "应急接口")
 @RestController
 @EnableAutoConfiguration
 @RequestMapping("/rest/emergency")

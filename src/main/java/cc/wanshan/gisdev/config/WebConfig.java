@@ -1,4 +1,4 @@
-package cc.wanshan.gisdev.filter;
+package cc.wanshan.gisdev.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +32,8 @@ public class WebConfig implements WebMvcConfigurer {
      */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        LOG.info("=========addResourceHandlers==========");
+
+        LOG.info("====》自定义静态资源过滤拦截器");
 
         registry.addResourceHandler("/static/**")
                 .addResourceLocations("classpath:/static/");
@@ -44,14 +45,6 @@ public class WebConfig implements WebMvcConfigurer {
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
         registry.addResourceHandler("swagger-ui.html")
                 .addResourceLocations("classpath:/META-INF/resources/");
-//        registry.addResourceHandler("/swagger-resources/**")
-//                .addResourceLocations("classpath:/META-INF/resources/swagger-resources/");
-//
-//        registry.addResourceHandler("/swagger/**")
-//                .addResourceLocations("classpath:/META-INF/resources/swagger*");
-//
-//        registry.addResourceHandler("/v2/api-docs/**")
-//                .addResourceLocations("classpath:/META-INF/resources/v2/api-docs/");
     }
 
 }
