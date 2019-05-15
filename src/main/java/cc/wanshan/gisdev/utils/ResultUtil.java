@@ -2,7 +2,9 @@ package cc.wanshan.gisdev.utils;
 
 import cc.wanshan.gisdev.common.enums.ResultCode;
 import cc.wanshan.gisdev.entity.Result;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ResultUtil {
 
   public static Result success(Integer code, String msg, Object object) {

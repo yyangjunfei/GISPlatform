@@ -1,3 +1,4 @@
+/*
 package cc.wanshan.gisdev.entity.TasktTemplate;
 
 import cc.wanshan.gisdev.common.enums.FieldEnum;
@@ -53,3 +54,4 @@ public class Emergency implements Serializable, EmergencyFactory<Emergency> {
         return emergency;
     }
 }
+*/

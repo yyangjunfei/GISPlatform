@@ -1,3 +1,4 @@
+/*
 package cc.wanshan.gisdev.service.TasktTemplate.impl;
 
 import cc.wanshan.gisdev.common.enums.FieldEnum;
@@ -91,3 +92,4 @@ public class EmergencyServiceImpl implements EmergencyService {
         }
     }
 }
+*/

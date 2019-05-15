@@ -1,3 +1,4 @@
+/*
 package cc.wanshan.gisdev.service.TasktTemplate;
 
 import cc.wanshan.gisdev.entity.Result;
@@ -10,3 +11,4 @@ public interface EmergencyService {
 
   Result update(String jsonStr);
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package cc.wanshan.gisdev.service.plot.impl;
 
 import cc.wanshan.gisdev.common.constants.Constant;
@@ -94,3 +95,4 @@ public class PlotServiceImpl implements PlotService {
         return ResultUtil.error(ResultCode.UPDATE_FAIL);
     }
 }
+*/

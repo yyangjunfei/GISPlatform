@@ -1,3 +1,4 @@
+/*
 package cc.wanshan.gisdev.entity.plot;
 
 import cc.wanshan.gisdev.common.enums.FieldEnum;
@@ -77,3 +78,4 @@ public class PlotPolygon extends Plot implements Serializable, PlotFactory<Plot>
         return plotPolygon;
     }
 }
+*/
