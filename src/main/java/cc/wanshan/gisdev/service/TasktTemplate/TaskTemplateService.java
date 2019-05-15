@@ -1,3 +1,4 @@
+/*
 package cc.wanshan.gisdev.service.TasktTemplate;
 
 import cc.wanshan.gisdev.entity.Result;
@@ -15,3 +16,4 @@ public interface TaskTemplateService {
 
   void delete(String id);
 }
+*/

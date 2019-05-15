@@ -1,3 +1,4 @@
+/*
 package cc.wanshan.gisdev.controller.plot;
 
 import cc.wanshan.gisdev.entity.Result;
@@ -59,3 +60,4 @@ public class PlotController {
         return plotService.findAll(type);
     }
 }
+*/

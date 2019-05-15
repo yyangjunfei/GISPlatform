@@ -1,7 +1,8 @@
+/*
 package cc.wanshan.gisdev.utils;
 
 import com.google.common.collect.Maps;
-import org.geotools.coverage.grid.GridCoverage2D;
+
 import org.geotools.data.DataSourceException;
 import org.geotools.gce.geotiff.GeoTiffReader;
 import org.geotools.geometry.Envelope2D;
@@ -23,7 +24,8 @@ public class TifReader {
     return d * Math.PI / 180.0; // 角度转化成弧度
   }
 
-  /**
+  */
+/**
    * 通过经纬度获取两点距离（单位：米）
    *
    * @param longitude1 经度1
@@ -31,7 +33,8 @@ public class TifReader {
    * @param longitude2 经度2
    * @param latitude2 纬度2
    * @return
-   */
+   *//*
+
   public static double DistanceOfTwoPoints(
       double longitude1, double latitude1, double longitude2, double latitude2) {
     double radLat1 = rad(latitude1); // 纬度
@@ -50,12 +53,14 @@ public class TifReader {
     return s * EARTH_RADIUS;
   }
 
-  /**
+  */
+/**
    * 读取GeoTiff信息
    *
    * @param sourceTiffPath tif文件路劲
    * @return
-   */
+   *//*
+
   private static Map<String, Object> getGeoTiffInfo(String sourceTiffPath) {
     HashMap<String, Object> map = Maps.newHashMap();
     File sourceTiff = new File(sourceTiffPath);
@@ -95,3 +100,4 @@ public class TifReader {
     return map;
   }
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package cc.wanshan.gisdev.entity.plot;
 
 import cc.wanshan.gisdev.common.enums.FieldEnum;
@@ -68,3 +69,4 @@ public class PlotLine extends Plot implements Serializable, PlotFactory<Plot> {
         return plotLine;
     }
 }
+*/

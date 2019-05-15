@@ -1,8 +1,8 @@
+/*
 package cc.wanshan.gisdev.controller.task; // package cc.wanshan.wsgisdev.controller.task;
 
 import cc.wanshan.gisdev.entity.Result;
 import cc.wanshan.gisdev.entity.TasktTemplate.TaskTemplate;
-import cc.wanshan.gisdev.service.TasktTemplate.TaskTemplateService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
+
 @Api(value = "TaskTemplateController", tags = "任务模板接口")
 @RestController
 @EnableAutoConfiguration
@@ -26,7 +28,7 @@ public class TaskTemplateController {
 
     private static Logger LOG = LoggerFactory.getLogger(TaskTemplateController.class);
 
-    @Autowired
+    @Resource
     private TaskTemplateService taskTemplateService;
 
     @ApiOperation(value = "任务模板创建", notes = "任务模板创建")
@@ -74,3 +76,4 @@ public class TaskTemplateController {
         taskTemplateService.delete(id);
     }
 }
+*/

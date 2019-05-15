@@ -1,35 +1,42 @@
+/*
 package cc.wanshan.gisdev.utils;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import org.geotools.geojson.geom.GeometryJSON;
 import org.geotools.geometry.jts.JTS;
-import org.geotools.referencing.CRS;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 
 import java.io.IOException;
+*/
+/** Geotools工具 *//*
 
-/** Geotools工具 */
 public class GeotoolsUtils {
 
   static GeometryJSON geometryJson = new GeometryJSON(20);
 
   private GeotoolsUtils() {}
 
-  /** GeoJson 转 Geometry */
+  */
+/** GeoJson 转 Geometry *//*
+
   public static Geometry geoJson2Geometry(String geoJson) throws IOException {
     return geometryJson.read(geoJson);
   }
 
-  /** Geometry 转 GeoJson */
+  */
+/** Geometry 转 GeoJson *//*
+
   public static String geometry2GeoJson(Geometry geometry) {
     return geometryJson.toString(geometry);
   }
 
-  /** 空间坐标系转化 */
+  */
+/** 空间坐标系转化 *//*
+
   public static Geometry transform(Geometry geometry, String sourceCRS, String targetCRS)
       throws FactoryException, TransformException {
 
@@ -68,3 +75,4 @@ public class GeotoolsUtils {
     return coordinate;
   }
 }
+*/
