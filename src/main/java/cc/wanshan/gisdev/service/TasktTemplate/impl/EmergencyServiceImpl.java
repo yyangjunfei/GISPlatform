@@ -1,10 +1,9 @@
-/*
 package cc.wanshan.gisdev.service.TasktTemplate.impl;
 
 import cc.wanshan.gisdev.common.enums.FieldEnum;
 import cc.wanshan.gisdev.common.enums.ResultCode;
 import cc.wanshan.gisdev.common.factory.EmergencyFactory;
-import cc.wanshan.gisdev.dao.EmergencyRepository;
+import cc.wanshan.gisdev.dao.EmergencyMapper;
 import cc.wanshan.gisdev.entity.Result;
 import cc.wanshan.gisdev.entity.TasktTemplate.Emergency;
 import cc.wanshan.gisdev.service.TasktTemplate.EmergencyService;
@@ -21,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 
 @Service
 public class EmergencyServiceImpl implements EmergencyService {
@@ -31,7 +29,7 @@ public class EmergencyServiceImpl implements EmergencyService {
     private static HashMap<String, EmergencyFactory<Emergency>> map = Maps.newHashMap();
 
     @Autowired
-    private EmergencyRepository emergencyRepository;
+    private EmergencyMapper emergencyMapper;
 
     static {
 
@@ -50,22 +48,26 @@ public class EmergencyServiceImpl implements EmergencyService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        if (emergencyRepository.save(emergency) != null) {
-            return ResultUtil.success(emergency);
-        } else {
-            return ResultUtil.error(ResultCode.SAVE_FAIL);
-        }
+        return ResultUtil.success(emergencyMapper.insert(emergency));
+//        if (emergencyMapper.save(emergency) != null) {
+//            return ResultUtil.success(emergency);
+//        } else {
+//            return ResultUtil.error(ResultCode.SAVE_FAIL);
+//        }
     }
 
     @Override
     public Result findAll() {
-        List<Emergency> emergencyList = emergencyRepository.findAll();
-        if (emergencyList != null) {
-            return ResultUtil.success(emergencyList);
-        } else {
-            return ResultUtil.error(ResultCode.FIND_NULL);
-        }
+        return ResultUtil.success(emergencyMapper.findAll());
+
+//        List<Emergency> emergencyList = emergencyMapper.s();
+//        if (emergencyList != null) {
+//            return ResultUtil.success(emergencyList);
+//        } else {
+//            return ResultUtil.error(ResultCode.FIND_NULL);
+//        }
+
+
     }
 
     @Override
@@ -85,11 +87,8 @@ public class EmergencyServiceImpl implements EmergencyService {
                 e.printStackTrace();
             }
         }
-        if (emergencyRepository.saveAndFlush(emergency) != null) {
-            return ResultUtil.success(emergency);
-        } else {
-            return ResultUtil.error(ResultCode.UPDATE_FAIL);
-        }
+
+        return ResultUtil.success(emergencyMapper.updateByPrimaryKeySelective(emergency));
+
     }
 }
-*/

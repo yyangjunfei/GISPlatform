@@ -1,4 +1,3 @@
-/*
 package cc.wanshan.gisdev.entity.plot;
 
 import cc.wanshan.gisdev.common.constants.Constant;
@@ -28,4 +27,3 @@ public class Plot {
         return map.get(type).create(jsonString.toJSONString());
     }
 }
-*/
