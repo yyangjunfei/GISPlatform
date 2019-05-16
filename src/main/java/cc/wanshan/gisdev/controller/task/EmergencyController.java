@@ -1,4 +1,3 @@
-/*
 package cc.wanshan.gisdev.controller.task;
 
 import cc.wanshan.gisdev.entity.Result;
@@ -51,4 +50,3 @@ public class EmergencyController {
         return emergencyService.update(jsonStr);
     }
 }
-*/

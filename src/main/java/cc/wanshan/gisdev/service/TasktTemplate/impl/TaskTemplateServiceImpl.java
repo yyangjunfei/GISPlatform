@@ -16,55 +16,56 @@
 //@Service
 //public class TaskTemplateServiceImpl implements TaskTemplateService {
 //
-//  private static Logger LOG = LoggerFactory.getLogger(TaskTemplateServiceImpl.class);
+//    private static Logger LOG = LoggerFactory.getLogger(TaskTemplateServiceImpl.class);
 //
-//  @Resource private TaskTemplateRepository taskTemplateRepository;
+//    @Resource
+//    private TaskTemplateRepository taskTemplateRepository;
 //
-//  @Override
-//  public Result save(TaskTemplate taskTemplate) {
+//    @Override
+//    public Result save(TaskTemplate taskTemplate) {
 //
-//    if (null == taskTemplate) {
-//      return ResultUtil.error(ResultCode.PARAM_IS_NULL);
+//        if (null == taskTemplate) {
+//            return ResultUtil.error(ResultCode.PARAM_IS_NULL);
+//        }
+//        if (taskTemplateRepository.save(taskTemplate) != null) {
+//            return ResultUtil.success(taskTemplate);
+//        } else {
+//            return ResultUtil.error(ResultCode.SAVE_FAIL);
+//        }
 //    }
-//    if (taskTemplateRepository.save(taskTemplate) != null) {
-//      return ResultUtil.success(taskTemplate);
-//    } else {
-//      return ResultUtil.error(ResultCode.SAVE_FAIL);
-//    }
-//  }
 //
-//  @Override
-//  public Result findAll() {
-//    List<TaskTemplate> taskTemplateList = taskTemplateRepository.findAll();
-//    if (taskTemplateList != null) {
-//      return ResultUtil.success(taskTemplateList);
-//    } else {
-//      return ResultUtil.error(ResultCode.FIND_NULL);
+//    @Override
+//    public Result findAll() {
+//        List<TaskTemplate> taskTemplateList = taskTemplateRepository.findAll();
+//        if (taskTemplateList != null) {
+//            return ResultUtil.success(taskTemplateList);
+//        } else {
+//            return ResultUtil.error(ResultCode.FIND_NULL);
+//        }
 //    }
-//  }
 //
-//  @Override
-//  public Result findById(String id) {
-//    TaskTemplate taskTemplate = taskTemplateRepository.getOne(id);
-//    if (taskTemplate != null) {
-//      return ResultUtil.success(taskTemplate);
-//    } else {
-//      return ResultUtil.error(ResultCode.FIND_NULL);
+//    @Override
+//    public Result findById(String id) {
+//        TaskTemplate taskTemplate = taskTemplateRepository.getOne(id);
+//        if (taskTemplate != null) {
+//            return ResultUtil.success(taskTemplate);
+//        } else {
+//            return ResultUtil.error(ResultCode.FIND_NULL);
+//        }
 //    }
-//  }
 //
-//  @Override
-//  public Result update(TaskTemplate taskTemplate) {
-//    TaskTemplate taskTemplateDb = taskTemplateRepository.saveAndFlush(taskTemplate);
-//    if (taskTemplateDb != null) {
-//      return ResultUtil.success(taskTemplateDb);
-//    } else {
-//      return ResultUtil.error(ResultCode.UPDATE_FAIL);
+//    @Override
+//    public Result update(TaskTemplate taskTemplate) {
+//        TaskTemplate taskTemplateDb = taskTemplateRepository.saveAndFlush(taskTemplate);
+//        if (taskTemplateDb != null) {
+//            return ResultUtil.success(taskTemplateDb);
+//        } else {
+//            return ResultUtil.error(ResultCode.UPDATE_FAIL);
+//        }
 //    }
-//  }
 //
-//  @Override
-//  public void delete(String id) {
-//    taskTemplateRepository.deleteById(id);
-//  }
+//    @Override
+//    public void delete(String id) {
+//        taskTemplateRepository.deleteById(id);
+//    }
 //}

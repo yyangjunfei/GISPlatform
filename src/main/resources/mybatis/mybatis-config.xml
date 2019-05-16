@@ -1,0 +1,17 @@
+<!--<?xml version="1.0" encoding="UTF-8" ?>-->
+<!--<!DOCTYPE configuration-->
+<!--        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"-->
+<!--        "http://mybatis.org/dtd/mybatis-3-config.dtd">-->
+<!--<configuration>-->
+
+<!--    <settings>-->
+<!--        &lt;!&ndash;开启驼峰命名&ndash;&gt;-->
+<!--        <setting name="mapUnderscoreToCamelCase" value="true"/>-->
+<!--        <setting name="jdbcTypeForNull" value="NULL"></setting>-->
+<!--        <setting name="lazyLoadingEnabled" value="true"></setting>-->
+<!--        <setting name="aggressiveLazyLoading" value="false"></setting>-->
+<!--        &lt;!&ndash;开启二级缓存&ndash;&gt;-->
+<!--        <setting name="cacheEnabled" value="true"></setting>-->
+<!--    </settings>-->
+
+<!--</configuration>-->
