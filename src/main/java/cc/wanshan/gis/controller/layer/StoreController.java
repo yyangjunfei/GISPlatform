@@ -1,15 +1,18 @@
 package cc.wanshan.gis.controller.layer;
 
+
 import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.entity.drawlayer.Store;
 import cc.wanshan.gis.service.storeservice.StoreService;
 import cc.wanshan.gis.utils.ResultUtil;
+
 import io.micrometer.core.instrument.util.StringUtils;
 import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -26,8 +29,9 @@ public class StoreController {
     private StoreService storeService;
     @RequestMapping("/findStoreByUsername")
     @ResponseBody
-    public Result findStoreByUsername(@RequestParam String username){
-        logger.info("findStoreByUsername::username = [{}]",username);
+    public Result findStoreByUsername(@RequestBody JSONObject jsonObject){
+        logger.info("findStoreByUsername::username = [{}]",jsonObject);
+        String username=jsonObject.getString("username");
         if (StringUtils.isNotBlank(username)){
             List<Store> stores = storeService.findStoreByUsername(username);
             if (stores!=null&&stores.size()>0){

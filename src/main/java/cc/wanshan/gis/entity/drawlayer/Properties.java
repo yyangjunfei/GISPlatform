@@ -1,7 +1,9 @@
 package cc.wanshan.gis.entity.drawlayer;
 
-import java.io.Serializable;
+import lombok.Data;
 
+import java.io.Serializable;
+@Data
 public class Properties implements Serializable {
     private static final long serialVersionUID = 1L;
     private int code;
@@ -12,7 +14,9 @@ public class Properties implements Serializable {
     public Properties() {
     }
 
-
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
 
     public int getCode() {
         return code;
@@ -42,7 +46,7 @@ public class Properties implements Serializable {
         return osmId;
     }
 
-    public void setOsmID(String osmID) {
+    public void setOsmId(String osmId) {
         this.osmId = osmId;
     }
 
@@ -52,7 +56,7 @@ public class Properties implements Serializable {
                 "code=" + code +
                 ", fclass='" + fclass + '\'' +
                 ", name='" + name + '\'' +
-                ", osmID='" + osmId + '\'' +
+                ", osmId='" + osmId + '\'' +
                 '}';
     }
 }

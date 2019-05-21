@@ -29,7 +29,7 @@ public interface StoreService {
      * @Param [storeId]
      * @return cc.wanshan.demo.entity.Store
      **/
-    public Store findStoreByStoreId(Integer storeId);
+    public Store findStoreByStoreId(String storeId);
     /**
      * @Author Li Cheng
      * @Description  根据userId查找store
@@ -37,7 +37,7 @@ public interface StoreService {
      * @Param [userId]
      * @return java.util.List<cc.wanshan.demo.entity.Store>
      **/
-    public List<Store> findStoreByUserId(Integer userId);
+    public List<Store> findStoreByUserId(String userId);
     /**
      * @Author Li Cheng
      * @Description 新增store

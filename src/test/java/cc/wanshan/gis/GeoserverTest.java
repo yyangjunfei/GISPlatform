@@ -2,6 +2,8 @@ package cc.wanshan.gis;
 
 import cc.wanshan.gis.utils.GeoserverUtils;
 import it.geosolutions.geoserver.rest.decoder.RESTLayer;
+import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList;
+import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList.RESTShortWorkspace;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -21,5 +23,14 @@ public class GeoserverTest {
         logger.info("getLayers::");
         RESTLayer layer = GeoserverUtils.manager.getReader().getLayer("NanZheng", "NZ_sd");
         logger.info("结果为" + layer.toString());
+    }
+    @Test
+    public void getStore(){
+        logger.info("getStore::");
+        RESTWorkspaceList layer = GeoserverUtils.manager.getReader().getWorkspaces();
+        for (RESTShortWorkspace restShortWorkspace : layer) {
+            logger.info("结果为"+restShortWorkspace.toString());
+        }
+
     }
 }

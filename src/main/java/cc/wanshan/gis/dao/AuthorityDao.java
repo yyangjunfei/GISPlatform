@@ -9,77 +9,130 @@ import java.util.List;
 
 /**
  * @Author Li Cheng
- * @Description 
  * @Date 13:34 2019/3/12
- * @Param 
- * @return 
  **/
 @Mapper
 @Component
 public interface AuthorityDao {
-    /**
-     * @Author Li Cheng
-     * @Description 根据角色id查找对应的权限记录
-     * @Date 9:53 2019/4/10
-     * @Param [roleId]
-     * @return java.util.List<cc.wanshan.demo.entity.Authority>
-     **/
-    @Select({"select * from tb_authority where author_id in (select author_id from tb_authority_role where role_id=#{roleId})"})
-    public List<Authority> findAuthoritiesByRoleId(Integer roleId);
-    /**
-     * @Author Li Cheng
-     * @Description  根据url查找对应的authority
-     * @Date 9:57 2019/4/10
-     * @Param [url]
-     * @return cc.wanshan.demo.entity.Authority
-     **/
-    @Select({"select * from tb_authority where url=#{url}"})
-    @Results({
-            @Result(id = true,column = "author_id",property = "authorId"),
-            @Result(column = "author_name",property = "authorName"),
-            @Result(column = "url",property = "url"),
-    })
-    public Authority findByUrl(String url);
-    /**
-     * @Author Li Cheng
-     * @Description 根据authorId查找对应的authority
-     * @Date 9:58 2019/4/10
-     * @Param [authorId]
-     * @return cc.wanshan.demo.entity.Authority
-     **/
-    @Select({"select * from tb_authority where author_id=#{authorId}"})
-    @Results({
-            @Result(id = true,column = "author_id",property = "authorId"),
-            @Result(column = "author_name",property = "authorName"),
-            @Result(column = "url",property = "url"),
-    })
-    public Authority findByAuthorId(Integer authorId);
-    /**
-     * @Author Li Cheng
-     * @Description 新增authority记录
-     * @Date 10:03 2019/4/10
-     * @Param [authority]
-     * @return int
-     **/
-    @Insert({"insert into tb_authority (author_name,url) values (#{authorName},#{url})"})
-    @Options(useGeneratedKeys = true,keyColumn = "author_id",keyProperty = "authorId")
-    public int insertAuthority(Authority authority);
-    /**
-     * @Author Li Cheng
-     * @Description  根据authorId修改authority记录
-     * @Date 10:06 2019/4/10
-     * @Param [authority]
-     * @return int
-     **/
-    @Update({"update tb_authority set author_id=#{authorId},author_name=#{authorName},url=#{url} where author_id=#{authorId}"})
-    public int updateAuthority(Authority authority);
-    /**
-     * @Author Li Cheng
-     * @Description  根据authorId删除对应authority
-     * @Date 10:11 2019/4/10
-     * @Param [authorId]
-     * @return int
-     **/
-    @Delete({"delete from tb_authority where author_id=#{authorId}"})
-    public int deleteAuthority(Integer authorId);
+
+
+  @Select({
+      "select "
+          + "* "
+          + "from "
+          + "tb_authority "
+          + "where "
+          + "author_id "
+          + "in ("
+          + "select "
+          + "author_id "
+          + "from "
+          + "tb_authority_role "
+          + "where role_id=#{roleId})"
+  })
+  /**
+   * description: 根据角色Id查找权限
+   *
+   * @param roleId
+   * @return java.util.List<cc.wanshan.gisdev.entity.usermanagement.Authority>
+   */
+  public List<Authority> findAuthoritiesByRoleId(String roleId);
+
+
+  @Select({
+      "select "
+          + "* "
+          + "from "
+          + "tb_authority "
+          + "where url=#{url}"
+  })
+  @Results({
+      @Result(id = true, column = "author_id", property = "authorId"),
+      @Result(column = "author_name", property = "authorName"),
+      @Result(column = "url", property = "url"),
+  })
+  /**
+   * description:根据url查找权限
+   *
+   * @param url
+   * @return cc.wanshan.gisdev.entity.usermanagement.Authority
+   */
+  public Authority findByUrl(String url);
+
+
+  @Select({
+      "select "
+          + "* "
+          + "from "
+          + "tb_authority "
+          + "where "
+          + "author_id=#{authorId}"
+  })
+  @Results({
+      @Result(id = true, column = "author_id", property = "authorId"),
+      @Result(column = "author_name", property = "authorName"),
+      @Result(column = "url", property = "url"),
+  })
+  /**
+   * description: 根据权限ID查找权限
+   *
+   * @param authorId
+   * @return cc.wanshan.gisdev.entity.usermanagement.Authority
+   */
+  public Authority findByAuthorId(String authorId);
+
+
+  @Insert({"insert into "
+      + "tb_authority ("
+      + "author_name,"
+      + "url,"
+      + "insert_time,"
+      + "update_time ) "
+      + "values ("
+      + "#{authorName},"
+      + "#{url},"
+      + "#{insertTime,jdbcType=TIMESTAMP},"
+      + "#{updateTime,jdbcType=TIMESTAMP})"
+  })
+  @Options(useGeneratedKeys = true, keyColumn = "author_id", keyProperty = "authorId")
+  /**
+   * description:新增权限记录
+   *
+   * @param authority
+   * @return int
+   */
+  public int insertAuthority(Authority authority);
+
+  @Update({
+      "update "
+          + "tb_authority "
+          + "set "
+          + "author_id=#{authorId},"
+          + "author_name=#{authorName},"
+          + "url=#{url} "
+          + "update_time=#{updateTime,jdbcType=TIMESTAMP}) "
+          + "where "
+          + "author_id=#{authorId}"
+  })
+  /**
+   * description: 根据authorId修改authority记录
+   *
+   * @param authority
+   * @return int
+   */
+  public int updateAuthority(Authority authority);
+
+
+  @Delete({"delete from "
+      + "tb_authority "
+      + "where "
+      + "author_id=#{authorId}"
+  })
+  /**
+   * description: 根据authorId删除对应authority
+   *
+   * @param authorId
+   * @return int
+   */
+  public int deleteAuthority(String authorId);
 }
