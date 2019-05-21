@@ -2,7 +2,7 @@
 package cc.wanshan.gis.entity.usermanagement;
 import cc.wanshan.gis.entity.drawlayer.Store;
 
-import cc.wanshan.gisdev.entity.thematic.Thematic;
+import cc.wanshan.gis.entity.thematic.Thematic;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.NotBlank;

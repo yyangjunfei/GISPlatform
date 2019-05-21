@@ -5,8 +5,6 @@ package cc.wanshan.gisdev.dao;
  * @date 2019/5/20 8:37
  */
 
-
-import cc.wanshan.gisdev.entity.style.Style;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Many;

@@ -1,6 +1,5 @@
 package cc.wanshan.gis.dao.searchschemadao.impl;
 
-import cc.wanshan.gis.controller.user.RoleController;
 import cc.wanshan.gis.dao.searchschemadao.SearchSchemaDao;
 import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.utils.JDBCConnectUtils;

@@ -1,12 +1,11 @@
-package cc.wanshan.gisdev;
+package cc.wanshan.gis;
 
-import cc.wanshan.gisdev.dao.LayerDao;
-import cc.wanshan.gisdev.dao.searchlayertabledao.SearchLayerTableDao;
-import cc.wanshan.gisdev.dao.searchlayertabledao.impl.SearchLayerTableDaoImpl;
-import cc.wanshan.gisdev.entity.Result;
-import cc.wanshan.gisdev.entity.drawlayer.Layer;
-import cc.wanshan.gisdev.entity.drawlayer.Store;
-import cc.wanshan.gisdev.entity.thematic.Thematic;
+import cc.wanshan.gis.dao.LayerDao;
+import cc.wanshan.gis.dao.searchlayertabledao.SearchLayerTableDao;
+import cc.wanshan.gis.entity.Result;
+import cc.wanshan.gis.entity.drawlayer.Layer;
+import cc.wanshan.gis.entity.drawlayer.Store;
+import cc.wanshan.gis.entity.thematic.Thematic;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
