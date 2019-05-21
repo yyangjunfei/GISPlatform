@@ -142,9 +142,9 @@ public interface StoreDao {
       @Result(column = "store_name", property = "storeName"),
       @Result(column = "security", property = "user.security"),
       @Result(column = "user_id", property = "user.userId"),
-      @Result(column = "thematic_id", property = "user.thematic", many = @Many(select = "cc.wanshan.gisdev.dao.ThematicDao.findByThematicId")),
+      @Result(column = "thematic_id", property = "user.thematic", many = @Many(select = "cc.wanshan.gis.dao.ThematicDao.findByThematicId")),
       @Result(column = "store_id", property = "layerList",
-          many = @Many(select = "cc.wanshan.gisdev.dao.LayerDao.findLayersByStoreId")),
+          many = @Many(select = "cc.wanshan.gis.dao.LayerDao.findLayersByStoreId")),
   })
   /**
    * description: 根据用户名查找stores

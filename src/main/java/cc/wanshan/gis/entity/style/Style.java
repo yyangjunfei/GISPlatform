@@ -1,6 +1,6 @@
-package cc.wanshan.gisdev.entity.style;
+package cc.wanshan.gis.entity.style;
 
-import cc.wanshan.gisdev.entity.drawlayer.Layer;
+import cc.wanshan.gis.entity.drawlayer.Layer;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.NotBlank;
@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
+
 
 @Data
 public class Style implements Serializable {

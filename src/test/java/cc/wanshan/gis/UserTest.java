@@ -1,10 +1,10 @@
-package cc.wanshan.gisdev;
+package cc.wanshan.gis;
 
-import cc.wanshan.gisdev.dao.RoleDao;
-import cc.wanshan.gisdev.dao.UserDao;
-import cc.wanshan.gisdev.entity.thematic.Thematic;
-import cc.wanshan.gisdev.entity.usermanagement.Role;
-import cc.wanshan.gisdev.entity.usermanagement.User;
+import cc.wanshan.gis.dao.RoleDao;
+import cc.wanshan.gis.dao.UserDao;
+import cc.wanshan.gis.entity.thematic.Thematic;
+import cc.wanshan.gis.entity.usermanagement.Role;
+import cc.wanshan.gis.entity.usermanagement.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;

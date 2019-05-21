@@ -1,6 +1,6 @@
-package cc.wanshan.gisdev.service.thematicService;
+package cc.wanshan.gis.service.thematicService;
 
-import cc.wanshan.gisdev.entity.thematic.Thematic;
+import cc.wanshan.gis.entity.thematic.Thematic;
 
 /**
  * @author Li Cheng

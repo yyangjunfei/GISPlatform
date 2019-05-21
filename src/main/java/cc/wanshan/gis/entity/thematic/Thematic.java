@@ -1,8 +1,6 @@
-package cc.wanshan.gisdev.entity.thematic;
+package cc.wanshan.gis.entity.thematic;
 
-import cc.wanshan.gisdev.entity.drawlayer.Store;
-import cc.wanshan.gisdev.entity.usermanagement.Role;
-import cc.wanshan.gisdev.entity.usermanagement.User;
+import cc.wanshan.gis.entity.usermanagement.User;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
