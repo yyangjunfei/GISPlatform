@@ -9,9 +9,11 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>cc.wanshan</groupId>
-    <artifactId>gisdev</artifactId>
+    <artifactId>GISPlatform</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>GisDev</name>
+    <packaging>jar</packaging>
+
+    <name>GISPlatform</name>
     <description>GIS project for Spring Boot</description>
 
     <repositories>
@@ -76,9 +78,13 @@
         <mybatis.version>2.0.1</mybatis.version>
         <pagehelper-starter.version>1.2.10</pagehelper-starter.version>
         <mybatis-ehcache.version>1.1.0</mybatis-ehcache.version>
+        <mybatis-plus.version>3.1.1</mybatis-plus.version>
+
+
     </properties>
 
     <dependencies>
+        <!--springboot相关依赖-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
@@ -90,15 +96,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-        <!--<dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>-->
-        <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>${mybatis.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -141,6 +138,7 @@
             <optional>true</optional>
         </dependency>
 
+        <!--Geotools相关依赖-->
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-shapefile</artifactId>
@@ -232,6 +230,7 @@
             <version>${geotools.version}</version>
         </dependency>
 
+        <!--GIS相关依赖-->
         <!-- https://mvnrepository.com/artifact/com.vividsolutions/jts -->
         <dependency>
             <groupId>com.vividsolutions</groupId>
@@ -258,6 +257,42 @@
             <type>pom</type>
         </dependency>
 
+        <!--数据库DB相关依赖-->
+      <!--  <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>-->
+        <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>${mybatis.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper-spring-boot-starter</artifactId>
+            <version>${pagehelper-starter.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.baomidou/mybatis-plus-boot-starter -->
+       <!-- <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>${mybatis-plus.version}</version>
+        </dependency>-->
+        <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-spatial -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-spatial</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+
+        <!--第三方相关依赖-->
         <!-- https://mvnrepository.com/artifact/junit/junit -->
         <dependency>
             <groupId>junit</groupId>
@@ -283,7 +318,6 @@
             <artifactId>springfox-swagger-ui</artifactId>
             <version>${swagger.version}</version>
         </dependency>
-
         <!-- https://mvnrepository.com/artifact/com.github.xiaoymin/swagger-bootstrap-ui -->
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
@@ -429,30 +463,6 @@
             <artifactId>jdom2</artifactId>
             <version>${jdom2.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>${postgresql.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.pagehelper</groupId>
-            <artifactId>pagehelper-spring-boot-starter</artifactId>
-            <version>${pagehelper-starter.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mybatis.caches</groupId>
-            <artifactId>mybatis-ehcache</artifactId>
-            <version>${mybatis-ehcache.version}</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-spatial -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-spatial</artifactId>
-            <version>${hibernate.version}</version>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/com.thetransactioncompany/cors-filter -->
         <dependency>
             <groupId>com.thetransactioncompany</groupId>
@@ -468,7 +478,7 @@
     </dependencies>
 
     <build>
-        <finalName>GisDev</finalName>
+        <finalName>GISPlatform</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.wanshan.gis.dao.plot.PlotPointMapper">
+    <resultMap id="BaseResultMap" type="cc.wanshan.gis.entity.plot.PlotPoint">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="type" jdbcType="VARCHAR" property="type"/>
+        <result column="layer_id" jdbcType="VARCHAR" property="layerId"/>
+        <result column="color" jdbcType="VARCHAR" property="color"/>
+        <result column="style" jdbcType="VARCHAR" property="style"/>
+        <result column="width" jdbcType="INTEGER" property="width"/>
+        <result column="opacity" jdbcType="INTEGER" property="opacity"/>
+        <result column="symbol" jdbcType="VARCHAR" property="symbol"/>
+        <result column="geom" jdbcType="VARCHAR" property="geom"/>
+        <result column="create_time" jdbcType="DATE" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="DATE" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, name, type, layer_id, color, style, width, opacity, symbol, geom, create_time, 
+    create_by, update_time, update_by
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from plot_point
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from plot_point
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+    <insert id="insert" parameterType="cc.wanshan.gis.entity.plot.PlotPoint">
+        <selectKey keyProperty="id" resultType="java.lang.String" order="BEFORE">
+            select replace(cast(uuid_generate_v4() as VARCHAR), '-', '');
+        </selectKey>
+        insert into plot_point (id, name, type,
+        layer_id, color, style,
+        width, opacity, symbol,
+        geom, create_time, create_by,
+        update_time, update_by)
+        values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR},
+        #{layerId,jdbcType=VARCHAR}, #{color,jdbcType=VARCHAR}, #{style,jdbcType=VARCHAR},
+        #{width,jdbcType=INTEGER}, #{opacity,jdbcType=INTEGER}, #{symbol,jdbcType=VARCHAR},
+        #{geom,jdbcType=VARCHAR}, #{createTime,jdbcType=DATE}, #{createBy,jdbcType=VARCHAR},
+        #{updateTime,jdbcType=DATE}, #{updateBy,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="cc.wanshan.gis.entity.plot.PlotPoint">
+
+        <selectKey keyProperty="id" resultType="java.lang.String" order="BEFORE">
+            select uuid()
+        </selectKey>
+
+        insert into plot_point
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+            <if test="layerId != null">
+                layer_id,
+            </if>
+            <if test="color != null">
+                color,
+            </if>
+            <if test="style != null">
+                style,
+            </if>
+            <if test="width != null">
+                width,
+            </if>
+            <if test="opacity != null">
+                opacity,
+            </if>
+            <if test="symbol != null">
+                symbol,
+            </if>
+            <if test="geom != null">
+                geom,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="createBy != null">
+                create_by,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="updateBy != null">
+                update_by,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="layerId != null">
+                #{layerId,jdbcType=VARCHAR},
+            </if>
+            <if test="color != null">
+                #{color,jdbcType=VARCHAR},
+            </if>
+            <if test="style != null">
+                #{style,jdbcType=VARCHAR},
+            </if>
+            <if test="width != null">
+                #{width,jdbcType=INTEGER},
+            </if>
+            <if test="opacity != null">
+                #{opacity,jdbcType=INTEGER},
+            </if>
+            <if test="symbol != null">
+                #{symbol,jdbcType=VARCHAR},
+            </if>
+            <if test="geom != null">
+                #{geom,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=DATE},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=DATE},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cc.wanshan.gis.entity.plot.PlotPoint">
+        update plot_point
+        <set>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="layerId != null">
+                layer_id = #{layerId,jdbcType=VARCHAR},
+            </if>
+            <if test="color != null">
+                color = #{color,jdbcType=VARCHAR},
+            </if>
+            <if test="style != null">
+                style = #{style,jdbcType=VARCHAR},
+            </if>
+            <if test="width != null">
+                width = #{width,jdbcType=INTEGER},
+            </if>
+            <if test="opacity != null">
+                opacity = #{opacity,jdbcType=INTEGER},
+            </if>
+            <if test="symbol != null">
+                symbol = #{symbol,jdbcType=VARCHAR},
+            </if>
+            <if test="geom != null">
+                geom = #{geom,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=DATE},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=DATE},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="cc.wanshan.gis.entity.plot.PlotPoint">
+    update plot_point
+    set name = #{name,jdbcType=VARCHAR},
+      type = #{type,jdbcType=VARCHAR},
+      layer_id = #{layerId,jdbcType=VARCHAR},
+      color = #{color,jdbcType=VARCHAR},
+      style = #{style,jdbcType=VARCHAR},
+      width = #{width,jdbcType=INTEGER},
+      opacity = #{opacity,jdbcType=INTEGER},
+      symbol = #{symbol,jdbcType=VARCHAR},
+      geom = #{geom,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=DATE},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=DATE},
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

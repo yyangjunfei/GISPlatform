@@ -27,7 +27,7 @@
         </javaTypeResolver>
 
         <!-- 数据表对应的model层  -->
-        <javaModelGenerator targetPackage="cc.wanshan.gisdev.entity" targetProject="src/main/java">
+        <javaModelGenerator targetPackage="cc.wanshan.gis.entity" targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>
@@ -38,17 +38,22 @@
         </sqlMapGenerator>
 
         <!-- mybatis3中的mapper接口 -->
-        <javaClientGenerator type="XMLMAPPER" targetPackage="cc.wanshan.gisdev.dao" targetProject="src/main/java">
+        <javaClientGenerator type="XMLMAPPER" targetPackage="cc.wanshan.gis.dao" targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
         <!-- 数据表进行生成操作 schema:相当于库名; tableName:表名; domainObjectName:对应的DO -->
-        <table tableName="emergency" domainObjectName="Emergency"
+        <!--   <table tableName="emergency" domainObjectName="Emergency"
+                  enableCountByExample="false" enableUpdateByExample="false"
+                  enableDeleteByExample="false" enableSelectByExample="false"
+                  selectByExampleQueryId="false">
+           </table>-->
+
+        <table tableName="plot_point" domainObjectName="PlotPoint"
                enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false">
         </table>
-
 
     </context>
 </generatorConfiguration>
