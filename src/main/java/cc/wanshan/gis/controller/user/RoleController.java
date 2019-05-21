@@ -1,4 +1,9 @@
+
+/*
+package cc.wanshan.gisdev.controller.user;
+=======
 package cc.wanshan.gis.controller.user;
+>>>>>>> master:src/main/java/cc/wanshan/gis/controller/user/RoleController.java
 
 
 import cc.wanshan.gis.entity.Result;
@@ -151,3 +156,4 @@ public class RoleController {
         }
     }
 }
+*/

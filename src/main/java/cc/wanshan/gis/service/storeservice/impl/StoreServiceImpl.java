@@ -35,13 +35,13 @@ public class StoreServiceImpl implements StoreService {
         return ResultUtil.error(1,"保存失败");
     }
     @Override
-    public Store findStoreByStoreId(Integer storeId) {
+    public Store findStoreByStoreId(String storeId) {
         logger.info("findStoreByStoreId::storeId = [{}]",storeId);
         return storeDao.findStoreByStoreId(storeId);
     }
 
     @Override
-    public List<Store> findStoreByUserId (Integer userId) {
+    public List<Store> findStoreByUserId (String userId) {
         logger.info("findStoreByUserId::userId = [{}]",userId);
         return storeDao.findStoreByUserId(userId);
     }

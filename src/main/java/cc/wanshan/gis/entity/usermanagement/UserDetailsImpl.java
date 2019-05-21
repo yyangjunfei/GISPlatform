@@ -1,47 +1,25 @@
 package cc.wanshan.gis.entity.usermanagement;
 
+import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
+@Data
 public class UserDetailsImpl implements UserDetails {
     private static final long serialVersionUID = 1L;
+    @NotBlank(message = "用户名不可为null")
+    @Length(max = 24,message = "长度最多24位")
     private String username;
+    @NotBlank(message = "密码不可为null")
+    @Length(min = 6,message = "长度最少6位")
     private String passwoed;
     private Role role;
-
-    public UserDetailsImpl() {
-    }
-
-
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPasswoed() {
-        return passwoed;
-    }
-
-    public void setPasswoed(String passwoed) {
-        this.passwoed = passwoed;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();

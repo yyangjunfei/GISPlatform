@@ -16,36 +16,41 @@ import java.util.ArrayList;
 
 @Repository(value = "insertLayerDaoImpl")
 public class InsertFeatureDaoImpl implements InsertFeatureDao {
-    private static final Logger logger= LoggerFactory.getLogger(InsertFeatureDaoImpl.class);
-    @Override
-    public Result insertFeatures(ArrayList<Feature> features, String tableName, String schema) {
-        logger.info("insertFeatures::features = [{}], tableName = [{}], schema = [{}]",features, tableName, schema);
-        Connection connection = JDBCConnectUtils.getDBConnection();
-        PreparedStatement preparedStatement=null;
-        int de=0;
-        try {
-            String sql = "INSERT INTO "+schema+"."+"\""+tableName+"\""+"(" +
-                    " fclass, name, geom)" +
-                    "VALUES ( ?,?,st_geomfromgeojson(?))";
-            preparedStatement = connection.prepareStatement(sql);
-            for (Feature feature : features) {
-                preparedStatement.setString(1,feature.getProperties().getFclass());
-                preparedStatement.setString(2,feature.getProperties().getName());
-                preparedStatement.setString(3,feature.getGeometry());
-                de = preparedStatement.executeUpdate();
-            }
-            System.out.println(de);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }finally {
-            JDBCConnectUtils.close(null,preparedStatement,connection);
-        }
-        if (de!=0){
-            return ResultUtil.success();
-        }else {
-            logger.warn(tableName+"插入失败");
-            return ResultUtil.error(1,"插入失败");
-        }
+
+  private static final Logger logger = LoggerFactory.getLogger(InsertFeatureDaoImpl.class);
+
+  @Override
+  public Result insertFeatures(ArrayList<Feature> features, String tableName, String schema) {
+    logger.info("insertFeatures::features = [{}], tableName = [{}], schema = [{}]", features,
+        tableName, schema);
+    Connection connection = JDBCConnectUtils.getDBConnection();
+    PreparedStatement preparedStatement = null;
+    int de = 0;
+    try {
+      //String sql = "INSERT INTO " + ""+schema+"" +  "." + ""+tableName+"" + " ( fclass, name, geom ) VALUES (?,?,st_geomfromgeojson( ? ))";
+      String sql = "INSERT INTO "+schema+"."+"\""+tableName+"\""+"(" +
+          " fclass, name, geom)" +
+          "VALUES ( ?,?,st_geomfromgeojson(?))";
+      preparedStatement = connection.prepareStatement(sql);
+      for (Feature feature : features) {
+        preparedStatement.setString(1, feature.getProperties().getFclass());
+        preparedStatement.setString(2, feature.getProperties().getName());
+        preparedStatement.setString(3, feature.getGeometry().toString());
+
+        de = preparedStatement.executeUpdate();
+      }
+      System.out.println(de);
+    } catch (SQLException e) {
+      e.printStackTrace();
+    } finally {
+      JDBCConnectUtils.close(null, preparedStatement, connection);
     }
+    if (de != 0) {
+      return ResultUtil.success();
+    } else {
+      logger.warn(tableName + "插入失败");
+      return ResultUtil.error(1, "插入失败");
+    }
+  }
 }
 

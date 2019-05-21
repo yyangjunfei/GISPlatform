@@ -1,0 +1,222 @@
+-- 专题表
+CREATE TABLE public.tb_thematic
+(
+    thematic_id character varying(32) NOT NULL DEFAULT replace(uuid_generate_v1()::text,'-',''),
+    thematic_name character varying(20) COLLATE pg_catalog."default" NOT NULL,
+    thematic_name_zh character varying(32) COLLATE pg_catalog."default" NOT NULL,
+    insert_time timestamp(0) with time zone NOT NULL,
+    update_time timestamp(0) with time zone NOT NULL,
+    describe character varying(100) COLLATE pg_catalog."default",
+    CONSTRAINT tb_thematic_pkey PRIMARY KEY (thematic_id)
+)
+-- 角色表
+CREATE TABLE public.tb_role
+(
+    role_id character varying(32) NOT NULL DEFAULT replace(uuid_generate_v1()::text,'-',''),
+    role_name character varying(20) COLLATE pg_catalog."default" NOT NULL,
+    role_name_zh character varying(24) COLLATE pg_catalog."default" NOT NULL,
+    insert_time timestamp(0) with time zone NOT NULL,
+    update_time timestamp(0) with time zone NOT NULL,
+    describe character varying(100) COLLATE pg_catalog."default",
+    CONSTRAINT tb_role_pkey PRIMARY KEY (role_id)
+)
+
+-- 用户表
+CREATE TABLE public.tb_user
+(
+    user_id character varying(32) NOT NULL DEFAULT replace(uuid_generate_v1()::text,'-',''),
+    username character varying(24) COLLATE pg_catalog."default" NOT NULL,
+    password character varying(32) COLLATE pg_catalog."default" NOT NULL,
+    role_id character varying(32) COLLATE pg_catalog."default",
+    thematic_id character varying(32) COLLATE pg_catalog."default",
+    phone_num character varying(16) COLLATE pg_catalog."default",
+    email character varying(16) COLLATE pg_catalog."default",
+    department character varying(24) COLLATE pg_catalog."default",
+    security character varying(16) COLLATE pg_catalog."default",
+    insert_time timestamp(0) with time zone NOT NULL,
+    update_time timestamp(0) with time zone NOT NULL,
+    status integer,
+    delete integer,
+	CONSTRAINT fkcgvb4rn18kaq4pxb0piueexx7 FOREIGN KEY (role_id)
+                REFERENCES public.tb_role (role_id) MATCH SIMPLE
+                ON UPDATE NO ACTION
+                ON DELETE NO ACTION,
+            CONSTRAINT tb_user_role_id_fkey FOREIGN KEY (role_id)
+                REFERENCES public.tb_role (role_id) MATCH SIMPLE
+                ON UPDATE CASCADE
+                ON DELETE CASCADE,
+  CONSTRAINT fkcgvb4rn18kaq4pxb0piueexx7 FOREIGN KEY (thematic_id)
+                  REFERENCES public.tb_thematic (thematic_id) MATCH SIMPLE
+                  ON UPDATE NO ACTION
+                  ON DELETE NO ACTION,
+              CONSTRAINT tb_user_thematic_id_fkey FOREIGN KEY (thematic_id)
+                  REFERENCES public.tb_thematic (thematic_id) MATCH SIMPLE
+                  ON UPDATE CASCADE
+                  ON DELETE CASCADE,
+    CONSTRAINT tb_user_pkey PRIMARY KEY (user_id)
+
+)
+
+-- 权限表
+CREATE TABLE public.tb_authority
+(
+    author_id character varying(32) NOT NULL DEFAULT replace(uuid_generate_v1()::text,'-',''),
+    author_name character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    url character varying(200) COLLATE pg_catalog."default" NOT NULL,
+    insert_time timestamp(0) with time zone NOT NULL,
+    update_time timestamp(0) with time zone NOT NULL,
+    CONSTRAINT tb_authority_pkey PRIMARY KEY (author_id)
+)
+
+-- 权限角色关系表
+CREATE TABLE public.tb_authority_role
+(
+    author_role_id character varying(32) NOT NULL DEFAULT replace(uuid_generate_v1()::text,'-',''),
+    author_id character varying(32) COLLATE pg_catalog."default" NOT NULL,
+    role_id character varying(32) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT fkaukq8hfdqf5vjcrwgps5tojpq FOREIGN KEY (role_id)
+            REFERENCES public.tb_role (role_id) MATCH SIMPLE
+            ON UPDATE NO ACTION
+            ON DELETE NO ACTION,
+        CONSTRAINT fkgfb2hd9j9ryp5jpxw5q2xiubj FOREIGN KEY (author_id)
+            REFERENCES public.tb_authority (author_id) MATCH SIMPLE
+            ON UPDATE NO ACTION
+            ON DELETE NO ACTION,
+    CONSTRAINT tb_authority_role_pkey PRIMARY KEY (author_role_id)
+)
+
+-- 存储点表
+
+CREATE TABLE public.tb_store
+   (
+       store_id character varying(32) NOT NULL DEFAULT replace(uuid_generate_v1()::text,'-',''),
+       store_name character varying(32) COLLATE pg_catalog."default" NOT NULL,
+       user_id character varying(32) COLLATE pg_catalog."default" NOT NULL,
+       insert_time timestamp(0) with time zone NOT NULL,
+       update_time timestamp(0) with time zone NOT NULL,
+       CONSTRAINT fkcgvb4rn18kaq4pxb0piueexx7 FOREIGN KEY (user_id)
+                  REFERENCES public.tb_user (user_id) MATCH SIMPLE
+                  ON UPDATE NO ACTION
+                  ON DELETE NO ACTION,
+              CONSTRAINT tb_store_user_id_fkey FOREIGN KEY (user_id)
+                  REFERENCES public.tb_user (user_id) MATCH SIMPLE
+                  ON UPDATE CASCADE
+                  ON DELETE CASCADE,
+       CONSTRAINT tb_store_pkey PRIMARY KEY (store_id)
+   )
+
+
+--图层表
+CREATE TABLE public.tb_layer
+   (
+       layer_id character varying(32) NOT NULL DEFAULT replace(uuid_generate_v1()::text,'-',''),
+       layer_name character varying(32) COLLATE pg_catalog."default" NOT NULL,
+       layer_name_zh character varying(32) COLLATE pg_catalog."default" NOT NULL,
+       type character varying(16) COLLATE pg_catalog."default" ,
+       store_id character varying(32) COLLATE pg_catalog."default" NOT NULL,
+       user_id character varying(32) COLLATE pg_catalog."default" NOT NULL,
+       thematic_id character varying(32) COLLATE pg_catalog."default" NOT NULL,
+       thematic_name character varying(20) COLLATE pg_catalog."default" NOT NULL,
+       thematic_name_zh character varying(32) COLLATE pg_catalog."default" NOT NULL,
+       first_classification character varying(32) COLLATE pg_catalog."default" NOT NULL,
+       second_classification character varying(32) COLLATE pg_catalog."default" NOT NULL,
+       security character varying(16) COLLATE pg_catalog."default" NOT NULL,
+       publish_time timestamp(0) with time zone NOT NULL,
+       upload_time timestamp(0) with time zone NOT NULL,
+       update_time timestamp(0) with time zone NOT NULL,
+       epsg character varying(4) COLLATE pg_catalog."default" NOT NULL,
+        CONSTRAINT fkiefpj8xb3nyh5e8s6w5vc23qk FOREIGN KEY (store_id)
+                  REFERENCES public.tb_store (store_id) MATCH SIMPLE
+                  ON UPDATE NO ACTION
+                  ON DELETE NO ACTION,
+              CONSTRAINT tb_layer_store_id_fkey FOREIGN KEY (store_id)
+                  REFERENCES public.tb_store (store_id) MATCH SIMPLE
+                  ON UPDATE CASCADE
+                  ON DELETE CASCADE,
+       CONSTRAINT fkiefpj8xb3nyh5e8s6w5vc23qk FOREIGN KEY (thematic_id)
+                         REFERENCES public.tb_thematic (thematic_id) MATCH SIMPLE
+                         ON UPDATE NO ACTION
+                         ON DELETE NO ACTION,
+                     CONSTRAINT tb_layer_thematic_id_fkey FOREIGN KEY (thematic_id)
+                         REFERENCES public.tb_thematic (thematic_id) MATCH SIMPLE
+                         ON UPDATE CASCADE
+                         ON DELETE CASCADE,
+       CONSTRAINT tb_layer_pkey PRIMARY KEY (layer_id)
+   )
+
+-- 风格表
+CREATE TABLE public.tb_style
+(
+    style_id character varying(32) NOT NULL DEFAULT replace(uuid_generate_v1()::text,'-',''),
+    style_name character varying(32) COLLATE pg_catalog."default" NOT NULL,
+    layer_id character varying(32) COLLATE pg_catalog."default" NOT NULL,
+    insert_time timestamp(0) with time zone NOT NULL,
+    update_time timestamp(0) with time zone NOT NULL,
+    CONSTRAINT fkcgvb4rn18kaq4pxb0piueexx7 FOREIGN KEY (layer_id)
+                    REFERENCES public.tb_layer (layer_id) MATCH SIMPLE
+                    ON UPDATE NO ACTION
+                    ON DELETE NO ACTION,
+                CONSTRAINT tb_style_layer_id_fkey FOREIGN KEY (layer_id)
+                    REFERENCES public.tb_layer (layer_id) MATCH SIMPLE
+                    ON UPDATE CASCADE
+                    ON DELETE CASCADE,
+    CONSTRAINT tb_style_pkey PRIMARY KEY (style_id)
+)
+
+-- 风格规则表
+CREATE TABLE public.tb_rule_name
+(
+	  rule_name_id character varying(32) NOT NULL DEFAULT replace(uuid_generate_v1()::text,'-',''),
+    style_id character varying(32) NOT NULL,
+    fill_env character varying(16) COLLATE pg_catalog."default",
+    stroke_env character varying(16) COLLATE pg_catalog."default",
+    width_env character varying(16) COLLATE pg_catalog."default",
+    opacity_env character varying(16) COLLATE pg_catalog."default",
+    font_family_env character varying(16) COLLATE pg_catalog."default",
+    font_size_env character varying(16) COLLATE pg_catalog."default",
+    font_fill_env character varying(16) COLLATE pg_catalog."default",
+    font_stroke_env character varying(16) COLLATE pg_catalog."default",
+    font_style_env character varying(16) COLLATE pg_catalog."default",
+    font_weight_env character varying(16) COLLATE pg_catalog."default",
+    insert_time timestamp(0) with time zone NOT NULL,
+    update_time timestamp(0) with time zone NOT NULL,
+	  CONSTRAINT fkcgvb4rn18kaq4pxb0piueexx7 FOREIGN KEY (style_id)
+                REFERENCES public.tb_style (style_id) MATCH SIMPLE
+                ON UPDATE NO ACTION
+                ON DELETE NO ACTION,
+            CONSTRAINT tb_rule_name_style_id_fkey FOREIGN KEY (style_id)
+                REFERENCES public.tb_style (style_id) MATCH SIMPLE
+                ON UPDATE CASCADE
+                ON DELETE CASCADE,
+    CONSTRAINT tb_rule_name_pkey PRIMARY KEY (rule_name_id)
+)
+
+-- 规则参数表
+
+CREATE TABLE public.tb_rule_value
+(
+    rule_value character varying(32) COLLATE pg_catalog."default" NOT NULL,
+    rule_value_id character varying(32) NOT NULL DEFAULT replace(uuid_generate_v1()::text,'-',''),
+	  rule_name_id character varying(32) NOT NULL,
+    fill_value character varying(8) COLLATE pg_catalog."default",
+    stroke_value character varying(8) COLLATE pg_catalog."default",
+    width_value character varying(8) COLLATE pg_catalog."default",
+    opacity_value character varying(8) COLLATE pg_catalog."default",
+    font_family_value character varying(8) COLLATE pg_catalog."default",
+    font_size_value character varying(8) COLLATE pg_catalog."default",
+    font_fill_value character varying(8) COLLATE pg_catalog."default",
+    font_stroke_value character varying(8) COLLATE pg_catalog."default",
+    font_style_value character varying(8) COLLATE pg_catalog."default",
+    font_weight_value character varying(8) COLLATE pg_catalog."default",
+    insert_time timestamp(0) with time zone NOT NULL,
+    update_time timestamp(0) with time zone NOT NULL,
+    CONSTRAINT fkcgvb4rn18kaq4pxb0piueexx7 FOREIGN KEY (rule_name_id)
+                REFERENCES public.tb_rule_name (rule_name_id) MATCH SIMPLE
+                ON UPDATE NO ACTION
+                ON DELETE NO ACTION,
+            CONSTRAINT tb_rule_value_rule_name_id_fkey FOREIGN KEY (rule_name_id)
+                REFERENCES public.tb_rule_name (rule_name_id) MATCH SIMPLE
+                ON UPDATE CASCADE
+                ON DELETE CASCADE,
+    CONSTRAINT tb_rule_value_pkey PRIMARY KEY (rule_value_id)
+)
