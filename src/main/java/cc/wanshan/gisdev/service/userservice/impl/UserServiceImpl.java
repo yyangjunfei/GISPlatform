@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public Result findUserByUserId(Integer userId) {
+    public Result findUserByUserId(String userId) {
         logger.info("findUserByUserId::userId = [{}]",userId);
         User user = userDao.findUserByUserId(userId);
         if (user!=null){
@@ -130,7 +130,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public Result deleteUser(Integer userId) {
+    public Result deleteUser(String userId) {
         logger.info("deleteUser::userId = [{}]",userId);
         int i = userDao.deleteUser(userId);
         if (i==1){

@@ -10,7 +10,6 @@ import cc.wanshan.gisdev.service.storeservice.StoreService;
 import cc.wanshan.gisdev.service.userservice.UserService;
 import cc.wanshan.gisdev.utils.GeoserverUtils;
 import cc.wanshan.gisdev.utils.ResultUtil;
-import it.geosolutions.geoserver.rest.GeoServerRESTManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -21,6 +20,8 @@ import java.net.URISyntaxException;
 @Service("geoserverServiceImpl")
 public class GeoserverServiceImpl implements GeoserverService {
     private static final Logger logger= LoggerFactory.getLogger(GeoserverServiceImpl.class);
+    @Resource
+    private GeoserverUtils geoserverUtils;
     @Resource(name = "storeServiceImpl")
     private StoreService storeService;
     @Resource(name = "userServiceImpl")
@@ -36,9 +37,9 @@ public class GeoserverServiceImpl implements GeoserverService {
         if (searchSchema.getCode()==1){
             Result schema = createSchemaDao.createSchema(workspace);
             if (schema.getCode()==0){
-                boolean workSpace = GeoserverUtils.createWorkSpace(workspace,workspace);
+                boolean workSpace = geoserverUtils.createWorkSpace(workspace,workspace);
                 if (workSpace){
-                    Result newStore = GeoserverUtils.createDataStore("newStore",workspace);
+                    Result newStore = geoserverUtils.createDataStore("newStore",workspace);
                     if (newStore.getCode()==0){
                         Store store = new Store();
                         User user = userService.findUserByUsername(workspace);

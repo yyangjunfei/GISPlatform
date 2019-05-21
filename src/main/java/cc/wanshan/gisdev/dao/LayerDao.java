@@ -4,66 +4,170 @@ package cc.wanshan.gisdev.dao;
 import cc.wanshan.gisdev.entity.drawlayer.Layer;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 
 
 /**
  * @Author Li Cheng
- * @Description 图层查询
  * @Date 17:32 2019/3/20
- * @Param
- * @return
  **/
 @Mapper
 @Component
 public interface LayerDao {
-    /**
-     * @Author Li Cheng
-     * @Description 根据图层名和存储点id删除对应图层信息
-     * @Date 9:37 2019/4/10
-     * @Param [layerName, storeId]
-     * @return int
-     **/
-    @Delete({"delete from tb_layer where layer_name=#{layerName} and store_id=#{storeId}"})
-    public int deleteLayerByLayerNameAndStoreId(String layerName, Integer storeId);
-    /**
-     * @Author Li Cheng
-     * @Description 新增layer记录
-     * @Date 9:46 2019/4/10
-     * @Param [layer]
-     * @return int
-     **/
-    @Insert({"insert into tb_layer (layer_name,store_id,type,epsg) values (#{layerName},#{storeId},#{type},#{epsg})"})
-    @Options(useGeneratedKeys = true,keyColumn = "layer_id",keyProperty = "layerId")
-    public int insertLayer(Layer layer);
-    /**
-     * @Author Li Cheng
-     * @Description 根据layerId修改layer信息
-     * @Date 9:50 2019/4/10
-     * @Param [layer]
-     * @return int
-     **/
-    @Update({"update tb_layer set layer_id=#{layerId},layer_name=#{layerName},store_id=#{storeId},type=#{type},epsg=#{epsg} where layer_id=#{layerId}"})
-    public int updateLayer(Layer layer);
-    /**
-     * @Author Li Cheng
-     * @Description 根据layerId删除对应图层
-     * @Date 9:52 2019/4/10
-     * @Param [layerId]
-     * @return int
-     **/
-    @Delete({"delete from tb_layer where layer_id=#{layerId}"})
-    public int deleteLayer(Integer layerId);
-    @Select({"select * from tb_layer where store_id =#{storeId}"})
-    @Results({
-            @Result(id = true,column = "layer_id",property = "layerId"),
-            @Result(column = "layer_name",property = "layerName"),
-            @Result(column = "store_id",property = "storeId"),
-            @Result(column = "type",property = "type"),
-            @Result(column = "epsg",property = "epsg"),
-    })
-    public List<Layer> findLayersByStoreId(Integer storeId);
-    @Select({"select count(*) from tb_layer as l where l.layer_name = #{layerName} and l.store_id = (select s.store_id from tb_user as u inner join tb_store as s on u.u_id = s.u_id where u.username=#{username})   "})
-    public int findLayerCountByUsernameAndLayerName(String username, String layerName);
+
+  @Delete({
+      "delete from "
+          + "tb_layer "
+          + "where "
+          + "layer_name=#{layerName} and "
+          + "store_id=#{storeId}"
+  })
+  /**
+   * description: 根据storeId和图层名删除图层
+   *
+   * @param layerName
+   * @param storeId
+   * @return int
+   */
+  public int deleteLayerByLayerNameAndStoreId(String layerName, Integer storeId);
+
+
+  @Insert({
+      "insert into "
+          + "tb_layer ("
+          + "layer_name,"
+          + "layer_name_zh,"
+          + "store_id,"
+          + "user_id,"
+          + "thematic_id,"
+          + "thematic_name,"
+          + "thematic_name_zh,"
+          + "first_classification,"
+          + "second_classification,"
+          + "security,"
+          + "publish_time,"
+          + "upload_time,"
+          + "update_time,"
+          + "type,"
+          + "epsg"
+          + ") values ("
+          + "#{layerName},"
+          + "#{layerNameZH},"
+          + "#{store.storeId},"
+          + "#{userId},"
+          + "#{thematic.thematicId},"
+          + "#{thematic.thematicName},"
+          + "#{thematic.thematicNameZH},"
+          + "#{firstClassification},"
+          + "#{secondClassification},"
+          + "#{security},"
+          + "#{publishTime},"
+          + "#{uploadTime},"
+          + "#{updateTime},"
+          + "#{type},"
+          + "#{epsg})"
+  })
+  @Options(useGeneratedKeys = true, keyColumn = "layer_id", keyProperty = "layerId")
+  /**
+   * description: 新增图层
+   *
+   * @param layer
+   * @return int
+   */
+  public int insertLayer(Layer layer);
+
+
+  @Update({
+      "update "
+          + "tb_layer "
+          + "set "
+          + "layer_id=#{layerId},"
+          + "layer_name=#{layerName},"
+          + "store_id=#{storeId},"
+          + "type=#{type},"
+          + "epsg=#{epsg} "
+          + "where "
+          + "layer_id=#{layerId}"
+  })
+  /**
+   * description: 更新图层信息
+   *
+   * @param layer
+   * @return int
+   */
+  public int updateLayer(Layer layer);
+
+
+  @Delete({"delete from "
+      + "tb_layer "
+      + "where "
+      + "layer_id=#{layerId}"
+  })
+  /**
+   * description: 删除layer
+   *
+   * @param layerId
+   * @return int
+   */
+  public int deleteLayer(Integer layerId);
+
+  @Select({"select "
+      + "* "
+      + "from "
+      + "tb_layer "
+      + "where "
+      + "store_id =#{storeId}"
+  })
+  @Results({
+      @Result(id = true, column = "layer_id", property = "layerId"),
+      @Result(column = "layer_name", property = "layerName"),
+      @Result(column = "layer_name_zh", property = "layerNameZH"),
+      @Result(column = "store_id", property = "store.storeId"),
+      @Result(column = "user_id", property = "userId"),
+      @Result(column = "thematic_id", property = "thematic.thematicId"),
+      @Result(column = "thematic_name", property = "thematic.thematicName"),
+      @Result(column = "thematic_name_zh", property = "thematic.thematicNameZH"),
+      @Result(column = "first_classification", property = "firstClassification"),
+      @Result(column = "second_classification", property = "secondClassification"),
+      @Result(column = "security", property = "security"),
+      @Result(column = "publish_time", property = "publishTime"),
+      @Result(column = "upload_time", property = "uploadTime"),
+      @Result(column = "update_time", property = "updateTime"),
+      @Result(column = "type", property = "type"),
+      @Result(column = "epsg", property = "epsg"),
+  })
+  /**
+   * description: 根据storeId查询图层
+   *
+   * @param storeId
+   * @return java.util.List<cc.wanshan.gisdev.entity.drawlayer.Layer>
+   */
+  public List<Layer> findLayersByStoreId(String storeId);
+
+  @Select({
+      "select "
+          + "count(*) "
+          + "from "
+          + "tb_layer as l "
+          + "where "
+          + "l.layer_name = #{layerName} and "
+          + "l.store_id = ("
+          + "select "
+          + "s.store_id "
+          + "from "
+          + "tb_user as u "
+          + "inner join "
+          + "tb_store as s "
+          + "on "
+          + "u.u_id = s.u_id "
+          + "where u.username=#{username})"
+  })
+  /**
+   * description:
+   *
+   * @param username
+   * @param layerName
+   * @return int
+   */
+  public int findLayerCountByUsernameAndLayerName(String username, String layerName);
 }

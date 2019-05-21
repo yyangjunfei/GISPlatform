@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface AuthorityService {
     public Authority findAuthorityByUrl(String url);
-    public List<Role> findRolesByAuthorId(Integer authorId);
+    public List<Role> findRolesByAuthorId(String authorId);
 }

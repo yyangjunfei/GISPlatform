@@ -1,3 +1,4 @@
+/*
 package cc.wanshan.gisdev.controller.user;
 
 
@@ -219,3 +220,4 @@ public class UserController {
         }
     }
 }
+*/

@@ -1,78 +1,41 @@
 package cc.wanshan.gisdev.entity.usermanagement;
 
+import lombok.Data;
+import org.hibernate.validator.constraints.Length;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
+/**
+ * 角色实体类
+ *
+ * @Author Li Cheng
+ * @Date 14:44 2019/5/18
+ **/
+@Data
 public class Role implements Serializable {
-    private static final long serialVersionUID = 1L;
-    private Integer roleId;
-    private String roleName;
-    private String roleNameZH;
-    private String  describe;
 
-    private List<Authority> authorityList;
-
-    private List<User> userList;
-    public Role() {
-    }
-
-    public Integer getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(Integer roleId) {
-        this.roleId = roleId;
-    }
-
-    public String getRoleName() {
-        return roleName;
-    }
-
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
-    }
-
-    public String getRoleNameZH() {
-        return roleNameZH;
-    }
-
-    public void setRoleNameZH(String roleNameZH) {
-        this.roleNameZH = roleNameZH;
-    }
-
-    public String getDescribe() {
-        return describe;
-    }
-
-    public void setDescribe(String describe) {
-        this.describe = describe;
-    }
-
-    public List<Authority> getAuthorityList() {
-        return authorityList;
-    }
-
-    public void setAuthorityList(List<Authority> authorityList) {
-        this.authorityList = authorityList;
-    }
-
-    public List<User> getUserList() {
-        return userList;
-    }
-
-    public void setUserList(List<User> userList) {
-        this.userList = userList;
-    }
-
-    @Override
-    public String toString() {
-        return "Role{" +
-                "roleId=" + roleId +
-                ", roleName='" + roleName + '\'' +
-                ", roleNameZH='" + roleNameZH + '\'' +
-                ", describe='" + describe + '\'' +
-                ", authorityList=" + authorityList +
-                ", userList=" + userList +
-                '}';
-    }
+  private static final long serialVersionUID = 1L;
+  @NotBlank(message = "角色id不可为null")
+  @Length(max = 32, message = "角色id可超过32字节")
+  private String roleId;
+  @NotBlank(message = "角色名不可为null")
+  @Length(min = 8, message = "长度最短为8位")
+  private String roleName;
+  @NotBlank(message = "角色中文名不为null")
+  @Length(max = 24, message = "角色中文名不可超过24字节")
+  private String roleNameZH;
+  @NotNull(message = "插入时间不可为null")
+  @Past(message = "插入日期必须为过去时间")
+  private Date insertTime;
+  @NotNull(message = "修改时间不可为null")
+  @Past(message = "修改日期必须为过去时间")
+  private Date updateTime;
+  @Length(max = 100, message = "描述长度不可超过100字节")
+  private String describe;
+  private List<Authority> authorityList;
+  private List<User> userList;
 }

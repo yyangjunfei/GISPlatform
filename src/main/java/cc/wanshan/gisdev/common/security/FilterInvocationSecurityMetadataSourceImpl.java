@@ -24,13 +24,6 @@ public class FilterInvocationSecurityMetadataSourceImpl implements FilterInvocat
     @Resource(name ="roleServiceImpl")
     private RoleService roleService;
     @Override
-    /**
-     * @Author Li Cheng
-     * @Description 接收用户请求的地址，返回访问该地址需要的所有权限
-     * @Date 17:19 2019/3/13
-     * @Param [o]
-     * @return java.util.Collection<org.springframework.security.access.ConfigAttribute>
-     **/
     public Collection<ConfigAttribute> getAttributes(Object o) throws IllegalArgumentException {
         String requestUrl = ((FilterInvocation) o).getRequestUrl();
         logger.info("getAttributes::o = [{}]",o);

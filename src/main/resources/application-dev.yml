@@ -6,7 +6,7 @@ spring:
       request-timeout: 600000
   datasource:
     platform: postgres
-    url: jdbc:postgresql://192.168.1.133:5432/gsdb?useUnicode=true&characterEncoding=utf-8&serverTimezone=serverTimezone=Asia/Shanghai
+    url: jdbc:postgresql://192.168.1.133:5432/dev?useAffectedRows=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=serverTimezone=Asia/Shanghai
     username: postgres
     password: wanshan
     driver-class-name: org.postgresql.Driver
@@ -27,10 +27,6 @@ spring:
         hbm2ddl.auto: update
     thymeleaf:
       cache: false
-  #security:
-    #user:
-      #name: user
-      #password: user
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
@@ -39,17 +35,20 @@ mybatis:
     auto-mapping-unknown-column-behavior: warning
 # geoserver服务配置
 geoserver:
-  url: http://192.168.1.133:8080/geoserver
-  username: wanshan
-  passwd: wanshan@gis2019
+  #url: http://192.168.1.133:8080/geoserver
+  #username: wanshan
+  #passwd: wanshan@gis2019
+  url: http://localhost:8080/geoserver
+  username: admin
+  passwd: geoserver
   postgisHost: 192.168.1.133
   postgisPort: 5432
   postgisUser: postgres
   postgisPassword: wanshan
-  postgisDatabase: gsdb
+  postgisDatabase: dev
 
 postgis:
-  url: jdbc:postgresql://192.168.1.133:5432/gsdb
+  url: jdbc:postgresql://192.168.1.133:5432/dev
   user: postgres
   password: wanshan
 # swagger 显示判断

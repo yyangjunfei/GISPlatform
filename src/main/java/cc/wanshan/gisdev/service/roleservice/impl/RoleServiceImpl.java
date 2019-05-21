@@ -29,7 +29,7 @@ public class RoleServiceImpl implements RoleService {
         return roleDao.findRoleByUserName(username);
     }
     @Override
-    public Result findRoleByRoleId(Integer roleId) {
+    public Result findRoleByRoleId(String roleId) {
         logger.info("findRoleByRoleId::roleId = [{}]",roleId);
         Role role = roleDao.findByRoleId(roleId);
         if (role!=null){
@@ -40,7 +40,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public List<Role> findRoleByAuthorId(Integer authorId) {
+    public List<Role> findRoleByAuthorId(String authorId) {
         logger.info("findRoleByAuthorId::authorId = [{}]",authorId);
          return roleDao.findByAuthorId(authorId);
     }
@@ -107,7 +107,7 @@ public class RoleServiceImpl implements RoleService {
         }
     }
     @Override
-    public Result deleteRole(Integer roleId) {
+    public Result deleteRole(String roleId) {
         logger.info("deleteRole::roleId = [{}]",roleId);
         List<User> users = userDao.findUsersByRoleId(roleId);
         if (users.size()>0){

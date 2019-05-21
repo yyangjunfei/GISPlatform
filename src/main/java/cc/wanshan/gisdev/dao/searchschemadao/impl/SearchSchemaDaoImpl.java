@@ -1,6 +1,5 @@
 package cc.wanshan.gisdev.dao.searchschemadao.impl;
 
-import cc.wanshan.gisdev.controller.user.RoleController;
 import cc.wanshan.gisdev.dao.searchschemadao.SearchSchemaDao;
 import cc.wanshan.gisdev.entity.Result;
 import cc.wanshan.gisdev.utils.JDBCConnectUtils;
@@ -17,8 +16,7 @@ import java.sql.SQLException;
 
 @Repository(value = "searchSchemaDaoImpl")
 public class SearchSchemaDaoImpl implements SearchSchemaDao {
-    private static Logger logger= LoggerFactory.getLogger(RoleController.class);
-
+    private static final Logger logger= LoggerFactory.getLogger(SearchSchemaDaoImpl.class);
     @Override
     public Result searchSchema(String schema) {
         Connection connection = JDBCConnectUtils.getDBConnection();

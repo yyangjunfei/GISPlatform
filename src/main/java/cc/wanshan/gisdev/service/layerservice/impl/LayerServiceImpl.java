@@ -53,8 +53,10 @@ public class LayerServiceImpl implements LayerService {
     @Transactional
     public Result insertLayer(Layer layer, String workspace) {
         logger.info("insertLayer::layer = [{}], workspace = [{}]",layer, workspace);
+        //在layer中插入新记录
         int i = layerDao.insertLayer(layer);
         if (i==1){
+            //在对应Thematic中创建对应layer表
             Result result = newLayer(workspace, layer.getLayerName(), layer.getType(), layer.getEpsg());
             if (result.getCode()==0){
                 return ResultUtil.success(layer);
@@ -149,17 +151,19 @@ public class LayerServiceImpl implements LayerService {
         logger.info("insertFeatures::object = [{}]",object);
         Feature feature = new Feature();
         Properties newProperties= new Properties();
-        if (object!=null&&!"".equals(object)&& StringUtils.isNotBlank(object.getString("layerName"))&& StringUtils.isNotBlank(object.getString("workspace"))){
-            String schema =object.getString("workspace");
+        if (object!=null&& StringUtils.isNotBlank(object.getString("layerName"))&& StringUtils.isNotBlank(object.getString("thematicName"))){
+            String schema =object.getString("thematicName");
             String layerName = object.getString("layerName");
             Result searchLayer = searchLayerTableDao.searchLayer(layerName, schema);
             if (searchLayer.getCode()==0){
                 JSONArray features = object.getJSONArray("features");
                 ArrayList<Feature> featuresList = new ArrayList<>();
                 for (int i = 0; i < features.size(); i++) {
-                    feature.setGeometry(features.getJSONObject(i).getString("geometry"));
-                    feature.setgeoId(i);
+                    logger.info("geometry:"+features.getJSONObject(i).getJSONObject("geometry"));
+                    feature.setGeometry(features.getJSONObject(i).getJSONObject("geometry"));
+                    feature.setGeoId(i);
                     JSONObject properties = features.getJSONObject(i).getJSONObject("properties");
+                    logger.info("properties"+properties.toString());
                     newProperties.setFclass(properties.getString("featureClass"));
                     newProperties.setName(properties.getString("name"));
                     feature.setProperties(newProperties);
@@ -179,7 +183,7 @@ public class LayerServiceImpl implements LayerService {
             }
         }
         logger.warn(object+"参数为空");
-        return resultUtil.error(2,"参数为空");
+        return ResultUtil.error(2,"参数为空");
     }
     @Override
     public Result findLayerCountByUsernameAndLayerName(String username,String layerName) {
@@ -195,9 +199,9 @@ public class LayerServiceImpl implements LayerService {
     }
     private Result publishLayer(String workspace,String store,String layerName){
         logger.info("publishLayer::workspace = [{}], store = [{}], layerName = [{}]",workspace, store, layerName);
-        RESTLayer layer = GeoserverUtils.reader.getLayer(workspace, layerName);
+        RESTLayer layer = GeoserverUtils.manager.getReader().getLayer(workspace, layerName);
         if (layer==null) {
-            Result result = geoserverUtils.publishLayer( workspace, store, layerName);
+            Result result = geoserverUtils.publishLayer(workspace, store, layerName);
             if (result.getCode() == 0 || result.getCode() == 1) {
                 return ResultUtil.success();
             } else {

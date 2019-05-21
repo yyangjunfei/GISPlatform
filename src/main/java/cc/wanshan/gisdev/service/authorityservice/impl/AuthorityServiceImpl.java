@@ -22,7 +22,7 @@ public class AuthorityServiceImpl implements AuthorityService {
         return authorityDao.findByUrl(url);
     }
     @Override
-    public List<Role> findRolesByAuthorId(Integer authorId) {
+    public List<Role> findRolesByAuthorId(String authorId) {
         logger.info("findRolesByAuthorId::authorId = [{}]",authorId);
         Authority authority = authorityDao.findByAuthorId(authorId);
         return authority.getRoleList();

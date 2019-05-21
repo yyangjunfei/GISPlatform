@@ -4,7 +4,6 @@ import cc.wanshan.gisdev.entity.Result;
 import cc.wanshan.gisdev.entity.usermanagement.User;
 
 public interface UserService {
-    //public Page<User> getUserPageByRid(PageParam pageParam, Integer rId);
     /**
      * @Author Li Cheng
      * @Description 根据用户名查找当前用户
@@ -44,10 +43,10 @@ public interface UserService {
      * @Param [userId]
      * @return cc.wanshan.demo.entity.Result
      **/
-    public Result findUserByUserId(Integer userId);
+    public Result findUserByUserId(String userId);
     public Result updateUser(User user);
     public Result updateUserPassword(User user);
-    public Result deleteUser(Integer userId);
+    public Result deleteUser(String userId);
     public Result updateUserStatus(User user);
 
 }

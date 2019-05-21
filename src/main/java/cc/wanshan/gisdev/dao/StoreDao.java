@@ -8,82 +8,149 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
+ * store 实体类的增删改查
+ *
  * @Author Li Cheng
- * @Description 存储点查询
- * @Date 17:34 2019/3/20
- * @Param
- * @return
+ * @Date 9:11 2019/5/18
  **/
 @Mapper
 @Component
 public interface StoreDao {
-    /**
-     * @return cc.wanshan.demo.entity.Store
-     * @Author Li Cheng
-     * @Description 根据storeId查找当前store
-     * @Date 8:40 2019/4/10
-     * @Param [storeId]
-     **/
-    @Select({"select * from tb_store where store_id=#{storeId}"})
-    @Results({
-            @Result(id = true,column = "store_id",property = "storeId"),
-            @Result(column = "store_name",property = "storeName"),
-            @Result(column = "u_id",property = "user.userId"),
-    })
-    public Store findStoreByStoreId(Integer storeId);
 
-    /**
-     * @return java.util.List<cc.wanshan.demo.entity.Store> store集合
-     * @Author Li Cheng
-     * @Description 根据用户id查找当前用户所有store
-     * @Date 8:41 2019/4/10
-     * @Param [userId] 用户id
-     **/
-    @Select({"select * from tb_store where u_id=#{userId}"})
-    @Results({
-            @Result(id = true, column = "store_id", property = "storeId"),
-            @Result(column = "u_id", property = "user.userId"),
-            @Result(column = "store_name", property = "storeName")
-    })
-    public List<Store> findStoreByUserId(Integer userId);
+  @Select({
+      "select * "
+          + "from "
+          + "tb_store "
+          + "where "
+          + "store_id=#{storeId}"
+  })
+  @Results({
+      @Result(id = true, column = "store_id", property = "storeId"),
+      @Result(column = "store_name", property = "storeName"),
+      @Result(column = "user_id", property = "user.userId"),
+  })
+  /**
+   * description: 根据storeid查询store
+   *
+   * @param storeId
+   * @return cc.wanshan.gisdev.entity.drawlayer.Store
+   */
+  public Store findStoreByStoreId(String storeId);
 
-    /**
-     * @return int
-     * @Author Li Cheng
-     * @Description 新增store记录
-     * @Date 8:49 2019/4/10
-     * @Param [store]
-     **/
-    @Insert({"insert into tb_store (store_name,u_id) values (#{storeName},#{user.userId})"})
-    @Options(useGeneratedKeys = true,keyProperty = "storeId",keyColumn = "store_id")
-    public int insertStore(Store store);
+  @Select({
+      "select "
+          + "* "
+          + "from "
+          + "tb_store "
+          + "where "
+          + "user_id=#{userId}"
+  })
+  @Results({
+      @Result(id = true, column = "store_id", property = "storeId"),
+      @Result(column = "user_id", property = "user.userId"),
+      @Result(column = "store_name", property = "storeName")
+  })
+  /**
+   * description: 根据userId查询store
+   *
+   * @param userId
+   * @return java.util.List<cc.wanshan.gisdev.entity.drawlayer.Store>
+   */
+  public List<Store> findStoreByUserId(String userId);
 
-    /**
-     * @return int
-     * @Author Li Cheng
-     * @Description 修改用户记录
-     * @Date 8:49 2019/4/10
-     * @Param [store]
-     **/
-    @Update({"update tb_store set store_id=#{storeId},store_name=#{storeName},u_id=#{user.userId} where store_id=#{storeId}"})
-    public int updateStore(Store store);
 
-    /**
-     * @return int
-     * @Author Li Cheng
-     * @Description 根据storeId删除store记录
-     * @Date 9:03 2019/4/10
-     * @Param [storeId]
-     **/
-    @Delete({"delete from tb_store where store_id=#{storeId}"})
-    public int deleteStore(Integer storeId);
+  @Insert({
+      "insert into "
+          + "tb_store "
+          + "("
+          + "store_name,"
+          + "user_id,"
+          + "insert_time,"
+          + "update_time "
+          + ") "
+          + "values "
+          + "("
+          + "#{storeName},"
+          + "#{user.userId},"
+          + "#{insertTime},"
+          + "#{updateTime}"
+          + ")"
+  })
+  @Options(useGeneratedKeys = true, keyProperty = "storeId", keyColumn = "store_id")
+  /**
+   * description:新增store
+   *
+   * @param store
+   * @return int
+   */
+  public int insertStore(Store store);
 
-    @Select({"select * from tb_store as s where s.u_id=(select u.u_id from tb_user as u where u.username=#{username})"})
-    @Results({
-            @Result(id = true,column = "store_id",property = "storeId"),
-            @Result(column = "store_name",property = "storeName"),
-            @Result(column = "u_id",property = "user.userId"),
-            @Result(column = "store_id",property = "layerList",many = @Many(select = "cc.wanshan.demo.repository.LayerDao.findLayersByStoreId",fetchType = FetchType.LAZY)),
-    })
-    public List<Store> findStoresByUsername(String username);
+
+  @Update({
+      "update "
+          + "tb_store "
+          + "set "
+          + "store_id=#{storeId},"
+          + "store_name=#{storeName},"
+          + "user_id=#{user.userId}, "
+          + "update_time=#{updateTime} "
+          + "where "
+          + "store_id=#{storeId}"
+  })
+
+  /**
+   * description: 更新store
+   *
+   * @param store
+   * @return int
+   */
+  public int updateStore(Store store);
+
+
+  @Delete({
+      "delete from "
+          + "tb_store "
+          + "where "
+          + "store_id=#{storeId}"
+  })
+  /**
+   * description:删除store
+   *
+   * @param storeId
+   * @return int
+   */
+  public int deleteStore(String storeId);
+
+  /*@Select({
+      "select "
+          + "* "
+          + "from "
+          + "tb_store as s "
+          + "where "
+          + "s.user_id="
+          + "(select "
+          + "u.user_id "
+          + "from "
+          + "tb_user as u "
+          + "where "
+          + "u.username=#{username})"
+  })*/
+  @Select({
+      "select u.user_id,u.thematic_id,u.security,s.store_id,s.store_name from tb_store as s inner join tb_user as u on u.user_id = s.user_id where u.delete = 0 and u.status=1 and u.username=#{username}"})
+  @Results(value = {
+      @Result(id = true, column = "store_id", property = "storeId"),
+      @Result(column = "store_name", property = "storeName"),
+      @Result(column = "security", property = "user.security"),
+      @Result(column = "user_id", property = "user.userId"),
+      @Result(column = "thematic_id", property = "user.thematic", many = @Many(select = "cc.wanshan.gisdev.dao.ThematicDao.findByThematicId")),
+      @Result(column = "store_id", property = "layerList",
+          many = @Many(select = "cc.wanshan.gisdev.dao.LayerDao.findLayersByStoreId")),
+  })
+  /**
+   * description: 根据用户名查找stores
+   *
+   * @param username
+   * @return java.util.List<cc.wanshan.gisdev.entity.drawlayer.Store>
+   */
+  public List<Store> findStoresByUsername(String username);
 }

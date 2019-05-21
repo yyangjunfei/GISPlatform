@@ -16,7 +16,7 @@ public interface RoleService {
      **/
     public Role findRoleByUsername(String username);
 
-    public Result findRoleByRoleId(Integer roleId);
+    public Result findRoleByRoleId(String roleId);
     /**
      * @Author Li Cheng
      * @Description 根据authorId查询对应角色
@@ -24,7 +24,7 @@ public interface RoleService {
      * @Param [authorId]
      * @return cc.wanshan.demo.entity.Result
      **/
-    public List<Role> findRoleByAuthorId(Integer authorId);
+    public List<Role> findRoleByAuthorId(String authorId);
 
     /**
      * @Author Li Cheng
@@ -81,5 +81,5 @@ public interface RoleService {
      * @Param [roleId]
      * @return cc.wanshan.demo.entity.Result
      **/
-    public Result deleteRole(Integer roleId);
+    public Result deleteRole(String roleId);
 }

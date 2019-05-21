@@ -42,7 +42,6 @@ public class GeoserverUtils {
     public static GeoServerRESTManager manager;
     public static GeoServerRESTReader reader;
     private static GeoServerRESTPublisher publisher;
-
     /**
      * 初始化，发布时进行身份认证
      */
@@ -74,16 +73,16 @@ public class GeoserverUtils {
      * @return
      * @throws URISyntaxException
      */
-    public static boolean createWorkSpace(String workSpaceName, String uri)
+    public boolean createWorkSpace(String workSpaceName, String uri)
             throws URISyntaxException {
         if (uri == null || uri.isEmpty()) {
-            return publisher.createWorkspace(workSpaceName);
+            return manager.getPublisher().createWorkspace(workSpaceName);
         } else {
-            return publisher.createWorkspace(workSpaceName, new URI(uri));
+            return manager.getPublisher().createWorkspace(workSpaceName, new URI(uri));
         }
     }
 
-    public static Result createDataStore(String storeName, String workspace) {
+    public  Result createDataStore(String storeName, String workspace) {
         log.info("已进入createDataStore::manager = [{}], storeName = [{}], workspace = [{}]", manager, storeName, workspace);
         //判断数据存储（datastore）是否已经存在，不存在则创建
         if (manager != null && storeName != null && !"".equals(storeName)) {
@@ -112,15 +111,15 @@ public class GeoserverUtils {
                 if (manager.getStoreManager().create(workspace, store)) {
                     return ResultUtil.success();
                 } else {
-                    log.warn("存储点创建失败：createDataStore::manager = [{}], storeName = [{}], workspace = [{}]", manager, storeName, workspace);
+                    log.warn("存储点创建失败：createDataStore::manager = [{}], storeName = [{}], workspace = [{}]", storeName, workspace);
                     return ResultUtil.error(3, "存储点" + storeName + "创建失败");
                 }
             } else {
-                log.warn("存储点已存在:createDataStore::manager = [{}], storeName = [{}], workspace = [{}]", manager, storeName, workspace);
+                log.warn("存储点已存在:createDataStore::manager = [{}], storeName = [{}], workspace = [{}]", storeName, workspace);
                 return ResultUtil.error(1, "存储点" + storeName + "已存在");
             }
         } else {
-            log.warn("空指针异常:createDataStore::manager = [{}], storeName = [{}], workspace = [{}]", manager, storeName, workspace);
+            log.warn("空指针异常:createDataStore::manager = [{}], storeName = [{}], workspace = [{}]", storeName, workspace);
             return ResultUtil.error(2, "空指针异常");
         }
     }

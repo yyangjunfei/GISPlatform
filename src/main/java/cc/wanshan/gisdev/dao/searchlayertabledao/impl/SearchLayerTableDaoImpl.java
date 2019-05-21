@@ -24,7 +24,7 @@ public class SearchLayerTableDaoImpl implements SearchLayerTableDao {
         try {
             String sql="select count(*) from pg_tables where schemaname=? and tablename=?";
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1,schema);
+            preparedStatement.setString(1,schema.toLowerCase());
             preparedStatement.setString(2,layerName);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
