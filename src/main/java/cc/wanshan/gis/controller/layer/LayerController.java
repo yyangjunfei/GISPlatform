@@ -2,6 +2,8 @@ package cc.wanshan.gis.controller.layer;
 
 import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.entity.drawlayer.Layer;
+import cc.wanshan.gis.entity.drawlayer.Store;
+import cc.wanshan.gis.entity.thematic.Thematic;
 import cc.wanshan.gis.service.layerservice.LayerService;
 import cc.wanshan.gis.utils.ResultUtil;
 

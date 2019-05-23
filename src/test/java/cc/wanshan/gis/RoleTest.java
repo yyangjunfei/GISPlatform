@@ -1,7 +1,7 @@
-package cc.wanshan.gisdev;
+package cc.wanshan.gis;
 
-import cc.wanshan.gisdev.dao.RoleDao;
-import cc.wanshan.gisdev.entity.usermanagement.Role;
+import cc.wanshan.gis.dao.RoleDao;
+import cc.wanshan.gis.entity.usermanagement.Role;
 import java.util.Date;
 import javax.annotation.Resource;
 import org.junit.Test;

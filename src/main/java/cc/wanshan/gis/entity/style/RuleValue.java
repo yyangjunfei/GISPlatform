@@ -1,4 +1,4 @@
-package cc.wanshan.gisdev.entity.style;
+package cc.wanshan.gis.entity.style;
 
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;

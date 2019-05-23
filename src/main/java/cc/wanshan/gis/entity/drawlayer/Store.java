@@ -1,7 +1,7 @@
 package cc.wanshan.gis.entity.drawlayer;
 
 
-import lombok.Data;
+import cc.wanshan.gis.entity.usermanagement.User;
 import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

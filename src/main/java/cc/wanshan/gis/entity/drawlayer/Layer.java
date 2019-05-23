@@ -1,7 +1,7 @@
 package cc.wanshan.gis.entity.drawlayer;
 
 
-import cc.wanshan.gisdev.entity.thematic.Thematic;
+import cc.wanshan.gis.entity.thematic.Thematic;
 import lombok.Data;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

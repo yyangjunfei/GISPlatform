@@ -1,12 +1,11 @@
-package cc.wanshan.gisdev.service.thematicService.impl;
+package cc.wanshan.gis.service.thematicService.impl;
 
-import cc.wanshan.gisdev.dao.ThematicDao;
-import cc.wanshan.gisdev.dao.createschemadao.CreateSchemaDao;
-import cc.wanshan.gisdev.entity.Result;
-import cc.wanshan.gisdev.entity.thematic.Thematic;
-import cc.wanshan.gisdev.service.thematicService.ThematicService;
+import cc.wanshan.gis.dao.ThematicDao;
+import cc.wanshan.gis.dao.createschemadao.CreateSchemaDao;
+import cc.wanshan.gis.entity.Result;
+import cc.wanshan.gis.entity.thematic.Thematic;
+import cc.wanshan.gis.service.thematicService.ThematicService;
 import javax.annotation.Resource;
-import javax.naming.Name;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
