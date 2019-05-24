@@ -14,7 +14,6 @@ import java.sql.SQLException;
 @Repository(value = "dropLayerDaoImpl")
 public class DropLayerDaoImpl implements DropLayerDao {
     private static final Logger logger= LoggerFactory.getLogger(DropLayerDaoImpl.class);
-
     @Override
     public Result dropLayer(String schema, String layerName) {
         logger.info("dropLayer::schema = [{}], layerName = [{}]",schema, layerName);

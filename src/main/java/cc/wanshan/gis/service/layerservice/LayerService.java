@@ -1,10 +1,14 @@
 package cc.wanshan.gis.service.layerservice;
 
 import cc.wanshan.gis.entity.Result;
+import cc.wanshan.gis.entity.drawlayer.Feature;
 import cc.wanshan.gis.entity.drawlayer.Layer;
+import cc.wanshan.gis.entity.thematic.FirstClassification;
 import com.alibaba.fastjson.JSONObject;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Author Li Cheng
@@ -30,7 +34,7 @@ public interface LayerService {
      * @Param [jsonObject] 封装了layer信息的json对象
      * @return cc.wanshan.demo.entity.Result
      **/
-    public Result deleteLayer(JSONObject jsonObject);
+    public Result deleteLayer(String layerName,String thematicName,String storeId,String storeName);
     /**
      * @Author Li Cheng
      * @Description 查找图层是否为已发布图层
@@ -38,7 +42,7 @@ public interface LayerService {
      * @Param [jsonObject]
      * @return cc.wanshan.demo.entity.Result
      **/
-    public Result searchLayer(JSONObject jsonObject);
+    public Result searchLayer(String thematicName,String layerName);
     /**
      * @Author Li Cheng
      * @Description 创建图层对应表发布图层
@@ -46,13 +50,20 @@ public interface LayerService {
      * @Param [object]
      * @return void
      **/
-    public Result insertFeatures(JSONObject object) throws IOException;
+    public Result insertFeatures(String thematicName,String layerName, String storeName,List<Feature> features) throws IOException;
     /**
-     * @Author Li Cheng
-     * @Description 根据username和layerName判断图层是否重名
-     * @Date 15:59 2019/4/22
-     * @Param [username, layerName]
-     * @return cc.wanshan.demo.entity.Result
-     **/
+     * description:
+     *
+     * @param username
+     * @param layerName
+     * @return
+     */
     public Result findLayerCountByUsernameAndLayerName(String username, String layerName);
+    /**
+     * description: 根据thematicId和nullUserId查询layer
+     *
+     * @param thematicId
+     * @return
+     */
+    public List<FirstClassification> findLayerByThematicIdAndNullUserId(String thematicId);
 }
