@@ -40,7 +40,9 @@ geoserver:
   #url: http://192.168.1.133:8080/geoserver
   #username: wanshan
   #passwd: wanshan@gis2019
-  url: http://localhost:8080/geoserver
+  #  url: http://localhost:8080/geoserver
+  url: http://localhost:8765/geoserver
+
   username: admin
   passwd: geoserver
   postgisHost: 192.168.1.133
@@ -53,7 +55,12 @@ postgis:
   url: jdbc:postgresql://192.168.1.133:5432/dev
   user: postgres
   password: wanshan
+
 # swagger 显示判断
 swagger:
   enable: true
+
+# file 文件路径
+file:
+  path: D:\Metadata
 

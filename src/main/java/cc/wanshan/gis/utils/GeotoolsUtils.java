@@ -66,8 +66,8 @@ public class GeotoolsUtils {
      * 空间坐标系转化
      *
      * @param geoJson   geoJson字符串
-     * @param sourceCRS 源空间坐标
-     * @param targetCRS 目标空间坐标
+     * @param sourceCRS 源空间坐标 EPSG：3857
+     * @param targetCRS 目标空间坐标 EPSG：4326
      * @return
      * @throws FactoryException
      * @throws TransformException
@@ -83,8 +83,8 @@ public class GeotoolsUtils {
      * 空间坐标系转化
      *
      * @param coordinates 坐标数组
-     * @param sourceCRS   源空间坐标
-     * @param targetCRS   目标空间坐标
+     * @param sourceCRS   源空间坐标 EPSG：3857
+     * @param targetCRS   目标空间坐标 EPSG：4326
      * @return
      * @throws FactoryException
      * @throws TransformException
@@ -105,8 +105,8 @@ public class GeotoolsUtils {
      * 空间坐标系转化
      *
      * @param coordinate 坐标
-     * @param sourceCRS  源空间坐标
-     * @param targetCRS  目标空间坐标
+     * @param sourceCRS  源空间坐标 EPSG：3857
+     * @param targetCRS  目标空间坐标 EPSG：4326
      * @return
      * @throws FactoryException
      * @throws TransformException

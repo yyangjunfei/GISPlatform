@@ -1,20 +1,14 @@
-# 基于springboot系统
+# 基于springboot GIS系统
 
 ### 项目描述
 GIS平台后端开发
 
 ### 功能描述
 基本功能描述如下：
-* spring boot mybatis 
+* SpringBoot security mybatis 
 * 前后端分离
-* spring-security基于角色的权限管理
 * 整合swagger-ui接口文档
-* maven项目管理
-* 多profile管理
-* logback记录日志
-* spring-data-redis整合
-* 定时任务
-* 统一异常管理
+* maven项目，多profile管理
 * 未完待续
 
 ### 更新日志
