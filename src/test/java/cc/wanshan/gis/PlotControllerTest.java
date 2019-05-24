@@ -35,7 +35,14 @@ public class PlotControllerTest {
 
     /**
      * 绘制点保存测试
+     * <p>
+     * 绘制线保存测试
+     * <p>
+     * 绘制面保存测试
+     * <p>
+     * 根据类型查询测试
      */
+
     @Test
     public void testCreatePoint() {
         String jsonStr =
@@ -66,6 +73,7 @@ public class PlotControllerTest {
     /**
      * 绘制线保存测试
      */
+
     @Test
     public void testCreateLineString() {
         String jsonStr =
@@ -105,6 +113,7 @@ public class PlotControllerTest {
     /**
      * 绘制面保存测试
      */
+
     @Test
     public void testCreatePolygon() {
         String jsonStr =
@@ -146,6 +155,7 @@ public class PlotControllerTest {
     /**
      * 根据类型查询测试
      */
+
     @Test
     public void selectByTypeTest() {
 

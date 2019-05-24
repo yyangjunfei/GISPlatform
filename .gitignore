@@ -34,12 +34,16 @@ target/*
 .git/*
 data/
 logs/
-logs/**
+logs/*
+classes/
+classes/*
 
 ### maven ###
 .mvn/*
 .mvn
 mvnw
 mvnw.cmd
+
+
 
 

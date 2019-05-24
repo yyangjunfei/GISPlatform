@@ -3,10 +3,11 @@ package cc.wanshan.gis.controller.plot;
 import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.service.plot.PlotService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +23,7 @@ import javax.annotation.Resource;
 @Api(value = "PlotController", tags = "标绘接口")
 @RestController
 @RequestMapping("/rest/plot")
-@EnableAutoConfiguration
+//@EnableAutoConfiguration
 public class PlotController {
 
     private static Logger LOG = LoggerFactory.getLogger(PlotController.class);
@@ -54,8 +55,9 @@ public class PlotController {
     }
 
     @ApiOperation(value = "查询标绘", notes = "查询标绘")
+    @ApiImplicitParams(@ApiImplicitParam(name = "type", value = "数据类型", required = false))
     @GetMapping("/findAll")
-    public Result findAll(@RequestParam String type) {
+    public Result findAll(@RequestParam(required = false) String type) {
         LOG.info("查询标绘");
         return plotService.findAll(type);
     }

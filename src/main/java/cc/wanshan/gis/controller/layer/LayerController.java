@@ -1,15 +1,24 @@
 package cc.wanshan.gis.controller.layer;
 
 import cc.wanshan.gis.entity.Result;
+import cc.wanshan.gis.entity.drawlayer.Feature;
 import cc.wanshan.gis.entity.drawlayer.Layer;
+import cc.wanshan.gis.entity.drawlayer.Properties;
 import cc.wanshan.gis.entity.drawlayer.Store;
+import cc.wanshan.gis.entity.thematic.FirstClassification;
 import cc.wanshan.gis.entity.thematic.Thematic;
 import cc.wanshan.gis.service.layerservice.LayerService;
 import cc.wanshan.gis.utils.ResultUtil;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import io.micrometer.core.instrument.util.StringUtils;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import javax.validation.Valid;
+import org.apache.commons.lang.StringUtils;
 import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import javax.annotation.Resource;
 import java.io.IOException;
 
@@ -59,6 +67,9 @@ public class LayerController {
   @RequestMapping("/saveLayer")
   @ResponseBody
   public Result saveLayer(@RequestBody JSONObject jsonObject) throws IOException {
+    Layer layer = null;
+    Thematic thematic = null;
+    Store store = null;
     logger.info("saveLayer::jsonObject = [{}]", jsonObject);
     if (StringUtils.isNotBlank(jsonObject.getString("thematicName"))
         && StringUtils.isNotBlank(jsonObject.getString("thematicNameZH"))
@@ -71,15 +82,17 @@ public class LayerController {
         && StringUtils.isNotBlank(jsonObject.getString("userId"))
         && StringUtils.isNotBlank(jsonObject.getString("storeId"))
     ) {
-      Layer layer = new Layer();
-      Thematic thematic = new Thematic();
-      Store store = new Store();
+      layer = new Layer();
+      thematic = new Thematic();
+      store = new Store();
       String thematicName = jsonObject.getString("thematicName");
+      String layerName = jsonObject.getString("layerName");
+      String storeName = jsonObject.getString("storeName");
       thematic.setThematicId(jsonObject.getString("thematicId"));
       thematic.setThematicName(thematicName);
       thematic.setThematicNameZH(jsonObject.getString("thematicNameZH"));
       layer.setLayerNameZH(jsonObject.getString("layerNameZH"));
-      layer.setLayerName(jsonObject.getString("layerName"));
+      layer.setLayerName(layerName);
       layer.setEpsg(jsonObject.getString("epsg"));
       layer.setType(jsonObject.getString("type"));
       layer.setFirstClassification(jsonObject.getString("firstClassification"));
@@ -92,9 +105,12 @@ public class LayerController {
       layer.setStore(store);
       layer.setUserId(jsonObject.getString("userId"));
       layer.setThematic(thematic);
-      Result insertLayer = layerService.insertLayer(layer, thematicName);
-      if (insertLayer.getCode() == 0) {
-        Result result = layerService.insertFeatures(jsonObject);
+      Result searchLayer = layerService.searchLayer(thematicName, layerName);
+      JSONArray features = jsonObject.getJSONArray("features");
+      List<Feature> featureList = getFeatures(features);
+      if (searchLayer.getCode() == 0) {
+        Result result = layerService
+            .insertFeatures(thematicName, layerName, storeName, featureList);
         if (result.getCode() == 0) {
           return ResultUtil.success();
         } else {
@@ -102,8 +118,20 @@ public class LayerController {
           return ResultUtil.error(1, result.getMsg());
         }
       } else {
-        logger.warn("警告：saveLayer::jsonObject = [{}]", insertLayer.getMsg());
-        return insertLayer;
+        Result insertLayer = layerService.insertLayer(layer, thematicName);
+        if (insertLayer.getCode() == 0) {
+          Result result = layerService
+              .insertFeatures(thematicName, layerName, storeName, featureList);
+          if (result.getCode() == 0) {
+            return ResultUtil.success();
+          } else {
+            logger.warn("警告:" + result.getMsg());
+            return ResultUtil.error(1, result.getMsg());
+          }
+        } else {
+          logger.warn("警告：saveLayer::jsonObject = [{}]", insertLayer.getMsg());
+          return insertLayer;
+        }
       }
     } else {
       logger.warn("图层参数为null:" + jsonObject.toString());
@@ -114,7 +142,20 @@ public class LayerController {
   @RequestMapping("/deletelayer")
   @ResponseBody
   public Result deleteLayer(@RequestBody JSONObject jsonObject) {
-    return layerService.deleteLayer(jsonObject);
+    logger.info("deleteLayer::jsonObject = [{}]", jsonObject);
+    if (jsonObject != null && StringUtils.isNotBlank(jsonObject.getString("layerName"))
+        && StringUtils.isNotBlank(jsonObject.getString("thematicName"))
+        && StringUtils.isNotBlank(jsonObject.getString("storeId"))
+        && StringUtils.isNotBlank(jsonObject.getString("storeName"))
+    ) {
+      String layerName = jsonObject.getString("layerName");
+      String thematicName = jsonObject.getString("thematicName");
+      String storeId = jsonObject.getString("storeId");
+      String storeName = jsonObject.getString("storeName");
+      return layerService.deleteLayer(layerName, thematicName, storeId, storeName);
+    }
+    logger.error("deleteLayer::jsonObject = [{}]", jsonObject + "参数为null");
+    return ResultUtil.error("参数为null");
   }
 
   @RequestMapping("/findLayerCountByLayerName")
@@ -134,12 +175,53 @@ public class LayerController {
   @ResponseBody
   public Result searchLayer(@RequestBody JSONObject jsonObject) {
     logger.info("searchLayer::jsonObject = [{}]", jsonObject);
-    Result result = layerService.searchLayer(jsonObject);
-    if (result.getCode() == 0) {
-      return result;
+    if (jsonObject != null && StringUtils.isNotBlank(jsonObject.getString("thematicName"))
+        && StringUtils.isNotBlank(jsonObject.getString("layerName"))) {
+      String thematicName = jsonObject.getString("thematicName");
+      String layerName = jsonObject.getString("layerName");
+      Result result = layerService.searchLayer(thematicName, layerName);
+      if (result.getCode() == 0) {
+        return result;
+      } else {
+        logger.warn("警告!" + result.getMsg());
+        return result;
+      }
     } else {
-      logger.warn("警告!" + result.getMsg());
-      return result;
+      logger.error("searchLayer::jsonObject = [{}]", jsonObject + "参数为null");
+      return ResultUtil.error("参数为null");
     }
+  }
+
+  private static List<Feature> getFeatures(JSONArray features) {
+    logger.info("getFeatures::features = [{}]", features);
+    List<Feature> featuresList =new ArrayList<>();
+    for (int i = 0; i < features.size(); i++) {
+      Feature feature = new Feature();
+      Properties newProperties = new Properties();
+      logger.info("geometry:" + features.getJSONObject(i).getJSONObject("geometry"));
+      feature.setGeometry(features.getJSONObject(i).getJSONObject("geometry"));
+      feature.setGeoId(i);
+      JSONObject properties = features.getJSONObject(i).getJSONObject("properties");
+      logger.info("properties" + properties.toString());
+      newProperties.setFclass(properties.getString("featureClass"));
+      newProperties.setName(properties.getString("name"));
+      feature.setProperties(newProperties);
+      logger.info("getFeatures::features = [{}]", feature);
+      featuresList.add(feature);
+      logger.info("getFeatures::featuresList = [{}]", featuresList);
+    }
+    return featuresList;
+  }
+
+  @RequestMapping(value = "/findthematiclayers")
+  @ResponseBody
+  public Result findThematicLayers(@RequestBody JSONObject jsonObject) {
+    logger.info("findThematicLayers::jsonObject = [{}]",jsonObject);
+      if (jsonObject!=null&&StringUtils.isNotBlank(jsonObject.getString("thematicId"))){
+        List<FirstClassification> layerList = layerService.findLayerByThematicIdAndNullUserId(jsonObject.getString("thematicId"));
+        logger.info("findThematicLayers::thematicId = [{}], bindingResult = [{}]"+layerList);
+        return ResultUtil.success(layerList);
+      }
+      return ResultUtil.error("参数为null");
   }
 }

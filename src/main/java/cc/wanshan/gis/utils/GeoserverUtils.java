@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -41,7 +42,8 @@ public class GeoserverUtils {
     public static URL url;
     public static GeoServerRESTManager manager;
     public static GeoServerRESTReader reader;
-    private static GeoServerRESTPublisher publisher;
+    public static GeoServerRESTPublisher publisher;
+
     /**
      * 初始化，发布时进行身份认证
      */
@@ -82,7 +84,7 @@ public class GeoserverUtils {
         }
     }
 
-    public  Result createDataStore(String storeName, String workspace) {
+    public Result createDataStore(String storeName, String workspace) {
         log.info("已进入createDataStore::manager = [{}], storeName = [{}], workspace = [{}]", manager, storeName, workspace);
         //判断数据存储（datastore）是否已经存在，不存在则创建
         if (manager != null && storeName != null && !"".equals(storeName)) {
@@ -134,7 +136,7 @@ public class GeoserverUtils {
                     GSFeatureTypeEncoder pds = new GSFeatureTypeEncoder();
                     pds.setTitle(tableName);
                     pds.setName(tableName);
-                    pds.setSRS("EPSG:4326");
+                    pds.setSRS("EPSG:3857");
                     GSLayerEncoder layerEncoder = new GSLayerEncoder();
                     boolean publishDBLayer = manager.getPublisher().publishDBLayer(ws, storeName, pds, layerEncoder);
                     if (publishDBLayer) {
@@ -168,7 +170,7 @@ public class GeoserverUtils {
      * @return
      * @throws Exception
      */
-    public static Result publishShp(
+    public Result publishShp(
             String zipFilePath,
             String workspace,
             String storeName,
@@ -191,6 +193,22 @@ public class GeoserverUtils {
         if (published) {
             return ResultUtil.success();
         }
+        return ResultUtil.error(ResultCode.SHP_PUBLISH_FAIL);
+    }
+
+
+    public Result publishShp(String workspace, String storename, String datasetname, File zipFile) {
+        boolean published;
+        try {
+            published = publisher.publishShp(workspace, storename, datasetname, zipFile);
+            if (published) {
+                return ResultUtil.success();
+            }
+        } catch (FileNotFoundException e) {
+
+            e.printStackTrace();
+        }
+
         return ResultUtil.error(ResultCode.SHP_PUBLISH_FAIL);
     }
 
