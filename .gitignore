@@ -42,4 +42,6 @@ logs/**
 mvnw
 mvnw.cmd
 
+classes/
+
 

@@ -61,6 +61,7 @@ public interface ThematicDao {
    */
   public Thematic findByThematicId(String thematicId);
 
+
   @Insert({
       "insert into "
           + "tb_thematic "

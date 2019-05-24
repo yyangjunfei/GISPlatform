@@ -6,6 +6,7 @@ import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.entity.drawlayer.Feature;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Author Li Cheng
@@ -21,6 +22,6 @@ public interface InsertFeatureDao {
      * @Param [layer 图层实体类] 图层实体类
      * @return java.lang.Boolean
      **/
-    public Result insertFeatures(ArrayList<Feature> features, String tableName, String schema);
+    public Result insertFeatures(List<Feature> features, String tableName, String schema);
 
 }

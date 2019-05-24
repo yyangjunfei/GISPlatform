@@ -1,3 +1,4 @@
+/*
 package cc.wanshan.gis;
 
 import cc.wanshan.gis.utils.GeoserverUtils;
@@ -34,3 +35,4 @@ public class GeoserverTest {
 
     }
 }
+*/

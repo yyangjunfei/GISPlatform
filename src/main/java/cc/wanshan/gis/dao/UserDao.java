@@ -181,8 +181,8 @@ public interface UserDao {
       @Result(column = "role_id", property = "role.roleId"),
       @Result(column = "thematic_id", property = "thematic.thematicId"),
       @Result(column = "security", property = "security"),
-      @Result(column = "insert_time", property = "insert_time"),
-      @Result(column = "update_time", property = "update_time"),
+      @Result(column = "insert_time", property = "insertTime"),
+      @Result(column = "update_time", property = "updateTime"),
       @Result(column = "phone_num", property = "phoneNum"),
       @Result(column = "email", property = "email"),
       @Result(column = "department", property = "department")
@@ -220,8 +220,8 @@ public interface UserDao {
       @Result(column = "role_id", property = "role.roleId"),
       @Result(column = "thematic_id", property = "thematic.thematicId"),
       @Result(column = "security", property = "security"),
-      @Result(column = "insert_time", property = "insert_time"),
-      @Result(column = "update_time", property = "update_time"),
+      @Result(column = "insert_time", property = "insertTime"),
+      @Result(column = "update_time", property = "updateTime"),
       @Result(column = "phone_num", property = "phoneNum"),
       @Result(column = "email", property = "email"),
       @Result(column = "department", property = "department")
@@ -264,7 +264,7 @@ public interface UserDao {
           "set " +
           "password=#{password}," +
           "role_id=#{role.roleId}," +
-          "update_time=#{updateTime} " +
+          "update_time=#{updateTime,jdbcType=TIMESTAMP} " +
           "where " +
           "delete = 0 and " +
           "status = 1 and " +
@@ -287,7 +287,7 @@ public interface UserDao {
           "thematic_id=#{thematic.thematicId}," +
           "security=#{security}," +
           "status=#{status}," +
-          "update_time=#{updateTime} " +
+          "update_time=#{updateTime,jdbcType=TIMESTAMP} " +
           "where " +
           "delete=0 and " +
           "status=0 and " +
