@@ -1,3 +1,4 @@
+/*
 package cc.wanshan.gis;
 
 import cc.wanshan.gis.dao.RoleDao;
@@ -60,3 +61,4 @@ public class UserTest {
         logger.info("updateUser::"+i);
     }
 }
+*/

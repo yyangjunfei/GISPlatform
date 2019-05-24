@@ -11,7 +11,7 @@
     <groupId>cc.wanshan</groupId>
     <artifactId>GISPlatform</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <name>GISPlatform</name>
     <description>GIS project for Spring Boot</description>

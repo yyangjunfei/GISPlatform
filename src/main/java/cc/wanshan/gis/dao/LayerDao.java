@@ -29,7 +29,7 @@ public interface LayerDao {
    * @param storeId
    * @return int
    */
-  public int deleteLayerByLayerNameAndStoreId(String layerName, Integer storeId);
+  public int deleteLayerByLayerNameAndStoreId(String layerName, String storeId);
 
 
   @Insert({
@@ -109,7 +109,7 @@ public interface LayerDao {
    * @param layerId
    * @return int
    */
-  public int deleteLayer(Integer layerId);
+  public int deleteLayer(String layerId);
 
   @Select({"select "
       + "* "
@@ -143,6 +143,38 @@ public interface LayerDao {
    * @return java.util.List<cc.wanshan.gisdev.entity.drawlayer.Layer>
    */
   public List<Layer> findLayersByStoreId(String storeId);
+  @Select({"select "
+      + "* "
+      + "from "
+      + "tb_layer "
+      + "where "
+      + "layer_id =#{layerId}"
+  })
+  @Results({
+      @Result(id = true, column = "layer_id", property = "layerId"),
+      @Result(column = "layer_name", property = "layerName"),
+      @Result(column = "layer_name_zh", property = "layerNameZH"),
+      @Result(column = "store_id", property = "store.storeId"),
+      @Result(column = "user_id", property = "userId"),
+      @Result(column = "thematic_id", property = "thematic.thematicId"),
+      @Result(column = "thematic_name", property = "thematic.thematicName"),
+      @Result(column = "thematic_name_zh", property = "thematic.thematicNameZH"),
+      @Result(column = "first_classification", property = "firstClassification"),
+      @Result(column = "second_classification", property = "secondClassification"),
+      @Result(column = "security", property = "security"),
+      @Result(column = "publish_time", property = "publishTime"),
+      @Result(column = "upload_time", property = "uploadTime"),
+      @Result(column = "update_time", property = "updateTime"),
+      @Result(column = "type", property = "type"),
+      @Result(column = "epsg", property = "epsg"),
+  })
+  /**
+   * description: 根据layerId查询Layer
+   *
+   * @param layerId
+   * @return
+   */
+  public Layer findLayerByLayerId(String layerId);
 
   @Select({
       "select "
@@ -170,4 +202,46 @@ public interface LayerDao {
    * @return int
    */
   public int findLayerCountByUsernameAndLayerName(String username, String layerName);
+  @Select({"select "
+      + "layer_id,"
+      + "layer_name,"
+      + "layer_name_zh,"
+      + "thematic_id,"
+      + "thematic_name,"
+      + "thematic_name_zh,"
+      + "first_classification,"
+      + "second_classification,"
+      + "security,"
+      + "publish_time,"
+      + "upload_time,"
+      + "update_time,"
+      + "epsg "
+      + "from "
+      + "tb_layer "
+      + "where "
+      + "thematic_id =#{thematic.thematicId} and "
+      + "user_id is null;"
+  })
+  @Results({
+      @Result(id = true, column = "layer_id", property = "layerId"),
+      @Result(column = "layer_name", property = "layerName"),
+      @Result(column = "layer_name_zh", property = "layerNameZH"),
+      @Result(column = "thematic_id", property = "thematic.thematicId"),
+      @Result(column = "thematic_name", property = "thematic.thematicName"),
+      @Result(column = "thematic_name_zh", property = "thematic.thematicNameZH"),
+      @Result(column = "first_classification", property = "firstClassification"),
+      @Result(column = "second_classification", property = "secondClassification"),
+      @Result(column = "security", property = "security"),
+      @Result(column = "publish_time", property = "publishTime"),
+      @Result(column = "upload_time", property = "uploadTime"),
+      @Result(column = "update_time", property = "updateTime"),
+      @Result(column = "epsg", property = "epsg"),
+  })
+  /**
+   * description: 根据thematicId查询layer
+   *
+   * @param thematicId
+   * @return
+   */
+  public List<Layer> findLayerByThematicIdAndNullUserId(String thematicId);
 }

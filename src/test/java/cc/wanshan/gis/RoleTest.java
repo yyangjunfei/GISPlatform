@@ -1,3 +1,4 @@
+/*
 package cc.wanshan.gis;
 
 import cc.wanshan.gis.dao.RoleDao;
@@ -11,10 +12,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+*/
 /**
  * @author Li Cheng
  * @date 2019/5/20 8:34
- */
+ *//*
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class RoleTest {
@@ -53,3 +56,4 @@ public class RoleTest {
     logger.info("updateRole::"+i);
   }
 }
+*/

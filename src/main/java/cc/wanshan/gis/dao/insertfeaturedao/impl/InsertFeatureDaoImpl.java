@@ -5,6 +5,7 @@ import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.entity.drawlayer.Feature;
 import cc.wanshan.gis.utils.JDBCConnectUtils;
 import cc.wanshan.gis.utils.ResultUtil;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -20,12 +21,12 @@ public class InsertFeatureDaoImpl implements InsertFeatureDao {
   private static final Logger logger = LoggerFactory.getLogger(InsertFeatureDaoImpl.class);
 
   @Override
-  public Result insertFeatures(ArrayList<Feature> features, String tableName, String schema) {
+  public Result insertFeatures(List<Feature> features, String tableName, String schema) {
     logger.info("insertFeatures::features = [{}], tableName = [{}], schema = [{}]", features,
         tableName, schema);
     Connection connection = JDBCConnectUtils.getDBConnection();
     PreparedStatement preparedStatement = null;
-    int de = 0;
+    int[] de = new int[0];
     try {
       //String sql = "INSERT INTO " + ""+schema+"" +  "." + ""+tableName+"" + " ( fclass, name, geom ) VALUES (?,?,st_geomfromgeojson( ? ))";
       String sql = "INSERT INTO "+schema+"."+"\""+tableName+"\""+"(" +
@@ -36,16 +37,16 @@ public class InsertFeatureDaoImpl implements InsertFeatureDao {
         preparedStatement.setString(1, feature.getProperties().getFclass());
         preparedStatement.setString(2, feature.getProperties().getName());
         preparedStatement.setString(3, feature.getGeometry().toString());
-
-        de = preparedStatement.executeUpdate();
+        preparedStatement.addBatch();
       }
-      System.out.println(de);
+      de = preparedStatement.executeBatch();
+      System.out.println(de.length);
     } catch (SQLException e) {
       e.printStackTrace();
     } finally {
       JDBCConnectUtils.close(null, preparedStatement, connection);
     }
-    if (de != 0) {
+    if (de.length != 0) {
       return ResultUtil.success();
     } else {
       logger.warn(tableName + "插入失败");

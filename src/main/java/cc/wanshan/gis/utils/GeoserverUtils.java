@@ -136,7 +136,7 @@ public class GeoserverUtils {
                     GSFeatureTypeEncoder pds = new GSFeatureTypeEncoder();
                     pds.setTitle(tableName);
                     pds.setName(tableName);
-                    pds.setSRS("EPSG:4326");
+                    pds.setSRS("EPSG:3857");
                     GSLayerEncoder layerEncoder = new GSLayerEncoder();
                     boolean publishDBLayer = manager.getPublisher().publishDBLayer(ws, storeName, pds, layerEncoder);
                     if (publishDBLayer) {

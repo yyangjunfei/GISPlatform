@@ -1,6 +1,7 @@
 package cc.wanshan.gis.entity.style;
 
 import cc.wanshan.gis.entity.drawlayer.Layer;
+import java.util.List;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.NotBlank;
@@ -27,5 +28,5 @@ public class Style implements Serializable {
     @NotNull(message = "修改时间不可为null")
     @Past(message = "修改日期必须为过去时间")
     private Date updateTime;
-
+    private List<RuleName> ruleNameList;
 }

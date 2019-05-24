@@ -1,3 +1,4 @@
+/*
 package cc.wanshan.gis;
 
 import cc.wanshan.gis.dao.ThematicDao;
@@ -14,10 +15,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+*/
 /**
- * @author Li Cheng
- * @date 2019/5/20 9:33
- */
+ * @Author Li Cheng
+ * @Date 17:21 2019/5/22
+ **//*
+
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ThematicTest {
@@ -29,18 +33,20 @@ public class ThematicTest {
   @Test
   public void insertThematic(){
     Thematic thematic = new Thematic();
-    thematic.setThematicName("ceshi");
-    thematic.setThematicNameZH("测试");
-    thematic.setDescribe("测试专题地图");
+    thematic.setThematicName("China4326");
+    thematic.setThematicNameZH("万山底图");
+    thematic.setDescribe("万山底图(4326)");
     thematic.setInsertTime(new Date());
     thematic.setUpdateTime(new Date());
     Boolean i = thematicService.insertThematic(thematic);
     logger.info("insertThematic::"+i);
-    if(i){
+    */
+/*if(i){
       logger.info("insertThematic::开始创建工作空间");
       boolean nanZheng = GeoserverUtils.manager.getPublisher().createWorkspace("ceshi");
       logger.info("insertThematic::"+nanZheng);
-    }
+    }*//*
+
   }
   @Test
   public void findThematicByThematicName(){
@@ -55,4 +61,6 @@ public class ThematicTest {
 
     logger.info("deleteThematicByThematicName::"+i);
   }
+
 }
+*/
