@@ -74,6 +74,8 @@ CREATE TABLE public.tb_authority_role
     author_role_id character varying(32) NOT NULL DEFAULT replace(uuid_generate_v1()::text,'-',''),
     author_id character varying(32) COLLATE pg_catalog."default" NOT NULL,
     role_id character varying(32) COLLATE pg_catalog."default" NOT NULL,
+    insert_time timestamp(0) with time zone NOT NULL,
+    update_time timestamp(0) with time zone NOT NULL,
     CONSTRAINT fkaukq8hfdqf5vjcrwgps5tojpq FOREIGN KEY (role_id)
             REFERENCES public.tb_role (role_id) MATCH SIMPLE
             ON UPDATE NO ACTION
@@ -219,4 +221,42 @@ CREATE TABLE public.tb_rule_value
                 ON UPDATE CASCADE
                 ON DELETE CASCADE,
     CONSTRAINT tb_rule_value_pkey PRIMARY KEY (rule_value_id)
+)
+
+
+CREATE TABLE public.tb_thematic_user
+(
+    thematic_user_id character varying(32) NOT NULL DEFAULT replace(uuid_generate_v1()::text,'-',''),
+    thematic_id character varying(32) COLLATE pg_catalog."default" NOT NULL,
+    user_id character varying(32) COLLATE pg_catalog."default" NOT NULL,
+    insert_time timestamp(0) with time zone NOT NULL,
+    update_time timestamp(0) with time zone NOT NULL,
+    CONSTRAINT fkaukq8hfdqf5vjcrwgps5tojpq FOREIGN KEY (user_id)
+            REFERENCES public.tb_user (user_id) MATCH SIMPLE
+            ON UPDATE NO ACTION
+            ON DELETE NO ACTION,
+        CONSTRAINT fkgfb2hd9j9ryp5jpxw5q2xiubj FOREIGN KEY (thematic_id)
+            REFERENCES public.tb_thematic (thematic_id) MATCH SIMPLE
+            ON UPDATE NO ACTION
+            ON DELETE NO ACTION,
+    CONSTRAINT tb_thematic_user_pkey PRIMARY KEY (thematic_user_id)
+)
+
+CREATE TABLE public.tb_firstClassification
+(
+    firstClassification_id character varying(32) NOT NULL DEFAULT replace(uuid_generate_v1()::text,'-',''),
+    firstClassification_name character varying(24) COLLATE pg_catalog."default" NOT NULL,
+    insert_time timestamp(0) with time zone NOT NULL,
+    update_time timestamp(0) with time zone NOT NULL,
+    describe character varying(24) COLLATE pg_catalog."default" ,
+	CONSTRAINT fkcgvb4rn18kaq4pxb0piueexx7 FOREIGN KEY (thematic_id)
+                REFERENCES public.tb_thematic (thematic_id) MATCH SIMPLE
+                ON UPDATE NO ACTION
+                ON DELETE NO ACTION,
+            CONSTRAINT tb_firstClassification_thematic_id_fkey FOREIGN KEY (thematic_id)
+                REFERENCES public.tb_thematic (thematic_id) MATCH SIMPLE
+                ON UPDATE CASCADE
+                ON DELETE CASCADE,
+    CONSTRAINT tb_firstClassification_pkey PRIMARY KEY (firstClassification_id)
+
 )

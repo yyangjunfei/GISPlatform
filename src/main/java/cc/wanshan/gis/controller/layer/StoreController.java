@@ -3,8 +3,9 @@ package cc.wanshan.gis.controller.layer;
 
 import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.entity.drawlayer.Store;
-import cc.wanshan.gis.service.storeservice.StoreService;
+import cc.wanshan.gis.service.store.StoreService;
 import cc.wanshan.gis.utils.ResultUtil;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.micrometer.core.instrument.util.StringUtils;
 import org.mybatis.spring.annotation.MapperScan;
@@ -26,7 +27,7 @@ public class StoreController {
     private static final Logger logger= LoggerFactory.getLogger(StoreController.class);
     @Resource(name = "storeServiceImpl")
     private StoreService storeService;
-    @RequestMapping("/findStoreByUsername")
+    @RequestMapping("/findstorebyusername")
     @ResponseBody
     public Result findStoreByUsername(@RequestBody JSONObject jsonObject){
         logger.info("findStoreByUsername::username = [{}]",jsonObject);
@@ -34,7 +35,8 @@ public class StoreController {
         if (StringUtils.isNotBlank(username)){
             List<Store> stores = storeService.findStoreByUsername(username);
             if (stores!=null&&stores.size()>0){
-                return ResultUtil.success(stores);
+                JSONArray jsonArray= (JSONArray) JSONArray.toJSON(stores);
+                return ResultUtil.success(jsonArray);
             }else {
                 return ResultUtil.error(1,"结果为null");
             }

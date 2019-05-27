@@ -1,17 +1,15 @@
 package cc.wanshan.gis;
 
 import cc.wanshan.gis.dao.LayerDao;
-import cc.wanshan.gis.dao.searchlayertabledao.SearchLayerTableDao;
+import cc.wanshan.gis.dao.searchlayertable.SearchLayerTableDao;
 import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.entity.drawlayer.Layer;
 import cc.wanshan.gis.entity.drawlayer.Store;
 import cc.wanshan.gis.entity.thematic.FirstClassification;
 import cc.wanshan.gis.entity.thematic.Thematic;
-import cc.wanshan.gis.service.layerservice.LayerService;
+import cc.wanshan.gis.service.layer.LayerService;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import javax.annotation.Resource;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,15 +38,17 @@ public class LayerTest {
   public void insertLayer(){
     logger.info("insertLayer::");
     Thematic thematic = new Thematic();
-    thematic.setThematicId("52ffd62e7c7311e9a07b20040ff72212");
-    thematic.setThematicName("China3857");
-    thematic.setThematicNameZH("万山底图");
-    layer.setLayerNameZH("快速路");
-    layer.setLayerName("C1_ksl");
+    thematic.setThematicId("4194542c7e0411e9b9dc20040ff72212");
+    thematic.setThematicName("NanZheng1");
+    thematic.setThematicNameZH("南郑专题地图");
+    layer.setLayerNameZH("县道 ");
+    layer.setLayerName("nz1_xjxzq");
     layer.setEpsg("3857");
     //layer.setType("Point");
-    layer.setFirstClassification("道路");
-    layer.setSecondClassification("快速路");
+    layer.setFirstClassificationName("境界与政区");
+    layer.setFirstClassificationId("3daacf3e7ebe11e9831f20040ff72212");
+    layer.setSecondClassificationName("县级行政区");
+    layer.setSecondClassificationId("292a1974802211e9a58e20040ff72212");
     layer.setSecurity("公开");
     layer.setPublishTime(new Date());
     layer.setUpdateTime(new Date());

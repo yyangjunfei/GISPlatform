@@ -51,7 +51,7 @@ public interface ThematicDao {
       @Result(column = "describe", property = "describe"),
       @Result(column = "insert_time", property = "insertTime"),
       @Result(column = "insert_time", property = "updateTime"),
-      //@Result(column = "thematic_id", property = "userList", many = @Many(select = "cc.wanshan.demo.repository.UserDao.findUsersByThematicId", fetchType = FetchType.LAZY)),
+      @Result(column = "thematic_id", property = "firstClassificationList", many = @Many(select = "cc.wanshan.gis.dao.FirstClassificationDao.findByThematicId", fetchType = FetchType.LAZY)),
   })
   /**
    * description: 根据thematicId查找Thematic
@@ -94,7 +94,7 @@ public interface ThematicDao {
           + "thematic_name=#{thematicName},"
           + "thematic_name_zh=#{thematicNameZH},"
           + "describe={#describe},"
-          + "update_time={#updateTime} "
+          + "update_time={#updateTime,jdbcType=TIMESTAMP} "
           + "where "
           + "thematic_id=#{thematicId}"
   })

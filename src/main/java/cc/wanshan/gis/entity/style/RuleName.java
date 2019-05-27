@@ -1,5 +1,7 @@
 package cc.wanshan.gis.entity.style;
 
+import cc.wanshan.gis.entity.drawlayer.Layer;
+import java.util.List;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.NotBlank;
@@ -18,6 +20,8 @@ public class RuleName implements Serializable {
   @NotBlank(message = "风格不可为null")
   private Style style;
   @NotNull(message = "插入时间不可为null")
+  @NotNull(message = "图层不可为null")
+  private Layer layer;
   @Past(message = "插入日期必须为过去时间")
   private Date insertTime;
   @NotNull(message = "修改时间不可为null")
@@ -43,5 +47,5 @@ public class RuleName implements Serializable {
   private String fontStyleEnv;
   @Length(max = 8, message = "填充颜色别名长度不可超过8字节")
   private String fontWeightEnv;
-
+  private RuleValue ruleValue;
 }
