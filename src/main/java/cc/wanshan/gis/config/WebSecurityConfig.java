@@ -2,7 +2,7 @@ package cc.wanshan.gis.config;
 
 import cc.wanshan.gis.common.security.AccessDecisionManagerImpl;
 import cc.wanshan.gis.common.security.MyAccessDeniedHandler;
-import cc.wanshan.gis.service.userservice.impl.UserServiceImpl;
+import cc.wanshan.gis.service.user.impl.UserServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;

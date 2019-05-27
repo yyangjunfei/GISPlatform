@@ -3,6 +3,7 @@ package cc.wanshan.gis.dao;
  * @author Li Cheng
  * @date 2019/5/20 8:37
  */
+
 import cc.wanshan.gis.entity.style.Style;
 import java.util.List;
 import org.apache.ibatis.annotations.Delete;
@@ -46,10 +47,11 @@ public interface StyleDao {
   @Results({
       @Result(id = true, column = "style_id", property = "styleId"),
       @Result(column = "style_name", property = "styleName"),
-      @Result(column = "layer_id", property = "layer",many = @Many(select = "cc.wanshan.gis.dao.LayerDao.findLayerByLayerId")),
+      @Result(column = "layer_id", property = "layer.layeeId"),
       @Result(column = "insert_time", property = "insertTime"),
-      @Result(column = "insert_time", property = "updateTime"),
-      //@Result(column = "style_id", property = "ruleNameList", many = @Many(select = "cc.wanshan.demo.repository.RuleNameDao.findRuleNamesByStyleId", fetchType = FetchType.LAZY)),
+      @Result(column = "update_time", property = "updateTime"),
+      @Result(column = "style_id", property = "ruleNameList",
+          many = @Many(select = "cc.wanshan.gis.dao.RuleNameDao.findRuleNamesByStyleId",fetchType = FetchType.LAZY))
   })
   /**
    * description: 根据styleId查找style
@@ -58,17 +60,43 @@ public interface StyleDao {
    * @return cc.wanshan.gisdev.entity.style.style
    */
   public Style findByStyleId(String styleId);
+  @Select({
+      "select "
+          + "style_id,"
+          + "style_name,"
+          + "layer_id,"
+          + "insert_time,"
+          + "update_time "
+          + "from "
+          + "tb_style "
+          + "where "
+          + "layer_id=#{layerId}"
+  })
+  @Results({
+      @Result(id = true, column = "style_id", property = "styleId"),
+      @Result(column = "style_name", property = "styleName"),
+      @Result(column = "layer_id", property = "layer.layerId"),
+      @Result(column = "insert_time", property = "insertTime"),
+      @Result(column = "update_time", property = "updateTime"),
+      @Result(column = "style_id", property = "ruleNameList",
+          many = @Many(select = "cc.wanshan.gis.dao.RuleNameDao.findRuleNamesByStyleId",fetchType = FetchType.LAZY))
+  })
+  /**
+   * description: 根据styleId查找style
+   *
+   * @param layerId
+   * @return cc.wanshan.gisdev.entity.style.style
+   */
+  public List<Style> findByLayerId(String layerId);
 
   @Insert({
       "insert into "
           + "tb_style "
           + "(style_name,"
-          + "layer_id,"
           + "insert_time,"
-          + "update_time) "
+          + "update_time ) "
           + "values "
           + "(#{styleName},"
-          + "#{layer.layerId},"
           + "#{insertTime,jdbcType=TIMESTAMP},"
           + "#{updateTime,jdbcType=TIMESTAMP})"
   })
@@ -85,11 +113,9 @@ public interface StyleDao {
       "update "
           + "tb_style "
           + "set "
-          + "style_id=#{styleId},"
+          + "layer_id=#{layer.layerId},"
           + "style_name=#{styleName},"
-          + "style_name_zh=#{styleNameZH},"
-          + "describe={#describe},"
-          + "update_time={#updateTime} "
+          + "update_time={#updateTime,jdbcType=TIMESTAMP} "
           + "where "
           + "style_id=#{styleId}"
   })
@@ -114,7 +140,7 @@ public interface StyleDao {
    * @return int
    */
   public int deleteStyle(String styleId);
-
+/*
   @Select({
       "select "
           + "* "
@@ -137,20 +163,19 @@ public interface StyleDao {
       @Result(column = "insert_time", property = "insertTime"),
       @Result(column = "insert_time", property = "updateTime"),
   })
+  */
+
   /**
    * description:根据用户名查找style
    *
-   * @param username
    * @return cc.wanshan.gisdev.entity.usermanagement.style
-   */
-  public Style findStyleByUserName(String username);
-
+   *//*
+  public Style findStyleByUserName(String username);*/
   @Select({
       "select "
-          + "style_id ,"
+          + "style_id,"
           + "style_name,"
-          + "style_name_zh,"
-          + "describe "
+          + "layer_id,"
           + "insert_time,"
           + "update_time "
           + "from "
@@ -158,11 +183,10 @@ public interface StyleDao {
   @Results({
       @Result(id = true, column = "style_id", property = "styleId"),
       @Result(column = "style_name", property = "styleName"),
-      @Result(column = "style_name_zh", property = "styleNameZH"),
-      @Result(column = "describe", property = "describe"),
       @Result(column = "insert_time", property = "insertTime"),
-      @Result(column = "insert_time", property = "updateTime"),
-      @Result(column = "style_id", property = "userList", many = @Many(select = "cc.wanshan.demo.repository.UserDao.findUsersBystyleId", fetchType = FetchType.LAZY))
+      @Result(column = "update_time", property = "updateTime"),
+      @Result(column = "style_id", property = "ruleNameList",
+          many = @Many(select = "cc.wanshan.gis.dao.RuleNameDao.findRuleNamesByStyleId",fetchType = FetchType.LAZY))
   })
   /**
    * description: 查询所有的style
@@ -173,13 +197,8 @@ public interface StyleDao {
   public List<Style> findAllStyle();
 
   @Select({
-      "select"
-          + "style_id,"
-          + "style_name,"
-          + "style_name_zh,"
-          + "describe,"
-          + "insert_time,"
-          + "update_time "
+      "select "
+          + "style_id "
           + "from "
           + "tb_style "
           + "where "
@@ -187,11 +206,8 @@ public interface StyleDao {
   })
   @Results({
       @Result(id = true, column = "style_id", property = "styleId"),
-      @Result(column = "style_name", property = "styleName"),
-      @Result(column = "style_name_zh", property = "styleNameZH"),
-      @Result(column = "insert_time", property = "insertTime"),
-      @Result(column = "insert_time", property = "updateTime"),
-      @Result(column = "describe", property = "describe")
+      @Result(column = "style_id", property = "ruleNameList",
+          many = @Many(select = "cc.wanshan.gis.dao.RuleNameDao.findRuleNamesByStyleId",fetchType = FetchType.LAZY))
   })
   /**
    * description: 根据styleName查询style
@@ -199,7 +215,7 @@ public interface StyleDao {
    * @param styleName
    * @return cc.wanshan.gisdev.entity.usermanagement.style
    */
-  public Style findStyleByStyleName(String styleName);
+  public List<Style> findStyleByStyleName(String styleName);
 
   @Select({
       "select "
