@@ -14,6 +14,9 @@ import com.vividsolutions.jts.io.WKTReader;
 
 import java.util.List;
 
+/**
+ * Geometry 构建
+ */
 public class GeometryCreator {
 
     private static final GeometryCreator INSTANCE = new GeometryCreator();

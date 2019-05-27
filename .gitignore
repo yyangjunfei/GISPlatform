@@ -34,7 +34,9 @@ target/*
 .git/*
 data/
 logs/
-logs/**
+logs/*
+classes/
+classes/*
 
 ### maven ###
 .mvn/*
@@ -42,6 +44,6 @@ logs/**
 mvnw
 mvnw.cmd
 
-classes/
+
 
 
