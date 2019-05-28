@@ -20,8 +20,6 @@ public class Style implements Serializable {
     @NotBlank(message = "风格名不为null")
     @Length(max = 32,message = "风格名长度不可超过32字节")
     private String styleName;
-    @NotNull(message = "图层不可为null")
-    private Layer layer;
     @NotNull(message ="插入时间不可为null")
     @Past(message = "插入日期必须为过去时间")
     private Date insertTime;

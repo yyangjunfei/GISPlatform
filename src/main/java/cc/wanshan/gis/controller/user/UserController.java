@@ -1,5 +1,5 @@
-
 /*
+
 package cc.wanshan.gisdev.controller.user;
 =======
 package cc.wanshan.gis.controller.user;
@@ -9,8 +9,8 @@ package cc.wanshan.gis.controller.user;
 import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.entity.usermanagement.Role;
 import cc.wanshan.gis.entity.usermanagement.User;
-import cc.wanshan.gis.service.geoserverservice.GeoserverService;
-import cc.wanshan.gis.service.userservice.UserService;
+import cc.wanshan.gis.service.geoserver.GeoserverService;
+import cc.wanshan.gis.service.user.UserService;
 import cc.wanshan.gis.utils.ResultUtil;
 import com.alibaba.fastjson.JSONObject;
 import io.micrometer.core.instrument.util.StringUtils;

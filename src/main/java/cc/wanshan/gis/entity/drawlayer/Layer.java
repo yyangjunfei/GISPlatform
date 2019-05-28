@@ -1,7 +1,10 @@
 package cc.wanshan.gis.entity.drawlayer;
 
 
+import cc.wanshan.gis.entity.style.RuleName;
+import cc.wanshan.gis.entity.style.Style;
 import cc.wanshan.gis.entity.thematic.Thematic;
+import java.util.List;
 import lombok.Data;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -34,10 +37,12 @@ public class Layer implements Serializable {
   private String security;
   @NotBlank(message = "第一分类不可为null")
   @Length(max = 32,message = "第一分类长度不可超过32字节")
-  private String firstClassification;
+  private String firstClassificationName;
+  private String firstClassificationId;
   @NotBlank(message = "第二分类不可为null")
   @Length(max = 32,message = "第二分类不可超过32字节")
-  private String secondClassification;
+  private String secondClassificationName;
+  private String secondClassificationId;
   @NotNull(message = "发布时间不可为null")
   @Past(message = "修改时间必须为过去时间")
   private Date publishTime;
@@ -53,4 +58,11 @@ public class Layer implements Serializable {
   @NotBlank(message = "坐标系不可为null")
   @Length(max = 4,message = "坐标系长度不可超过4字节")
   private String epsg;
+  private String describe;
+  private String fillColor;
+  private String strokeColor;
+  private String strokeWidth;
+  private Integer opacity;
+  private String department;
+  private List<RuleName> ruleNameList;
 }

@@ -4,7 +4,7 @@ package cc.wanshan.gis;
 import cc.wanshan.gis.dao.StoreDao;
 import cc.wanshan.gis.entity.drawlayer.Store;
 import cc.wanshan.gis.entity.usermanagement.User;
-import cc.wanshan.gis.service.storeservice.StoreService;
+import cc.wanshan.gis.service.store.StoreService;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;

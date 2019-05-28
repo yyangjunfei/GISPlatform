@@ -2,14 +2,17 @@ package cc.wanshan.gis.dao;
 
 import cc.wanshan.gis.entity.style.RuleName;
 import java.util.List;
+import net.bytebuddy.agent.builder.AgentBuilder.InitializationStrategy.SelfInjection.Lazy;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Many;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.mapping.FetchType;
 import org.springframework.stereotype.Component;
 
 /**
@@ -47,13 +50,13 @@ public interface RuleNameDao {
 
   @Delete({
       "delete from "
-          + "tb_ruleName "
+          + "tb_rule_name "
           + "where "
-          + "ruleName_id=#{ruleNameId} and "
+          + "rule_name_id=#{ruleNameId} and "
           + "style_id=#{styleId}"
   })
   /**
-   * description: 根据layerId和ruleNameId删除ruleName
+   * description: 根据styleId和ruleNameId删除ruleName
    *
    * @param ruleNameId
    * @param styleId
@@ -63,8 +66,9 @@ public interface RuleNameDao {
   
   @Insert({
       "insert into "
-          + "tb_ruleName ("
+          + "tb_rule_name ("
           + "style_id,"
+          + "layer_name,"
           + "fill_env,"
           + "stroke_env,"
           + "width_env,"
@@ -79,6 +83,7 @@ public interface RuleNameDao {
           + "update_time "
           + ") values ("
           + "#{style.styleId},"
+          + "#{layer.layerName},"
           + "#{fillEnv},"
           + "#{strokeEnv},"
           + "#{widthEnv},"
@@ -89,12 +94,13 @@ public interface RuleNameDao {
           + "#{fontStrokeEnv},"
           + "#{fontStyleEnv},"
           + "#{fontWeightEnv},"
-          + "#{insertTime},"
-          + "#{updateTime}"
+          + "#{insertTime,jdbcType=TIMESTAMP},"
+          + "#{updateTime,jdbcType=TIMESTAMP}"
+          + ")"
   })
-  @Options(useGeneratedKeys = true, keyColumn = "ruleName_id", keyProperty = "ruleNameId")
+  @Options(useGeneratedKeys = true, keyColumn = "rule_name_id", keyProperty = "ruleNameId")
   /**
-   * description: 新增图层
+   * description: 新增ruleName
    *
    * @param ruleName
    * @return int
@@ -103,7 +109,7 @@ public interface RuleNameDao {
 
   @Update({
       "update "
-          + "tb_ruleName "
+          + "tb_rule_name "
           + "set "
           + "style_id=#{styleId},"
           + "fill_env=#{fillEnv},"
@@ -118,10 +124,10 @@ public interface RuleNameDao {
           + "font_weight_env=#{fontWeightEnv} "
           + "update_time=#{updateTime,jdbcType=TIMESTAMP}"
           + "where "
-          + "ruleName_id=#{ruleNameId}"
+          + "rule_name_id=#{ruleNameId}"
   })
   /**
-   * description: 更新图层信息
+   * description: 更新ruleName信息
    *
    * @param ruleName
    * @return int
@@ -130,9 +136,9 @@ public interface RuleNameDao {
 
 
   @Delete({"delete from "
-      + "tb_ruleName "
+      + "tb_rule_name "
       + "where "
-      + "ruleName_id=#{ruleNameId}"
+      + "rule_name_id=#{ruleNameId}"
   })
   /**
    * description: 删除ruleName
@@ -145,26 +151,13 @@ public interface RuleNameDao {
   @Select({"select "
       + "* "
       + "from "
-      + "tb_ruleName "
+      + "tb_rule_name "
       + "where "
       + "style_id =#{styleId}"
   })
-  /**
-   + "style_id=#{styleId},"
-   + "fill_env=#{fillEnv},"
-   + "stroke_env=#{strokeEnv},"
-   + "width_env=#{widthEnv},"
-   + "opacity_env=#{opacityEnv} "
-   + "font_family_env=#{fontFamilyEnv} "
-   + "font_size_env=#{fontSizeEnv} "
-   + "font_fill_env=#{fontFillEnv} "
-   + "font_stroke_env=#{fontStrokeEnv} "
-   + "font_style_env=#{fontStyleEnv} "
-   + "font_weight_env=#{fontWeightEnv} "
-   + "update_time "
-   **/
   @Results({
-      @Result(id = true, column = "ruleName_id", property = "ruleNameId"),
+      @Result(id = true, column = "rule_name_id", property = "ruleNameId"),
+      @Result(column = "layer_name", property = "layer.layerName"),
       @Result(column = "fill_env", property = "fillEnv"),
       @Result(column = "stroke_env", property = "strokeEnv"),
       @Result(column = "width_env", property = "widthEnv"),
@@ -175,25 +168,26 @@ public interface RuleNameDao {
       @Result(column = "font_stroke_env", property = "fontStrokeEnv"),
       @Result(column = "font_style_env", property = "fontStyleEnv"),
       @Result(column = "font_weight_env", property = "fontWeightEnv"),
-      @Result(column = "insert_time", property = "insertTime"),
-      @Result(column = "update_time", property = "updateTime"),
+      @Result(column = "rule_name_id",property = "ruleValue",
+          many = @Many(select = "cc.wanshan.gis.dao.RuleValueDao.findRuleValuesByRuleNameId",fetchType = FetchType.LAZY))
   })
   /**
    * description: 根据styleId查询ruleName
    *
-   * @param styleid
+   * @param styleId
    * @return java.util.List<cc.wanshan.gis.entity.style.RuleName>
    */
-  public List<RuleName> findRuleNamesByStyleId(String styleid);
+  public List<RuleName> findRuleNamesByStyleId(String styleId);
+
   @Select({"select "
       + "* "
       + "from "
-      + "tb_ruleName "
+      + "tb_rule_name "
       + "where "
-      + "ruleName_id =#{ruleNameId}"
+      + "layer_name =#{layer.layerName}"
   })
   @Results({
-      @Result(id = true, column = "ruleName_id", property = "ruleNameId"),
+      @Result(id = true, column = "rule_name_id", property = "ruleNameId"),
       @Result(column = "fill_env", property = "fillEnv"),
       @Result(column = "stroke_env", property = "strokeEnv"),
       @Result(column = "width_env", property = "widthEnv"),
@@ -204,8 +198,35 @@ public interface RuleNameDao {
       @Result(column = "font_stroke_env", property = "fontStrokeEnv"),
       @Result(column = "font_style_env", property = "fontStyleEnv"),
       @Result(column = "font_weight_env", property = "fontWeightEnv"),
-      @Result(column = "insert_time", property = "insertTime"),
-      @Result(column = "update_time", property = "updateTime"),
+      @Result(column = "rule_name_id",property = "ruleValue",
+          many = @Many(select = "cc.wanshan.gis.dao.RuleValueDao.findRuleValuesByRuleNameId",fetchType = FetchType.LAZY))
+  })
+  /**
+   * description: 根据layerName查询ruleName集合
+   *
+   * @param layerName
+   * @return java.util.List<cc.wanshan.gis.entity.style.RuleName>
+   */
+  public List<RuleName> findRuleNamesByLayerName(String layerName);
+  @Select({"select "
+      + "* "
+      + "from "
+      + "tb_rule_name "
+      + "where "
+      + "rule_name_id =#{ruleNameId}"
+  })
+  @Results({
+      @Result(id = true, column = "rule_name_id", property = "ruleNameId"),
+      @Result(column = "fill_env", property = "fillEnv"),
+      @Result(column = "stroke_env", property = "strokeEnv"),
+      @Result(column = "width_env", property = "widthEnv"),
+      @Result(column = "opacity_env", property = "opacityEnv"),
+      @Result(column = "font_family_env", property = "fontFamilyEnv"),
+      @Result(column = "font_size_env", property = "fontSizeEnv"),
+      @Result(column = "font_fill_env", property = "fontFillEnv"),
+      @Result(column = "font_stroke_env", property = "fontStrokeEnv"),
+      @Result(column = "font_style_env", property = "fontStyleEnv"),
+      @Result(column = "font_weight_env", property = "fontWeightEnv"),
   })
   /**
    * description: 根据ruleNameId查询ruleName
