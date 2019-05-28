@@ -110,15 +110,15 @@ public interface RoleDao {
       "select "
           + "* "
           + "from "
-          + "tb_role"
+          + "tb_role "
           + "where "
-          + "role_id=("
+          + "role_id =( "
           + "select  "
-          + "u.role_id"
+          + "u.role_id "
           + "from "
           + "tb_user as u "
           + "where "
-          + "u.username =#{username})"
+          + "u.username=#{username})"
   })
   @Results({
       @Result(id = true, column = "role_id", property = "roleId"),
@@ -263,7 +263,7 @@ public interface RoleDao {
           + "on "
           + "ar.role_id=r.role_id "
           + "where "
-          + "ar.authorole_id=#{authorId}"
+          + "ar.author_id=#{authorId}"
   })
   @Results({
       @Result(column = "role_name", property = "roleName")

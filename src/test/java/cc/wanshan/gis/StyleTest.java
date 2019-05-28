@@ -38,7 +38,7 @@ public class StyleTest {
   @Test
   public void insertStyle() {
     logger.info("insertStyle::");
-    style.setStyleName("蓝色魅影");
+    style.setStyleName("梦幻灰");
     style.setInsertTime(new Date());
     style.setUpdateTime(new Date());
     //layer.setLayerId("5dc242ec7bb811e9a01e20040ff72212");
@@ -77,7 +77,7 @@ public class StyleTest {
   @Test
   public void replaceStyle(){
     Style style2 = new Style();
-    style2.setStyleId("f09392dc807811e9a51920040ff72212");
+    style2.setStyleId("94dad65a80f811e98f0820040ff72212");
     List<Style> style = styleServiceImpl.findStyleByStyleName("暗夜精灵");
     for (Style style1 : style) {
       List<RuleName> ruleNameList = style1.getRuleNameList();
@@ -89,7 +89,7 @@ public class StyleTest {
           RuleValue ruleValue = ruleName.getRuleValue();
           ruleValue.setRuleValueId(null);
           ruleValue.setRuleName(ruleName);
-          ruleValue.setRuleValue("蓝色魅影");
+          ruleValue.setRuleValue("梦幻灰");
           Boolean aBoolean1 = ruleValueService.insertRuleValue(ruleValue);
           logger.info("replaceStyle::"+aBoolean1);
         }else {

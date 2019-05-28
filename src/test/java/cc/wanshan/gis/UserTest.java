@@ -1,11 +1,14 @@
-/*
 package cc.wanshan.gis;
 
 import cc.wanshan.gis.dao.RoleDao;
-import cc.wanshan.gis.dao.UserDao;
+import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.entity.thematic.Thematic;
+import cc.wanshan.gis.entity.thematic.ThematicUser;
 import cc.wanshan.gis.entity.usermanagement.Role;
 import cc.wanshan.gis.entity.usermanagement.User;
+import cc.wanshan.gis.service.thematic.ThematicService;
+import cc.wanshan.gis.service.thematicuser.ThematicUserService;
+import cc.wanshan.gis.service.user.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -21,26 +24,54 @@ import java.util.Date;
 public class UserTest {
     private static final Logger logger= LoggerFactory.getLogger(UserTest.class);
     @Resource
-    private UserDao userDao;
+    private UserService userServiceImpl;
+    @Resource
+    private ThematicUserService thematicUserServiceImpl;
     @Resource
     private RoleDao roleDao;
     @Test
     public void insertUser(){
         logger.info("insertUser::");
         User user = new User();
-        user.setUsername("蒹葭苍苍");
-        user.setPassword("白露为霜");
+        Role role = new Role();
+        String [] thematicId={"52ffd62e7c7311e9a07b20040ff72212","4194542c7e0411e9b9dc20040ff72212"};
+        ThematicUser thematicUser = new ThematicUser();
+        Thematic thematic = new Thematic();
+        user.setUsername("licheng");
+        user.setPassword("888888");
         user.setStatus(0);
         user.setDelete(0);
         user.setUpdateTime(new Date());
         user.setInsertTime(new Date());
-        int i = userDao.insertUser(user);
+        Result i = userServiceImpl.insertUser(user);
+        logger.info("userServiceImpl.insertUser::"+i);
+        if (i.getCode()==0){
+            thematic.setThematicId("72f0f0747bad11e9ac6420040ff72212");
+            role.setRoleId("2d8aa47c7c2911e9a6f820040ff72212");
+            user.setSecurity("秘密");
+            user.setStatus(1);
+            user.setRole(role);
+            user.setThematic(thematic);
+            user.setUpdateTime(new Date());
+            Result updateUserStatus = userServiceImpl.updateUserStatus(user);
+            logger.info("updateUser::"+updateUserStatus);
+            if (updateUserStatus.getCode()==0){
+                for (String s : thematicId) {
+                    thematicUser.setThematicId(s);
+                    thematicUser.setUserId(user.getUserId());
+                    thematicUser.setInsertTime(new Date());
+                    thematicUser.setUpdateTime(new Date());
+                    Boolean aBoolean = thematicUserServiceImpl.insertThematicUser(thematicUser);
+                    logger.info("insertUser::"+aBoolean);
+                }
+            }
+        }
         logger.info("insertUser::"+i);
     }
     @Test
     public void findUserByUsername(){
         logger.info("findUserByUsername::");
-        User user = userDao.findUserByUsername("蒹葭苍苍");
+        User user = userServiceImpl.findUserByUsername("蒹葭苍苍");
         logger.info("findUserByUsername::"+user.toString());
     }
     @Test
@@ -49,16 +80,15 @@ public class UserTest {
         User user = new User();
         Role role = new Role();
         Thematic thematic = new Thematic();
-        thematic.setThematicId("829699847b8f11e9b10120040ff72212");
-        role.setRoleId("dd786ef07a9911e990f920040ff72212");
+        thematic.setThematicId("72f0f0747bad11e9ac6420040ff72212");
+        role.setRoleId("2d8aa47c7c2911e9a6f820040ff72212");
         user.setUserId("7ca5cf8e7ab011e98ce020040ff72212");
         user.setSecurity("绝密");
         user.setStatus(1);
         user.setRole(role);
         user.setThematic(thematic);
         user.setUpdateTime(new Date());
-        int i = userDao.updateUserStatus(user);
+        Result i = userServiceImpl.updateUserStatus(user);
         logger.info("updateUser::"+i);
     }
 }
-*/
