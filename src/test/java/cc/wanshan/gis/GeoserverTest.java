@@ -1,4 +1,3 @@
-/*
 package cc.wanshan.gis;
 
 import cc.wanshan.gis.utils.GeoserverUtils;
@@ -18,11 +17,10 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @WebAppConfiguration
 public class GeoserverTest {
     private static final Logger logger = LoggerFactory.getLogger(GeoserverTest.class);
-
     @Test
     public void getLayers() {
         logger.info("getLayers::");
-        RESTLayer layer = GeoserverUtils.manager.getReader().getLayer("NanZheng", "NZ_sd");
+        RESTLayer layer = GeoserverUtils.manager.getReader().getLayer("ceshi", "bd36ade41559030291105");
         logger.info("结果为" + layer.toString());
     }
     @Test
@@ -32,7 +30,12 @@ public class GeoserverTest {
         for (RESTShortWorkspace restShortWorkspace : layer) {
             logger.info("结果为"+restShortWorkspace.toString());
         }
-
+    }
+    @Test
+    public void searchLayer(){
+        logger.info("searchLayer::");
+        boolean layer = GeoserverUtils.manager.getReader()
+            .existsLayer("ceshi", "bd36ade41559034275078",true);
+        logger.info("searchLayer::"+layer);
     }
 }
-*/
