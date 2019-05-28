@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.4.RELEASE</version>
+        <version>2.1.5.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>cc.wanshan</groupId>
@@ -63,6 +63,7 @@
         <poi.version>4.1.0</poi.version>
         <ant.version>1.10.5</ant.version>
         <easyexcel.version>1.1.1</easyexcel.version>
+        <pinyin4j.version>2.5.0</pinyin4j.version>
         <xmlbeans.version>3.1.0</xmlbeans.version>
         <javacsv.version>2.0</javacsv.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>
@@ -393,6 +394,12 @@
                     <groupId>org.apache.xmlbeans</groupId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.belerweb/pinyin4j -->
+        <dependency>
+            <groupId>com.belerweb</groupId>
+            <artifactId>pinyin4j</artifactId>
+            <version>${pinyin4j.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.xmlbeans/xmlbeans -->
         <dependency>
