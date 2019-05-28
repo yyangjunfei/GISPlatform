@@ -1,4 +1,3 @@
-/*
 package cc.wanshan.gis;
 
 import cc.wanshan.gis.dao.StoreDao;
@@ -14,12 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-*/
-/**
- * @Author Li Cheng
- * @Date 17:09 2019/5/22
- **//*
 
 
 @RunWith(SpringRunner.class)
@@ -37,7 +30,7 @@ public class StoreTest {
   public void insertStore() {
     logger.info("insertStore::");
     User user = new User();
-    user.setUserId("7ca5cf8e7ab011e98ce020040ff72212");
+    user.setUserId("1628256880eb11e99f2320040ff72212");
     store.setStoreName("newStore");
     store.setUser(user);
     store.setInsertTime(new Date());
@@ -53,11 +46,9 @@ public class StoreTest {
     for (Store store1 : storeByUsername) {
       logger.info("findLayersByUsername::" + store1.toString());
     }
-
     List<Store> byUsername = storeDao.findStoresByUsername("蒹葭苍苍");
     for (Store store1 : byUsername) {
       logger.info("findLayersByUsername::" + store1.toString());
     }
   }
 }
-*/

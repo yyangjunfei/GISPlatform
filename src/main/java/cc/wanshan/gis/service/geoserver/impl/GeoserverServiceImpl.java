@@ -51,12 +51,12 @@ public class GeoserverServiceImpl implements GeoserverService {
             System.out.println("user为" + user.getUserId());
             store.setStoreName("newStore");
             store.setUser(user);
-            Result save = storeService.insertStore(store);
-            if (save.getCode() == 0) {
+            Boolean save = storeService.insertStore(store);
+            if (save) {
               return ResultUtil.success();
             } else {
               logger.warn("插入store失败", save.toString());
-              return save;
+              return ResultUtil.error(1,"插入store失败");
             }
           } else {
             logger.warn("创建store失败", newStore.toString());

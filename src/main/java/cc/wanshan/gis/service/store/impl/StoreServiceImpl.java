@@ -26,13 +26,13 @@ public class StoreServiceImpl implements StoreService {
     }
     @Override
     @Transactional
-    public Result insertStore(Store store) {
+    public Boolean insertStore(Store store) {
         logger.info("insertStore::store = [{}]",store);
         int i = storeDao.insertStore(store);
         if (i==1){
-            return ResultUtil.success(store);
+            return true;
         }
-        return ResultUtil.error(1,"保存失败");
+        return false;
     }
     @Override
     public Store findStoreByStoreId(String storeId) {
