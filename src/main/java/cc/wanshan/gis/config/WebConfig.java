@@ -2,6 +2,7 @@ package cc.wanshan.gis.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -14,6 +15,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
 
     private static Logger LOG = LoggerFactory.getLogger(WebConfig.class);
+
+    @Bean
+    public CurrentUserMethodArgumentResolver currentUserMethodArgumentResolver() {
+        return new CurrentUserMethodArgumentResolver();
+    }
 
     /**
      * 跨域支持
