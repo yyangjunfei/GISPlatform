@@ -55,6 +55,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
             if (userDao.findUserCountByUsername(user.getUsername())==0){
                 BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
                 String encode = encoder.encode(user.getPassword());
+                logger.info("password："+encode);
                 user.setPassword(encode);
                 int i = userDao.insertUser(user);
                 if (i>0){

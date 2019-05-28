@@ -1,11 +1,5 @@
 
-/*
-package cc.wanshan.gisdev.controller.user;
-=======
 package cc.wanshan.gis.controller.user;
->>>>>>> master:src/main/java/cc/wanshan/gis/controller/user/RoleController.java
-
-
 import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.entity.usermanagement.Role;
 import cc.wanshan.gis.service.role.RoleService;
@@ -103,7 +97,7 @@ public class RoleController {
         logger.info("updateRole::jsonObject = [{}]",jsonObject);
         Role role = new Role();
         if (jsonObject!=null&&jsonObject.getInteger("roleId")!=null&&jsonObject.getInteger("roleId")!=0&& StringUtils.isNotBlank(jsonObject.getString("roleName"))&& StringUtils.isNotBlank(jsonObject.getString("roleNameZH"))&& StringUtils.isNotBlank(jsonObject.getString("describe"))){
-            role.setRoleId(jsonObject.getInteger("roleId"));
+            role.setRoleId(jsonObject.getString("roleId"));
             role.setRoleName(jsonObject.getString("roleName"));
             role.setRoleNameZH(jsonObject.getString("roleNameZH"));
             role.setDescribe(jsonObject.getString("describe"));
@@ -122,7 +116,7 @@ public class RoleController {
     }
     @RequestMapping("/deleteRole")
     @ResponseBody
-    public Result deleteRole(@RequestParam Integer roleId){
+    public Result deleteRole(@RequestParam String roleId){
         logger.info("deleteRole::roleId = [{}]",roleId);
         if (roleId!=null){
             Result result = roleService.deleteRole(roleId);
@@ -139,7 +133,7 @@ public class RoleController {
     }
     @RequestMapping("/findRoleByRoleId")
     @ResponseBody
-    public Result findRoleByRoleId(@RequestParam Integer roleId){
+    public Result findRoleByRoleId(@RequestParam String roleId){
         logger.info("findRoleByRoleId::roleId = [{}]",roleId);
         if (roleId!=null){
             Result role = roleService.findRoleByRoleId(roleId);
@@ -156,4 +150,3 @@ public class RoleController {
         }
     }
 }
-*/

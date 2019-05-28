@@ -45,5 +45,5 @@ public interface StoreService {
      * @Param [store]
      * @return cc.wanshan.demo.entity.Result
      **/
-    public Result insertStore(Store store);
+    public Boolean insertStore(Store store);
 }
