@@ -1,4 +1,4 @@
-package cc.wanshan.gis.entity.shp;
+package cc.wanshan.gis.entity.metadata;
 
 import lombok.Data;
 

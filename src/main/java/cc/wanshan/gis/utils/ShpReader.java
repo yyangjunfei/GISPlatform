@@ -1,6 +1,6 @@
 package cc.wanshan.gis.utils;
 
-import cc.wanshan.gis.entity.shp.ShpInfo;
+import cc.wanshan.gis.entity.metadata.ShpInfo;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.shapefile.ShapefileDataStore;
