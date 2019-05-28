@@ -1,5 +1,6 @@
 package cc.wanshan.gis.entity.thematic;
 
+import cc.wanshan.gis.entity.drawlayer.Layer;
 import cc.wanshan.gis.entity.usermanagement.User;
 import java.io.Serializable;
 import java.util.Date;
@@ -15,7 +16,7 @@ import org.hibernate.validator.constraints.Length;
  * @date 2019/5/18 14:30
  */
 @Data
-public class Thematic implements Serializable {
+public class Thematic<layer> implements Serializable {
 
   private static final long serialVersionUID = 1L;
   @NotBlank(message = "专题id不可为null")
@@ -36,4 +37,5 @@ public class Thematic implements Serializable {
   @Length(max = 32, message = "描述长度不可超过100字节")
   private String describe;
   private List<User> userList;
+  private List<FirstClassification> firstClassificationList;
 }

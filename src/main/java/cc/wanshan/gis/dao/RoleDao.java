@@ -59,8 +59,8 @@ public interface RoleDao {
           + "values "
           + "(#{roleName},"
           + "#{roleNameZH},"
-          + "#{insertTime},"
-          + "#{updateTime},"
+          + "#{insertTime,jdbcType=TIMESTAMP},"
+          + "#{updateTime,jdbcType=TIMESTAMP},"
           + "#{describe})"
   })
   @Options(useGeneratedKeys = true, keyColumn = "role_id", keyProperty = "roleId")

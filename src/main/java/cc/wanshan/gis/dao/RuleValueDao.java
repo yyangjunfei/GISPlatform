@@ -65,7 +65,6 @@ public interface RuleValueDao {
   @Insert({
       "insert into "
           + "tb_rule_value ("
-          + "rule_value_id,"
           + "rule_value,"
           + "rule_name_id,"
           + "fill_value,"
@@ -81,7 +80,6 @@ public interface RuleValueDao {
           + "insert_time,"
           + "update_time "
           + ") values ("
-          + "#{ruleValueId},"
           + "#{ruleValue},"
           + "#{ruleName.ruleNameId},"
           + "#{fillValue},"
@@ -94,8 +92,9 @@ public interface RuleValueDao {
           + "#{fontStrokeValue},"
           + "#{fontStyleValue},"
           + "#{fontWeightValue},"
-          + "#{insertTime},"
-          + "#{updateTime}"
+          + "#{insertTime,jdbcType=TIMESTAMP},"
+          + "#{updateTime,jdbcType=TIMESTAMP}"
+          + ")"
   })
   @Options(useGeneratedKeys = true, keyColumn = "rule_value_id", keyProperty = "ruleValueId")
   /**
@@ -116,14 +115,14 @@ public interface RuleValueDao {
           + "fill_value=#{fillValue},"
           + "stroke_value=#{strokeValue},"
           + "width_value=#{widthValue},"
-          + "opacity_value=#{opacityValue} "
-          + "font_family_value=#{fontFamilyValue} "
-          + "font_size_value=#{fontSizeValue} "
-          + "font_fill_value=#{fontFillValue} "
-          + "font_stroke_value=#{fontStrokeValue} "
-          + "font_style_value=#{fontStyleValue} "
-          + "font_weight_value=#{fontWeightValue} "
-          + "update_time =#{updateTime,jdbcType=TIMESTAMP}"
+          + "opacity_value=#{opacityValue},"
+          + "font_family_value=#{fontFamilyValue},"
+          + "font_size_value=#{fontSizeValue},"
+          + "font_fill_value=#{fontFillValue},"
+          + "font_stroke_value=#{fontStrokeValue},"
+          + "font_style_value=#{fontStyleValue},"
+          + "font_weight_value=#{fontWeightValue},"
+          + "update_time =#{updateTime,jdbcType=TIMESTAMP} "
           + "where "
           + "rule_value_id=#{ruleValueId}"
   })
@@ -154,7 +153,7 @@ public interface RuleValueDao {
       + "from "
       + "tb_rule_value "
       + "where "
-      + "style_id =#{styleId}"
+      + "rule_name_id =#{ruleName.ruleNameId}"
   })
   @Results({
       @Result(id = true, column = "rule_value_id", property = "ruleValueId"),
@@ -170,16 +169,14 @@ public interface RuleValueDao {
       @Result(column = "font_stroke_value", property = "fontStrokeValue"),
       @Result(column = "font_style_value", property = "fontStyleValue"),
       @Result(column = "font_weight_value", property = "fontWeightValue"),
-      @Result(column = "insert_time", property = "insertTime"),
-      @Result(column = "update_time", property = "updateTime"),
   })
   /**
-   * description: 根据styleId查询ruleValue 
+   * description:
    *
-   * @param styleid
-   * @return java.util.List<cc.wanshan.gis.entity.style.ruleValue>
+   * @param ruleNameId
+   * @return java.util.List<cc.wanshan.gis.entity.style.RuleValue>
    */
-  public List<RuleValue> findRuleValuesByStyleId(String styleid);
+  public RuleValue findRuleValuesByRuleNameId(String ruleNameId);
   @Select({"select "
       + "* "
       + "from "
@@ -199,8 +196,6 @@ public interface RuleValueDao {
       @Result(column = "font_stroke_value", property = "fontStrokeValue"),
       @Result(column = "font_style_value", property = "fontStyleValue"),
       @Result(column = "font_weight_value", property = "fontWeightValue"),
-      @Result(column = "insert_time", property = "insertTime"),
-      @Result(column = "update_time", property = "updateTime"),
   })
   /**
    * description: 根据ruleValueId查询ruleValue

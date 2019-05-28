@@ -72,8 +72,8 @@ public interface StoreDao {
           + "("
           + "#{storeName},"
           + "#{user.userId},"
-          + "#{insertTime},"
-          + "#{updateTime}"
+          + "#{insertTime,jdbcType=TIMESTAMP},"
+          + "#{updateTime,jdbcType=TIMESTAMP}"
           + ")"
   })
   @Options(useGeneratedKeys = true, keyProperty = "storeId", keyColumn = "store_id")
@@ -93,7 +93,7 @@ public interface StoreDao {
           + "store_id=#{storeId},"
           + "store_name=#{storeName},"
           + "user_id=#{user.userId}, "
-          + "update_time=#{updateTime} "
+          + "update_time=#{updateTime,jdbcType=TIMESTAMP} "
           + "where "
           + "store_id=#{storeId}"
   })
@@ -152,5 +152,6 @@ public interface StoreDao {
    * @param username
    * @return java.util.List<cc.wanshan.gisdev.entity.drawlayer.Store>
    */
+
   public List<Store> findStoresByUsername(String username);
 }
