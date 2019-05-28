@@ -42,7 +42,11 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public List<Role> findRoleByAuthorId(String authorId) {
         logger.info("findRoleByAuthorId::authorId = [{}]",authorId);
-         return roleDao.findByAuthorId(authorId);
+        List<Role> byAuthorId = roleDao.findByAuthorId(authorId);
+        for (Role role : byAuthorId) {
+            logger.info("roleDao.findByAuthorId::"+role.toString());
+        }
+        return byAuthorId;
     }
 
     @Override
