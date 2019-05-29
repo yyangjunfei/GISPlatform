@@ -61,11 +61,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web){
         logger.info("configure::web = [{}]",web);
         web.ignoring()
-                //.antMatchers("/*")
-                .antMatchers("/user/findUserByUsername")
-                .antMatchers("/doc.html")
-                .antMatchers("/swagger-ui.html")
-                .antMatchers("/403");
+                .antMatchers("/*");
+
     }
     /**定义安全策略*/
     @Override
