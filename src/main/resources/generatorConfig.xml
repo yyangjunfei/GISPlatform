@@ -17,10 +17,16 @@
 
         <!-- 数据库连接 -->
         <jdbcConnection driverClass="org.postgresql.Driver"
-                        connectionURL="jdbc:postgresql://192.168.1.121:5432/renmydb?characterEncoding=utf8"
-                        userId="renmy"
-                        password="renmy">
+                        connectionURL="jdbc:postgresql://192.168.1.133:5432/dev?characterEncoding=utf8"
+                        userId="postgres"
+                        password="wanshan">
         </jdbcConnection>
+
+        <!--  <jdbcConnection driverClass="org.postgresql.Driver"
+                          connectionURL="jdbc:postgresql://192.168.1.121:5432/renmydb?characterEncoding=utf8"
+                          userId="renmy"
+                          password="renmy">
+          </jdbcConnection>-->
 
         <javaTypeResolver>
             <property name="forceBigDecimals" value="false"/>
@@ -42,14 +48,25 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <!-- 数据表进行生成操作 schema:相当于库名; tableName:表名; domainObjectName:对应的DO -->
-        <!--   <table tableName="emergency" domainObjectName="Emergency"
-                  enableCountByExample="false" enableUpdateByExample="false"
-                  enableDeleteByExample="false" enableSelectByExample="false"
-                  selectByExampleQueryId="false">
-           </table>-->
+        <table tableName="province" domainObjectName="Province"
+               enableCountByExample="false" enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false"
+               selectByExampleQueryId="false">
+        </table>
 
-        <table tableName="plot_point" domainObjectName="PlotPoint"
+        <table tableName="town" domainObjectName="Town"
+               enableCountByExample="false" enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false"
+               selectByExampleQueryId="false">
+        </table>
+
+        <table tableName="country" domainObjectName="Country"
+               enableCountByExample="false" enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false"
+               selectByExampleQueryId="false">
+        </table>
+
+        <table tableName="city" domainObjectName="City"
                enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false">

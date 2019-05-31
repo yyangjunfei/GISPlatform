@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.wanshan.gis.mapper.search.TownMapper">
+    <resultMap id="BaseResultMap" type="cc.wanshan.gis.entity.area.Town">
+        <id column="gid" jdbcType="INTEGER" property="gid"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="geom" jdbcType="OTHER" property="geom"/>
+        <result column="boundary" jdbcType="VARCHAR" property="boundary"/>
+        <result column="envelope" jdbcType="VARCHAR" property="envelope"/>
+        <result column="rectangle" jdbcType="VARCHAR" property="rectangle"/>
+        <result column="min_x" jdbcType="VARCHAR" property="minX"/>
+        <result column="min_y" jdbcType="VARCHAR" property="minY"/>
+        <result column="max_x" jdbcType="VARCHAR" property="maxX"/>
+        <result column="max_y" jdbcType="VARCHAR" property="maxY"/>
+        <result column="remarks" jdbcType="VARCHAR" property="remarks"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    gid, name, geom, boundary, envelope, rectangle, min_x, min_y, max_x, max_y, remarks
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from town
+        where gid = #{gid,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from town
+    where gid = #{gid,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="cc.wanshan.gis.entity.area.Town">
+    insert into town (gid, name, geom, 
+      boundary, envelope, rectangle, 
+      min_x, min_y, max_x, max_y, 
+      remarks)
+    values (#{gid,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{geom,jdbcType=OTHER}, 
+      #{boundary,jdbcType=VARCHAR}, #{envelope,jdbcType=VARCHAR}, #{rectangle,jdbcType=VARCHAR}, 
+      #{minX,jdbcType=VARCHAR}, #{minY,jdbcType=VARCHAR}, #{maxX,jdbcType=VARCHAR}, #{maxY,jdbcType=VARCHAR}, 
+      #{remarks,jdbcType=VARCHAR})
+  </insert>
+    <insert id="insertSelective" parameterType="cc.wanshan.gis.entity.area.Town">
+        insert into town
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="gid != null">
+                gid,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="geom != null">
+                geom,
+            </if>
+            <if test="boundary != null">
+                boundary,
+            </if>
+            <if test="envelope != null">
+                envelope,
+            </if>
+            <if test="rectangle != null">
+                rectangle,
+            </if>
+            <if test="minX != null">
+                min_x,
+            </if>
+            <if test="minY != null">
+                min_y,
+            </if>
+            <if test="maxX != null">
+                max_x,
+            </if>
+            <if test="maxY != null">
+                max_y,
+            </if>
+            <if test="remarks != null">
+                remarks,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="gid != null">
+                #{gid,jdbcType=INTEGER},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="geom != null">
+                #{geom,jdbcType=OTHER},
+            </if>
+            <if test="boundary != null">
+                #{boundary,jdbcType=VARCHAR},
+            </if>
+            <if test="envelope != null">
+                #{envelope,jdbcType=VARCHAR},
+            </if>
+            <if test="rectangle != null">
+                #{rectangle,jdbcType=VARCHAR},
+            </if>
+            <if test="minX != null">
+                #{minX,jdbcType=VARCHAR},
+            </if>
+            <if test="minY != null">
+                #{minY,jdbcType=VARCHAR},
+            </if>
+            <if test="maxX != null">
+                #{maxX,jdbcType=VARCHAR},
+            </if>
+            <if test="maxY != null">
+                #{maxY,jdbcType=VARCHAR},
+            </if>
+            <if test="remarks != null">
+                #{remarks,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cc.wanshan.gis.entity.area.Town">
+        update town
+        <set>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="geom != null">
+                geom = #{geom,jdbcType=OTHER},
+            </if>
+            <if test="boundary != null">
+                boundary = #{boundary,jdbcType=VARCHAR},
+            </if>
+            <if test="envelope != null">
+                envelope = #{envelope,jdbcType=VARCHAR},
+            </if>
+            <if test="rectangle != null">
+                rectangle = #{rectangle,jdbcType=VARCHAR},
+            </if>
+            <if test="minX != null">
+                min_x = #{minX,jdbcType=VARCHAR},
+            </if>
+            <if test="minY != null">
+                min_y = #{minY,jdbcType=VARCHAR},
+            </if>
+            <if test="maxX != null">
+                max_x = #{maxX,jdbcType=VARCHAR},
+            </if>
+            <if test="maxY != null">
+                max_y = #{maxY,jdbcType=VARCHAR},
+            </if>
+            <if test="remarks != null">
+                remarks = #{remarks,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where gid = #{gid,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="cc.wanshan.gis.entity.area.Town">
+    update town
+    set name = #{name,jdbcType=VARCHAR},
+      geom = #{geom,jdbcType=OTHER},
+      boundary = #{boundary,jdbcType=VARCHAR},
+      envelope = #{envelope,jdbcType=VARCHAR},
+      rectangle = #{rectangle,jdbcType=VARCHAR},
+      min_x = #{minX,jdbcType=VARCHAR},
+      min_y = #{minY,jdbcType=VARCHAR},
+      max_x = #{maxX,jdbcType=VARCHAR},
+      max_y = #{maxY,jdbcType=VARCHAR},
+      remarks = #{remarks,jdbcType=VARCHAR}
+    where gid = #{gid,jdbcType=INTEGER}
+  </update>
+</mapper>

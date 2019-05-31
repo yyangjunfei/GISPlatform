@@ -18,8 +18,8 @@
 
     <repositories>
         <repository>
-            <id>nexus-aliyun</id>
-            <name>Nexus aliyun</name>
+            <id>nexus-ALiYun</id>
+            <name>Nexus ALiYun</name>
             <layout>default</layout>
             <url>http://maven.aliyun.com/nexus/content/groups/public</url>
             <snapshots>
@@ -30,13 +30,13 @@
             </releases>
         </repository>
         <repository>
-            <id>osgeo</id>
-            <name>Open Source Geospatial Foundation Repository</name>
+            <id>OSGeo</id>
+            <name>Open Source GeoSpatial Foundation Repository</name>
             <url>http://download.osgeo.org/webdav/geotools/</url>
         </repository>
         <repository>
             <id>GeoSolutions</id>
-            <name>geosolutions repository</name>
+            <name>geoSolutions repository</name>
             <url>http://maven.geo-solutions.it/</url>
         </repository>
     </repositories>
@@ -268,11 +268,6 @@
         </dependency>
 
         <!--数据库DB相关依赖-->
-        <!--  <dependency>
-              <groupId>org.springframework.boot</groupId>
-              <artifactId>spring-boot-starter-data-jpa</artifactId>
-          </dependency>-->
-        <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
