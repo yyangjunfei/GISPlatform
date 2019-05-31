@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -60,9 +61,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web){
         logger.info("configure::web = [{}]",web);
         web.ignoring()
-                //.antMatchers("/*")
-                .antMatchers("/user/findUserByUsername")
-                .antMatchers("/403");
+                .antMatchers("/*");
+
     }
     /**定义安全策略*/
     @Override
@@ -89,7 +89,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 })
                 .and()
                 .formLogin()
-                .loginPage("/login")
                 .successHandler(new AuthenticationSuccessHandler() {
                     @Override
                     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
@@ -132,10 +131,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout()
                 .logoutUrl("/logout")
-                .logoutSuccessUrl("/login?logout")
+                .logoutSuccessHandler(new LogoutSuccessHandler() {
+                    @Override
+                    public void onLogoutSuccess(HttpServletRequest httpServletRequest,
+                        HttpServletResponse httpServletResponse, Authentication authentication)
+                        throws IOException, ServletException {
+                        logger.info("onAuthenticationSuccess::httpServletRequest = [{}], httpServletResponse = [{}], authentication = [{}]",httpServletRequest, httpServletResponse, authentication);
+                        httpServletResponse.setContentType("application/json;charset=utf-8");
+                        PrintWriter out = httpServletResponse.getWriter();
+                        logger.info("退出成功");
+                        out.write("{\"code\":0,\"msg\":\"退出成功\"}");
+                        out.flush();
+                        out.close();
+                    }
+                })
                 .deleteCookies("JSESSIONID")
                 .invalidateHttpSession(true)
                 .permitAll()
-                .and().sessionManagement().maximumSessions(10).expiredUrl("/login");
+                .and().sessionManagement().maximumSessions(1).expiredUrl("/logout");
     }
 }
