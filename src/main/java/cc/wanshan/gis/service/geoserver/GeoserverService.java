@@ -6,13 +6,14 @@ import java.net.URISyntaxException;
 
 public interface GeoserverService {
     /**
+     * @return cc.wanshan.demo.entity.Result
      * @Author Li Cheng
-     * @Description  创建工作空间
+     * @Description 创建工作空间
      * @Date 13:59 2019/4/23
      * @Param []
-     * @return cc.wanshan.demo.entity.Result
      **/
     public Result creatWorkspace(String workspace) throws URISyntaxException;
+
     /**
      * description: 查询layer是否存在
      *
@@ -20,7 +21,8 @@ public interface GeoserverService {
      * @param layerName
      * @return
      */
-    public Boolean searchLayer(String thematicName,String layerName);
+    public Boolean searchLayer(String thematicName, String layerName);
+
     /**
      * description: 删除layer
      *
@@ -29,5 +31,7 @@ public interface GeoserverService {
      * @param layerName
      * @return
      */
-    public Boolean deleteLayer(String thematicName,String storeName,String layerName);
+    public Boolean deleteLayer(String thematicName, String storeName, String layerName);
+
+
 }
