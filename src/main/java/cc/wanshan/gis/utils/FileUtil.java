@@ -23,17 +23,20 @@ public class FileUtil {
      * 获取相关后缀的文件路劲
      *
      * @param file   文件
-     * @param suffix 文件后缀
+     * @param suffix 文件后缀(为空时，获取所有文件的路劲，不为空时，获取指定后缀的路劲)
      * @return
      */
     public static List<String> fileList(File file, String suffix) {
-
-        File[] files = file.listFiles();
         List<String> list = Lists.newArrayList();
-        if (files != null) {
-            for (File f : files) {
+        File[] fileArr = file.listFiles();
+
+        if (fileArr != null) {
+            for (File f : fileArr) {
                 if (f.isDirectory()) {
                     fileList(f, suffix);
+                }
+                if (suffix == null || suffix.trim().length() <= 0) {
+                    list.add(f.getPath());
                 }
                 if (f.getName().endsWith(suffix)) {
                     list.add(f.getPath());
@@ -47,31 +50,33 @@ public class FileUtil {
      * 递归删除文件夹或文件
      */
     public static void deleteFile(File file) {
-        if (file.isDirectory()) {
-            File[] files = file.listFiles();
-            for (File f : files) {
-                deleteFile(f);
+        if (file.exists()) {
+            if (file.isDirectory()) {
+                File[] files = file.listFiles();
+                for (File f : files) {
+                    deleteFile(f);
+                }
             }
+            file.delete();
         }
-        file.delete();
     }
 
     /**
      * zip文件解压
      *
-     * @param zipFilePath 源文件路劲
-     * @param destDirPath 目标文件路劲
+     * @param sourcePath 源文件路劲
+     * @param targetPath 目标文件路劲
      */
-    public static void unZip(String zipFilePath, String destDirPath) {
+    public static void unZip(String sourcePath, String targetPath) {
         ZipInputStream zis = null;
         BufferedOutputStream bos = null;
         try {
-            zis = new ZipInputStream(new BufferedInputStream(new FileInputStream(zipFilePath)));
+            zis = new ZipInputStream(new BufferedInputStream(new FileInputStream(sourcePath)));
 
             ZipEntry zipEntry;
             while ((zipEntry = zis.getNextEntry()) != null) {
                 // 获取目标文件的绝对路劲
-                String filePath = destDirPath + File.separator + zipEntry.getName();
+                String filePath = targetPath + File.separator + zipEntry.getName();
                 if (zipEntry.isDirectory()) {
                     new File(filePath).mkdirs();
                 } else {
