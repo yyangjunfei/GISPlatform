@@ -27,7 +27,6 @@ public class InsertFeatureDaoImpl implements InsertFeatureDao {
     PreparedStatement preparedStatement = null;
     int[] de = new int[0];
     try {
-      //String sql = "INSERT INTO " + ""+schema+"" +  "." + ""+tableName+"" + " ( fclass, name, geom ) VALUES (?,?,st_geomfromgeojson( ? ))";
       String sql = "INSERT INTO "+schema+"."+"\""+tableName+"\""+"(" +
           " fclass, name, geom)" +
           "VALUES ( ?,?,st_geomfromgeojson(?))";

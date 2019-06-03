@@ -29,7 +29,7 @@ private static final Logger logger= LoggerFactory.getLogger(SecondClass.class);
   public void insertSecondClass(){
     logger.info("insertSecondClass::");
     firstClassification.setFirstClassificationId("3daacf3e7ebe11e9831f20040ff72212");
-    secondClassification.setSecondClassificationName("县级行政区");
+    secondClassification.setSecondClassificationName("镇级行政区");
     secondClassification.setInsertTime(new Date());
     secondClassification.setUpdateTime(new Date());
     secondClassification.setFirstClassification(firstClassification);
