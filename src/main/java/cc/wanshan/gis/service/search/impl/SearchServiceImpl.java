@@ -15,6 +15,7 @@ import cc.wanshan.gis.service.search.SearchService;
 import cc.wanshan.gis.utils.GeometryCreator;
 import cc.wanshan.gis.utils.GeotoolsUtils;
 import cc.wanshan.gis.utils.ResultUtil;
+import com.google.common.collect.Lists;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 import org.slf4j.Logger;
@@ -22,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.List;
@@ -30,6 +32,11 @@ import java.util.List;
 public class SearchServiceImpl implements SearchService {
 
     private static Logger LOG = LoggerFactory.getLogger(SearchServiceImpl.class);
+
+    private static List<Country> countryList;
+    private static List<Province> provinceList;
+    private static List<City> cityList;
+    private static List<Town> townList;
 
     @Autowired
     private SearchDao searchDao;
@@ -46,55 +53,89 @@ public class SearchServiceImpl implements SearchService {
     @Resource
     private TownMapper townMapper;
 
+    @PostConstruct
+    public void init() {
+        countryList = searchDao.findAllCountry();
+        provinceList = searchDao.findAllProvince();
+        cityList = searchDao.findAllCity();
+        townList = searchDao.findAllTown();
+    }
+
     @Override
+
     public Result searchAreaName(double longitude, double latitude, double level) {
 
         Point point = GeometryCreator.createPoint(longitude, latitude);
+        List<Country> countries = Lists.newArrayList();
+        List<Province> provinces = Lists.newArrayList();
+        List<City> cities = Lists.newArrayList();
+        List<Town> towns = Lists.newArrayList();
+
         try {
             if (level <= 8) {
-                LOG.info("国家::level==[{}] ", level);
-                List<Country> countryList = searchDao.findAllCountry();
-
+//                List<Country> countryList = searchDao.findAllCountry();
                 for (Country country : countryList) {
-                    String envelope = country.getEnvelope();
-                    Geometry geometry = GeotoolsUtils.geoJson2Geometry(envelope);
+                    Geometry geometry = GeotoolsUtils.geoJson2Geometry(country.getEnvelope());
                     if (geometry.contains(point)) {
-                        LOG.info("====国家=== longitude::[{}],latitude::[{}],longitude::[{}],level::[{}],name::[{}]", longitude, latitude, level, country.getName());
+                        countries.add(country);
+                    }
+                }
+                for (Country country : countries) {
+                    Country oneCountry = searchDao.findOneCountry(country.getGid());
+                    String geom = oneCountry.getGeometry();
+                    Geometry geometry = GeotoolsUtils.geoJson2Geometry(geom);
+                    if (geometry.contains(point)) {
                         return ResultUtil.success(country);
                     }
                 }
             } else if (level <= 11) {
-                LOG.info("省::level==[{}] ", level);
-                List<Province> provinceList = searchDao.findAllProvince();
+//                List<Province> provinceList = searchDao.findAllProvince();
                 for (Province province : provinceList) {
                     String envelope = province.getEnvelope();
                     Geometry geometry = GeotoolsUtils.geoJson2Geometry(envelope);
                     if (geometry.contains(point)) {
-                        LOG.info("====省=== longitude::[{}],latitude::[{}],longitude::[{}],level::[{}],name::[{}]", longitude, latitude, level, province.getName());
-
+                        provinces.add(province);
+                    }
+                }
+                for (Province province : provinces) {
+                    Province oneProvince = searchDao.findOneProvince(province.getGid());
+                    String geom = oneProvince.getGeometry();
+                    Geometry geometry = GeotoolsUtils.geoJson2Geometry(geom);
+                    if (geometry.contains(point)) {
                         return ResultUtil.success(province);
                     }
                 }
             } else if (level <= 14) {
-                LOG.info("市::level==[{}] ", level);
-                List<City> cityList = searchDao.findAllCity();
+//                List<City> cityList = searchDao.findAllCity();
                 for (City city : cityList) {
                     String envelope = city.getEnvelope();
                     Geometry geometry = GeotoolsUtils.geoJson2Geometry(envelope);
                     if (geometry.contains(point)) {
-                        LOG.info("====市=== longitude::[{}],latitude::[{}],longitude::[{}],level::[{}],name::[{}]", longitude, latitude, level, city.getName());
-
+                        cities.add(city);
+                    }
+                }
+                for (City city : cities) {
+                    City oneCity = searchDao.findOneCity(city.getGid());
+                    String geom = oneCity.getGeometry();
+                    Geometry geometry = GeotoolsUtils.geoJson2Geometry(geom);
+                    if (geometry.contains(point)) {
                         return ResultUtil.success(city);
                     }
                 }
             } else {
-                LOG.info("县::level==[{}] ", level);
-                List<Town> townList = searchDao.findAllTown();
+//                List<Town> townList = searchDao.findAllTown();
                 for (Town town : townList) {
                     String envelope = town.getEnvelope();
                     Geometry geometry = GeotoolsUtils.geoJson2Geometry(envelope);
                     if (geometry.contains(point)) {
-                        LOG.info("====县=== longitude::[{}],latitude::[{}],longitude::[{}],level::[{}],name::[{}]", longitude, latitude, level, town.getName());
+                        towns.add(town);
+                    }
+                }
+                for (Town town : towns) {
+                    Town oneTown = searchDao.findOneTown(town.getGid());
+                    String geom = oneTown.getGeometry();
+                    Geometry geometry = GeotoolsUtils.geoJson2Geometry(geom);
+                    if (geometry.contains(point)) {
                         return ResultUtil.success(town);
                     }
                 }
@@ -102,7 +143,7 @@ public class SearchServiceImpl implements SearchService {
             return ResultUtil.error(ResultCode.DATA_NOT_FOUND);
         } catch (IOException e) {
             e.printStackTrace();
-            return ResultUtil.error(ResultCode.BUSINESS_ERROR);
+            return ResultUtil.error(ResultCode.GEOMETRY_TRANSFORM_FAIL);
         }
     }
 
@@ -132,6 +173,9 @@ public class SearchServiceImpl implements SearchService {
 //
 //            townMapper.updateByPrimaryKeySelective(town);
 //        }
+
+//        Province oneProvince = searchDao.findOneProvince(13);
+
         return ResultUtil.success();
     }
 

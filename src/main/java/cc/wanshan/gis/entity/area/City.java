@@ -17,6 +17,9 @@ public class City {
     @ApiModelProperty(value = "空间位置")
     private Object geom;
 
+    @ApiModelProperty(value = "空间数据")
+    private String geometry;
+
     @ApiModelProperty(value = "边界")
     private String boundary;
 
