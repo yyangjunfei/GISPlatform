@@ -49,6 +49,8 @@ public enum ResultCode {
     LAS_PUBLISH_FAIL(31104, "las数据转化失败"),
     OSGB_PUBLISH_FAIL(31105, "osgb数据转化失败"),
 
+
+    GEOMETRY_TRANSFORM_FAIL(31201, "Geometry 转化失败"),
     /**
      * 系统错误：40001-49999
      */
