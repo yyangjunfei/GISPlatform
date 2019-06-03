@@ -53,6 +53,9 @@ public class SearchServiceImpl implements SearchService {
     @Resource
     private TownMapper townMapper;
 
+    /**
+     * 初始化方法
+     */
     @PostConstruct
     public void init() {
         countryList = searchDao.findAllCountry();
