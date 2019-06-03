@@ -258,5 +258,5 @@ CREATE TABLE public.tb_firstClassification
                 ON UPDATE CASCADE
                 ON DELETE CASCADE,
     CONSTRAINT tb_firstClassification_pkey PRIMARY KEY (firstClassification_id)
-
 )
+-- tb_point_layer表

@@ -2,7 +2,7 @@ server:
   port: 8090
   servlet:
     session:
-      timeout: 1800
+      timeout: 7200
 spring:
   mvc:
     async:
