@@ -22,8 +22,8 @@ public class SearchController {
     @Autowired
     private SearchService searchService;
 
-    @ApiOperation(value = "查询地区名称", notes = "查询地区名称")
-    @GetMapping("/AreaName")
+    @ApiOperation(value = "根据位置查询地区名称", notes = "根据位置查询地区名称")
+    @GetMapping("/location")
     public Result searchAreaName(@RequestParam double longitude, @RequestParam double latitude, @RequestParam double level) {
 
         LOG.info("SearchController::searchAreaName longitude = [{}],latitude = [{}],level = [{}]", longitude, latitude, level);
@@ -31,14 +31,13 @@ public class SearchController {
         return searchService.searchAreaName(longitude, latitude, level);
     }
 
-    @ApiOperation(value = "perfectField 勿动", notes = "perfectField 勿动")
-    @GetMapping("/perfectField")
-    public Result perfectField() {
+    @ApiOperation(value = "根据名称查询地区名称", notes = "根据名称查询地区名称")
+    @GetMapping("/name")
+    public Result searchAreaGeo(@RequestParam String name) {
 
-        LOG.info("SearchController::searchTest ");
+        LOG.info("SearchController::searchAreaGeo name = [{}]", name);
 
-        return searchService.perfectField();
+        return searchService.searchAreaGeo(name);
     }
-
 
 }

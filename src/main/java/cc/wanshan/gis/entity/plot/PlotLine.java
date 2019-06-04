@@ -37,10 +37,7 @@ public class PlotLine implements Serializable {
     private Integer width;
 
     @ApiModelProperty(value = "透明度")
-    private Integer opacity;
-
-    @ApiModelProperty(value = "符号")
-    private String symbol;
+    private double opacity;
 
     @ApiModelProperty(value = "空间坐标")
     private String geom;
@@ -57,4 +54,6 @@ public class PlotLine implements Serializable {
     @ApiModelProperty(value = "更新者")
     private String updateBy;
 
+    @ApiModelProperty(value = "备注")
+    private String remarks;
 }

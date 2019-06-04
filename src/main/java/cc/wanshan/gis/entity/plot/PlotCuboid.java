@@ -10,10 +10,10 @@ import java.sql.Date;
 
 @Data
 @Builder
-@ApiModel(value = "标绘--面", description = "PlotPolygon")
-public class PlotPolygon implements Serializable {
+@ApiModel(value = "标绘--正方体", description = "PlotCuboid")
+public class PlotCuboid implements Serializable {
 
-    private static final long serialVersionUID = 673233424909109381L;
+    private static final long serialVersionUID = 7231740578361428004L;
 
     @ApiModelProperty(value = "主键UUID")
     private String id;
@@ -27,17 +27,32 @@ public class PlotPolygon implements Serializable {
     @ApiModelProperty(value = "图层主键")
     private String layerId;
 
-    @ApiModelProperty(value = "颜色")
-    private String color;
+    @ApiModelProperty(value = "字体")
+    private String font;
 
-    @ApiModelProperty(value = "样式")
-    private String style;
+    @ApiModelProperty(value = "字体大小")
+    private Integer fontSize;
 
-    @ApiModelProperty(value = "面积")
-    private String square;
+    @ApiModelProperty(value = "字体颜色")
+    private Integer fontColor;
 
-    @ApiModelProperty(value = "透明度")
-    private double opacity;
+    @ApiModelProperty(value = "内容")
+    private String content;
+
+    @ApiModelProperty(value = "边缘线状态")
+    private boolean isBorder;
+
+    @ApiModelProperty(value = "边缘线宽度")
+    private Integer borderWidth;
+
+    @ApiModelProperty(value = "边缘线颜色")
+    private String borderColor;
+
+    @ApiModelProperty(value = "背景颜色")
+    private String backgroundColor;
+
+    @ApiModelProperty(value = "背景透明度")
+    private double backgroundOpacity;
 
     @ApiModelProperty(value = "空间坐标")
     private String geom;

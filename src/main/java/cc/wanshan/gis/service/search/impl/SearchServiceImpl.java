@@ -7,10 +7,6 @@ import cc.wanshan.gis.entity.area.City;
 import cc.wanshan.gis.entity.area.Country;
 import cc.wanshan.gis.entity.area.Province;
 import cc.wanshan.gis.entity.area.Town;
-import cc.wanshan.gis.mapper.search.CityMapper;
-import cc.wanshan.gis.mapper.search.CountryMapper;
-import cc.wanshan.gis.mapper.search.ProvinceMapper;
-import cc.wanshan.gis.mapper.search.TownMapper;
 import cc.wanshan.gis.service.search.SearchService;
 import cc.wanshan.gis.utils.GeometryCreator;
 import cc.wanshan.gis.utils.GeotoolsUtils;
@@ -24,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.List;
 
@@ -36,22 +31,9 @@ public class SearchServiceImpl implements SearchService {
     private static List<Country> countryList;
     private static List<Province> provinceList;
     private static List<City> cityList;
-    private static List<Town> townList;
 
     @Autowired
     private SearchDao searchDao;
-
-    @Resource
-    private CountryMapper countryMapper;
-
-    @Resource
-    private ProvinceMapper provinceMapper;
-
-    @Resource
-    private CityMapper cityMapper;
-
-    @Resource
-    private TownMapper townMapper;
 
     /**
      * 初始化方法
@@ -61,38 +43,19 @@ public class SearchServiceImpl implements SearchService {
         countryList = searchDao.findAllCountry();
         provinceList = searchDao.findAllProvince();
         cityList = searchDao.findAllCity();
-        townList = searchDao.findAllTown();
     }
 
     @Override
-
     public Result searchAreaName(double longitude, double latitude, double level) {
 
         Point point = GeometryCreator.createPoint(longitude, latitude);
         List<Country> countries = Lists.newArrayList();
         List<Province> provinces = Lists.newArrayList();
         List<City> cities = Lists.newArrayList();
-        List<Town> towns = Lists.newArrayList();
 
+        //级别[8, 22]查询省市，其他级别查询国家，查不到返回未找到
         try {
-            if (level <= 8) {
-//                List<Country> countryList = searchDao.findAllCountry();
-                for (Country country : countryList) {
-                    Geometry geometry = GeotoolsUtils.geoJson2Geometry(country.getEnvelope());
-                    if (geometry.contains(point)) {
-                        countries.add(country);
-                    }
-                }
-                for (Country country : countries) {
-                    Country oneCountry = searchDao.findOneCountry(country.getGid());
-                    String geom = oneCountry.getGeometry();
-                    Geometry geometry = GeotoolsUtils.geoJson2Geometry(geom);
-                    if (geometry.contains(point)) {
-                        return ResultUtil.success(country);
-                    }
-                }
-            } else if (level <= 11) {
-//                List<Province> provinceList = searchDao.findAllProvince();
+            if (level > 8 && level <= 11) {
                 for (Province province : provinceList) {
                     String envelope = province.getEnvelope();
                     Geometry geometry = GeotoolsUtils.geoJson2Geometry(envelope);
@@ -108,8 +71,7 @@ public class SearchServiceImpl implements SearchService {
                         return ResultUtil.success(province);
                     }
                 }
-            } else if (level <= 14) {
-//                List<City> cityList = searchDao.findAllCity();
+            } else if (level > 11 && level <= 22) {
                 for (City city : cityList) {
                     String envelope = city.getEnvelope();
                     Geometry geometry = GeotoolsUtils.geoJson2Geometry(envelope);
@@ -126,20 +88,18 @@ public class SearchServiceImpl implements SearchService {
                     }
                 }
             } else {
-//                List<Town> townList = searchDao.findAllTown();
-                for (Town town : townList) {
-                    String envelope = town.getEnvelope();
-                    Geometry geometry = GeotoolsUtils.geoJson2Geometry(envelope);
+                for (Country country : countryList) {
+                    Geometry geometry = GeotoolsUtils.geoJson2Geometry(country.getEnvelope());
                     if (geometry.contains(point)) {
-                        towns.add(town);
+                        countries.add(country);
                     }
                 }
-                for (Town town : towns) {
-                    Town oneTown = searchDao.findOneTown(town.getGid());
-                    String geom = oneTown.getGeometry();
+                for (Country country : countries) {
+                    Country oneCountry = searchDao.findOneCountry(country.getGid());
+                    String geom = oneCountry.getGeometry();
                     Geometry geometry = GeotoolsUtils.geoJson2Geometry(geom);
                     if (geometry.contains(point)) {
-                        return ResultUtil.success(town);
+                        return ResultUtil.success(country);
                     }
                 }
             }
@@ -151,35 +111,39 @@ public class SearchServiceImpl implements SearchService {
     }
 
     @Override
-    public Result perfectField() {
-//        List<Province> provinceList = searchDao.findProvinceAll();
-//        for (Province province : provinceList) {
-////            province.setRectangle(province.getMinX() + "," + province.getMinY() + "," + province.getMaxX() + "," + province.getMaxY());
-//            provinceMapper.updateByPrimaryKeySelective(province);
-//        }
-//        List<City> cityList = searchDao.findCityAll();
-//        for (City city : cityList) {
-////            city.setRectangle(city.getMinX() + "," + city.getMinY() + "," + city.getMaxX() + "," + city.getMaxY());
-//
-//            cityMapper.updateByPrimaryKeySelective(city);
-//        }
-//        List<Country> countryList = searchDao.findCountryAll();
-//        for (Country country : countryList) {
-////            country.setRectangle(country.getMinX() + "," + country.getMinY() + "," + country.getMaxX() + "," + country.getMaxY());
-//
-//            countryMapper.updateByPrimaryKeySelective(country);
-//        }
-//
-//        List<Town> townList = searchDao.findTownAll();
-//        for (Town town : townList) {
-////            town.setRectangle(town.getMinX() + "," + town.getMinY() + "," + town.getMaxX() + "," + town.getMaxY());
-//
-//            townMapper.updateByPrimaryKeySelective(town);
-//        }
+    public Result searchAreaGeo(String name) {
 
-//        Province oneProvince = searchDao.findOneProvince(13);
+        List<Country> allCountryGeo = searchDao.findAllCountryGeo(name);
+        if (allCountryGeo != null && allCountryGeo.size() > 0) {
+            LOG.info("[searchAreaGeo] size;;[{}],allCountryGeo;;[{}]", allCountryGeo.size(), allCountryGeo);
 
-        return ResultUtil.success();
+            return ResultUtil.success(allCountryGeo);
+        }
+        List<Province> allProvinceGeo = searchDao.findAllProvinceGeo(name);
+
+        if (allProvinceGeo != null && allProvinceGeo.size() > 0) {
+            LOG.info("[searchAreaGeo] size;;[{}],allProvinceGeo;;[{}]", allProvinceGeo.size(), allProvinceGeo);
+
+            return ResultUtil.success(allProvinceGeo);
+        }
+
+        List<City> allCityGeo = searchDao.findAllCityGeo(name);
+
+        if (allCityGeo != null && allCityGeo.size() > 0) {
+            LOG.info("[searchAreaGeo] size;;[{}],allCityGeo;;[{}]", allCityGeo.size(), allCityGeo);
+
+            return ResultUtil.success(allCityGeo);
+        }
+
+        List<Town> allTownGeo = searchDao.findAllTownGeo(name);
+
+        if (allTownGeo != null && allTownGeo.size() > 0) {
+            LOG.info("[searchAreaGeo] size;;[{}],allTownGeo;;[{}]", allTownGeo.size(), allTownGeo);
+
+            return ResultUtil.success(allTownGeo);
+        }
+
+        return ResultUtil.error(ResultCode.FIND_NULL);
     }
 
 }
