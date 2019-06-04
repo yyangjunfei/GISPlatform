@@ -14,19 +14,6 @@ import java.util.List;
 @Component
 public interface SearchDao {
 
-    //    @Select("select p.gid,p.name,st_xmin(p.geom) minX,st_ymin(p.geom) minY,st_xmax(p.geom) maxX,st_ymax(p.geom) maxY,ST_AsGeoJSON(ST_Envelope(p.geom)) envelope,ST_AsGeoJSON(p.geom) boundary from country p")
-    @Select("select p.gid,ST_AsGeoJSON(ST_Boundary(p.geom)) boundary from country p")
-    public List<Country> findCountryAll();
-
-    @Select("select p.gid,ST_AsGeoJSON(ST_Boundary(p.geom)) boundary from province p")
-    public List<Province> findProvinceAll();
-
-    @Select("select p.gid,ST_AsGeoJSON(ST_Boundary(p.geom)) boundary  from city p")
-    public List<City> findCityAll();
-
-    @Select("select p.gid,ST_AsGeoJSON(ST_Boundary(p.geom)) boundary  from town p")
-    public List<Town> findTownAll();
-
     @Select("select c.gid,c.name,c.envelope,c.rectangle from country c")
     public List<Country> findAllCountry();
 
@@ -38,6 +25,22 @@ public interface SearchDao {
 
     @Select("select t.gid,t.name,t.envelope,t.rectangle from town t")
     public List<Town> findAllTown();
+
+    @Select({"SELECT c.gid,c.name,c.envelope,c.rectangle,c.geometry FROM country c WHERE c.name LIKE CONCAT(#{name},'%')"})
+//    @Select({"SELECT c.gid,c.name,c.envelope,c.rectangle,c.geometry FROM country c WHERE c.name = #{name}"})
+    public List<Country> findAllCountryGeo(String name);
+
+    @Select({"SELECT p.gid,p.name,p.envelope,p.rectangle,p.geometry FROM province p WHERE p.name LIKE CONCAT(#{name},'%')"})
+//    @Select({"SELECT p.gid,p.name,p.envelope,p.rectangle,p.geometry FROM province p WHERE p.name = #{name}"})
+    public List<Province> findAllProvinceGeo(String name);
+
+    @Select({"SELECT c.gid,c.name,c.envelope,c.rectangle,c.geometry FROM city c WHERE c.name LIKE CONCAT(#{name},'%')"})
+//    @Select({"SELECT c.gid,c.name,c.envelope,c.rectangle,c.geometry FROM city c WHERE c.name = #{name}"})
+    public List<City> findAllCityGeo(String name);
+
+    @Select({"SELECT t.gid,t.name,t.envelope,t.rectangle,t.geometry FROM town t WHERE t.name LIKE CONCAT(#{name},'%')"})
+//    @Select({"SELECT t.gid,t.name,t.envelope,t.rectangle,t.geometry FROM town t WHERE t.name = #{name}"})
+    public List<Town> findAllTownGeo(String name);
 
     @Select({"SELECT c.gid,c.name,c.envelope,c.rectangle,c.geometry FROM country c WHERE c.gid = #{gid}"})
     public Country findOneCountry(int gid);
