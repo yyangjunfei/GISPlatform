@@ -87,20 +87,21 @@ public class SearchServiceImpl implements SearchService {
                         return ResultUtil.success(city);
                     }
                 }
-            } else {
-                for (Country country : countryList) {
-                    Geometry geometry = GeotoolsUtils.geoJson2Geometry(country.getEnvelope());
-                    if (geometry.contains(point)) {
-                        countries.add(country);
-                    }
+            }
+
+            //级别[8, 22]查询省市，查不到再查询国家；查不到返回未找到
+            for (Country country : countryList) {
+                Geometry geometry = GeotoolsUtils.geoJson2Geometry(country.getEnvelope());
+                if (geometry.contains(point)) {
+                    countries.add(country);
                 }
-                for (Country country : countries) {
-                    Country oneCountry = searchDao.findOneCountry(country.getGid());
-                    String geom = oneCountry.getGeometry();
-                    Geometry geometry = GeotoolsUtils.geoJson2Geometry(geom);
-                    if (geometry.contains(point)) {
-                        return ResultUtil.success(country);
-                    }
+            }
+            for (Country country : countries) {
+                Country oneCountry = searchDao.findOneCountry(country.getGid());
+                String geom = oneCountry.getGeometry();
+                Geometry geometry = GeotoolsUtils.geoJson2Geometry(geom);
+                if (geometry.contains(point)) {
+                    return ResultUtil.success(country);
                 }
             }
             return ResultUtil.error(ResultCode.DATA_NOT_FOUND);
@@ -112,6 +113,11 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     public Result searchAreaGeo(String name) {
+
+        // 判空
+        if (name == null || name.length() <= 0) {
+            return ResultUtil.error(ResultCode.PARAM_IS_NULL);
+        }
 
         List<Country> allCountryGeo = searchDao.findAllCountryGeo(name);
         if (allCountryGeo != null && allCountryGeo.size() > 0) {
