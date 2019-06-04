@@ -31,7 +31,7 @@ public class SearchController {
         return searchService.searchAreaName(longitude, latitude, level);
     }
 
-    @ApiOperation(value = "根据名称查询地区名称", notes = "根据名称查询地区名称")
+    @ApiOperation(value = "根据名称查询地区位置", notes = "根据名称查询地区位置")
     @GetMapping("/name")
     public Result searchAreaGeo(@RequestParam String name) {
 
