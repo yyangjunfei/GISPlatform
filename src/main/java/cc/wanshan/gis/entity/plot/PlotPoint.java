@@ -10,7 +10,7 @@ import java.sql.Date;
 
 @Data
 @Builder
-@ApiModel(value = "标绘--点", description = "PlotPoint2")
+@ApiModel(value = "标绘--点", description = "PlotPoint")
 public class PlotPoint implements Serializable {
 
     private static final long serialVersionUID = 3795894752015309811L;
@@ -30,17 +30,11 @@ public class PlotPoint implements Serializable {
     @ApiModelProperty(value = "颜色")
     private String color;
 
-    @ApiModelProperty(value = "样式")
-    private String style;
-
-    @ApiModelProperty(value = "宽度")
-    private Integer width;
+    @ApiModelProperty(value = "像素")
+    private String pixel;
 
     @ApiModelProperty(value = "透明度")
-    private Integer opacity;
-
-    @ApiModelProperty(value = "符号")
-    private String symbol;
+    private double opacity;
 
     @ApiModelProperty(value = "空间坐标")
     private String geom;
@@ -56,5 +50,8 @@ public class PlotPoint implements Serializable {
 
     @ApiModelProperty(value = "更新者")
     private String updateBy;
+
+    @ApiModelProperty(value = "备注")
+    private String remarks;
 
 }
