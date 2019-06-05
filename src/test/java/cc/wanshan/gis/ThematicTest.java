@@ -3,8 +3,6 @@ package cc.wanshan.gis;
 import cc.wanshan.gis.dao.ThematicDao;
 import cc.wanshan.gis.entity.thematic.Thematic;
 import cc.wanshan.gis.service.thematic.ThematicService;
-import cc.wanshan.gis.utils.GeoserverUtils;
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import java.util.Date;
 import javax.annotation.Resource;

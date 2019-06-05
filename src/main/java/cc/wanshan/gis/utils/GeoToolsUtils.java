@@ -1,5 +1,7 @@
 package cc.wanshan.gis.utils;
 
+import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import org.geotools.geojson.geom.GeometryJSON;
@@ -11,15 +13,16 @@ import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
- * Geotools工具
+ * GeoTools工具
  */
-public class GeotoolsUtils {
+public class GeoToolsUtils {
 
     static GeometryJSON geometryJson = new GeometryJSON(20);
 
-    private GeotoolsUtils() {
+    private GeoToolsUtils() {
     }
 
     /**
@@ -41,6 +44,45 @@ public class GeotoolsUtils {
      */
     public static String geometry2GeoJson(Geometry geometry) {
         return geometryJson.toString(geometry);
+    }
+
+    /**
+     * 通过最小最大经纬度构建Geometry
+     *
+     * @param xMin 最小经度
+     * @param yMin 最小纬度
+     * @param xMax 最大经度
+     * @param yMax 最大纬度
+     * @return
+     * @throws IOException
+     */
+    public static Geometry polygon2Geometry(double xMin, double yMin, double xMax, double yMax) throws IOException {
+
+        JSONObject polygonObject = new JSONObject();
+        List<List<Double>> coordinates = Lists.newArrayList();
+        List<Double> point1 = Lists.newArrayList();
+        List<Double> point2 = Lists.newArrayList();
+        List<Double> point3 = Lists.newArrayList();
+        List<Double> point4 = Lists.newArrayList();
+        List<Double> point5 = Lists.newArrayList();
+        point1.add(xMin);
+        point1.add(yMin);
+        point2.add(xMax);
+        point2.add(yMin);
+        point3.add(xMax);
+        point3.add(yMax);
+        point4.add(xMin);
+        point4.add(yMax);
+        point5.add(xMin);
+        point5.add(yMin);
+        coordinates.add(point1);
+        coordinates.add(point2);
+        coordinates.add(point3);
+        coordinates.add(point4);
+        coordinates.add(point5);
+        polygonObject.put("type", "Polygon");
+        polygonObject.put("coordinates", coordinates);
+        return geoJson2Geometry(polygonObject.toString());
     }
 
     /**
