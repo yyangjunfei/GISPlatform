@@ -30,7 +30,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins("*")
                 .allowedHeaders("*")
                 .allowCredentials(true)
-                .allowedMethods("*")
+                .allowedMethods("POST", "GET", "PUT", "OPTIONS", "DELETE")
                 .maxAge(3600);
     }
 
@@ -53,5 +53,4 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("swagger-ui.html")
                 .addResourceLocations("classpath:/META-INF/resources/");
     }
-
 }

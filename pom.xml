@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.4.RELEASE</version>
+        <version>2.1.5.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>cc.wanshan</groupId>
@@ -18,8 +18,8 @@
 
     <repositories>
         <repository>
-            <id>nexus-aliyun</id>
-            <name>Nexus aliyun</name>
+            <id>nexus-ALiYun</id>
+            <name>Nexus ALiYun</name>
             <layout>default</layout>
             <url>http://maven.aliyun.com/nexus/content/groups/public</url>
             <snapshots>
@@ -30,13 +30,13 @@
             </releases>
         </repository>
         <repository>
-            <id>osgeo</id>
-            <name>Open Source Geospatial Foundation Repository</name>
+            <id>OSGeo</id>
+            <name>Open Source GeoSpatial Foundation Repository</name>
             <url>http://download.osgeo.org/webdav/geotools/</url>
         </repository>
         <repository>
             <id>GeoSolutions</id>
-            <name>geosolutions repository</name>
+            <name>geoSolutions repository</name>
             <url>http://maven.geo-solutions.it/</url>
         </repository>
     </repositories>
@@ -63,6 +63,7 @@
         <poi.version>4.1.0</poi.version>
         <ant.version>1.10.5</ant.version>
         <easyexcel.version>1.1.1</easyexcel.version>
+        <pinyin4j.version>2.5.0</pinyin4j.version>
         <xmlbeans.version>3.1.0</xmlbeans.version>
         <javacsv.version>2.0</javacsv.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>
@@ -79,6 +80,7 @@
         <pagehelper-starter.version>1.2.10</pagehelper-starter.version>
         <mybatis-ehcache.version>1.1.0</mybatis-ehcache.version>
         <mybatis-plus.version>3.1.1</mybatis-plus.version>
+        <geoip2.version>2.12.0</geoip2.version>
 
     </properties>
 
@@ -233,6 +235,24 @@
             <version>${geotools.version}</version>
         </dependency>
 
+        <!-- elasticsearch启动器 (必须)-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+        </dependency>
+
+        <!--需要引入transport-netty4-client，否则elasticsearch启动报错-->
+        <dependency>
+            <groupId>org.elasticsearch.plugin</groupId>
+            <artifactId>transport-netty4-client</artifactId>
+            <version>6.4.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+        </dependency>
+
         <!--GIS相关依赖-->
         <!-- https://mvnrepository.com/artifact/com.vividsolutions/jts -->
         <dependency>
@@ -267,11 +287,6 @@
         </dependency>
 
         <!--数据库DB相关依赖-->
-        <!--  <dependency>
-              <groupId>org.springframework.boot</groupId>
-              <artifactId>spring-boot-starter-data-jpa</artifactId>
-          </dependency>-->
-        <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
@@ -394,6 +409,12 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.belerweb/pinyin4j -->
+        <dependency>
+            <groupId>com.belerweb</groupId>
+            <artifactId>pinyin4j</artifactId>
+            <version>${pinyin4j.version}</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.xmlbeans/xmlbeans -->
         <dependency>
             <groupId>org.apache.xmlbeans</groupId>
@@ -484,6 +505,13 @@
             <artifactId>thumbnailator</artifactId>
             <version>${thumbnailator.version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.maxmind.geoip2/geoip2 -->
+        <dependency>
+            <groupId>com.maxmind.geoip2</groupId>
+            <artifactId>geoip2</artifactId>
+            <version>${geoip2.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>

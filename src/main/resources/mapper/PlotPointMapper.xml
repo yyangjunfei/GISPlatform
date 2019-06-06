@@ -43,8 +43,8 @@
         values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR},
         #{layerId,jdbcType=VARCHAR}, #{color,jdbcType=VARCHAR}, #{style,jdbcType=VARCHAR},
         #{width,jdbcType=INTEGER}, #{opacity,jdbcType=INTEGER}, #{symbol,jdbcType=VARCHAR},
-        #{geom,jdbcType=VARCHAR}, #{createTime,jdbcType=DATE}, #{createBy,jdbcType=VARCHAR},
-        #{updateTime,jdbcType=DATE}, #{updateBy,jdbcType=VARCHAR})
+        #{geom,jdbcType=VARCHAR}, NOW(), #{createBy,jdbcType=VARCHAR},
+        NOW(), #{updateBy,jdbcType=VARCHAR})
     </insert>
     <insert id="insertSelective" parameterType="cc.wanshan.gis.entity.plot.PlotPoint">
 
@@ -179,7 +179,7 @@
                 create_by = #{createBy,jdbcType=VARCHAR},
             </if>
             <if test="updateTime != null">
-                update_time = #{updateTime,jdbcType=DATE},
+                update_time = NOW(),
             </if>
             <if test="updateBy != null">
                 update_by = #{updateBy,jdbcType=VARCHAR},
@@ -200,7 +200,7 @@
       geom = #{geom,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=DATE},
       create_by = #{createBy,jdbcType=VARCHAR},
-      update_time = #{updateTime,jdbcType=DATE},
+      update_time = NOW(),
       update_by = #{updateBy,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>

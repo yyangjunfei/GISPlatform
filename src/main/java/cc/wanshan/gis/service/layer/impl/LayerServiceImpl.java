@@ -15,7 +15,7 @@ import cc.wanshan.gis.entity.drawlayer.LineString;
 import cc.wanshan.gis.entity.thematic.FirstClassification;
 import cc.wanshan.gis.service.geoserver.GeoserverService;
 import cc.wanshan.gis.service.layer.LayerService;
-import cc.wanshan.gis.utils.GeoserverUtils;
+import cc.wanshan.gis.utils.GeoServerUtils;
 import cc.wanshan.gis.utils.ResultUtil;
 import io.micrometer.core.instrument.util.StringUtils;
 import it.geosolutions.geoserver.rest.decoder.RESTLayer;
@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.util.List;
 
 @Service(value = "layerServiceImpl")
 public class LayerServiceImpl implements LayerService {
@@ -70,7 +71,6 @@ public class LayerServiceImpl implements LayerService {
       logger.warn("保存出错" + layer.toString());
       return ResultUtil.error(2, "保存出错");
     }
-  }
 
   @Override
   @Transactional
@@ -135,38 +135,37 @@ public class LayerServiceImpl implements LayerService {
     } else {
       return ResultUtil.error(1, "删除失败");
     }
-  }
 
-  @Override
-  public Result searchLayer(String thematicName, String layerName) {
-    logger.info("searchLayer::thematicName = [{}], layerName = [{}]", thematicName, layerName);
-    RESTLayer layer = GeoserverUtils.manager.getReader().getLayer(thematicName, layerName);
-    if (layer == null) {
-      logger.warn("用户" + thematicName + "图层未发布" + layerName);
-      return ResultUtil.error(1, "图层未发布");
-    } else {
-      return ResultUtil.success();
+    @Override
+    public Result searchLayer(String thematicName, String layerName) {
+        logger.info("searchLayer::thematicName = [{}], layerName = [{}]", thematicName, layerName);
+        RESTLayer layer = GeoServerUtils.manager.getReader().getLayer(thematicName, layerName);
+        if (layer == null) {
+            logger.warn("用户" + thematicName + "图层未发布" + layerName);
+            return ResultUtil.error(1, "图层未发布");
+        } else {
+            return ResultUtil.success();
+        }
     }
-  }
 
-  @Override
-  @Transactional
-  public Result newLayer(String workspace, String layerName, String type, String epsg) {
-    logger.info("newLayer::workspace = [{}], layerName = [{}], type = [{}], epsg = [{}]", workspace,
-        layerName, type, epsg);
-    if (layerName != null && !"".equals(layerName) && type != null && !"".equals(type)
-        && epsg != null && !"".equals(epsg)) {
-      Result creatTable = createLayerTableDao.creatTable(workspace, layerName, type, epsg);
-      if (creatTable.getCode() == 0) {
-        return ResultUtil.success();
-      } else {
-        return creatTable;
-      }
-    } else {
-      logger.warn("空指针异常");
-      return ResultUtil.error(2, "空指针异常");
+    @Override
+    @Transactional
+    public Result newLayer(String workspace, String layerName, String type, String epsg) {
+        logger.info("newLayer::workspace = [{}], layerName = [{}], type = [{}], epsg = [{}]", workspace,
+                layerName, type, epsg);
+        if (layerName != null && !"".equals(layerName) && type != null && !"".equals(type)
+                && epsg != null && !"".equals(epsg)) {
+            Result creatTable = createLayerTableDao.creatTable(workspace, layerName, type, epsg);
+            if (creatTable.getCode() == 0) {
+                return ResultUtil.success();
+            } else {
+                return creatTable;
+            }
+        } else {
+            logger.warn("空指针异常");
+            return ResultUtil.error(2, "空指针异常");
+        }
     }
-  }
 
   @Override
   @Transactional
@@ -192,9 +191,6 @@ public class LayerServiceImpl implements LayerService {
         }
       }
     }
-    logger.warn("参数为空");
-    return ResultUtil.error(2, "参数为空");
-  }
 
   @Override
   public List<FirstClassification> findLayerByThematicIdAndNullUserId(String thematicId) {
@@ -233,8 +229,8 @@ public class LayerServiceImpl implements LayerService {
       }
     }
     return firstClassifications;*/
-    return null;
-  }
+        return null;
+    }
 
   @Override
   public Boolean updateLayer(Layer layer) {
@@ -246,12 +242,11 @@ public class LayerServiceImpl implements LayerService {
       logger.error("更新失败" + i);
       return false;
     }
-  }
 
-  @Override
-  public Layer findLayerByLayerId(String layerId) {
-    return layerDao.findLayerByLayerId(layerId);
-  }
+    @Override
+    public Layer findLayerByLayerId(String layerId) {
+        return layerDao.findLayerByLayerId(layerId);
+    }
 
   @Override
   public Layer findLayer(String userId, String layerName) {
@@ -308,5 +303,4 @@ public class LayerServiceImpl implements LayerService {
     } else {
       return ResultUtil.success();
     }
-  }
 }

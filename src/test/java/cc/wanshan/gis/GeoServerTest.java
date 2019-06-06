@@ -1,6 +1,6 @@
 package cc.wanshan.gis;
 
-import cc.wanshan.gis.utils.GeoserverUtils;
+import cc.wanshan.gis.utils.GeoServerUtils;
 import it.geosolutions.geoserver.rest.decoder.RESTLayer;
 import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList;
 import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList.RESTShortWorkspace;
@@ -15,27 +15,30 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = GISPlatformApplication.class)
 @WebAppConfiguration
-public class GeoserverTest {
-    private static final Logger logger = LoggerFactory.getLogger(GeoserverTest.class);
+public class GeoServerTest {
+    private static final Logger logger = LoggerFactory.getLogger(GeoServerTest.class);
+
     @Test
     public void getLayers() {
         logger.info("getLayers::");
-        RESTLayer layer = GeoserverUtils.manager.getReader().getLayer("ceshi", "bd36ade41559030291105");
+        RESTLayer layer = GeoServerUtils.manager.getReader().getLayer("ceshi", "bd36ade41559030291105");
         logger.info("结果为" + layer.toString());
     }
+
     @Test
-    public void getStore(){
+    public void getStore() {
         logger.info("getStore::");
-        RESTWorkspaceList layer = GeoserverUtils.manager.getReader().getWorkspaces();
+        RESTWorkspaceList layer = GeoServerUtils.manager.getReader().getWorkspaces();
         for (RESTShortWorkspace restShortWorkspace : layer) {
-            logger.info("结果为"+restShortWorkspace.toString());
+            logger.info("结果为" + restShortWorkspace.toString());
         }
     }
+
     @Test
-    public void searchLayer(){
+    public void searchLayer() {
         logger.info("searchLayer::");
-        boolean layer = GeoserverUtils.manager.getReader()
-            .existsLayer("ceshi", "bd36ade41559034275078",true);
-        logger.info("searchLayer::"+layer);
+        boolean layer = GeoServerUtils.manager.getReader()
+                .existsLayer("ceshi", "bd36ade41559034275078", true);
+        logger.info("searchLayer::" + layer);
     }
 }
