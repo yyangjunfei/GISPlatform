@@ -235,6 +235,24 @@
             <version>${geotools.version}</version>
         </dependency>
 
+        <!-- elasticsearch启动器 (必须)-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+        </dependency>
+
+        <!--需要引入transport-netty4-client，否则elasticsearch启动报错-->
+        <dependency>
+            <groupId>org.elasticsearch.plugin</groupId>
+            <artifactId>transport-netty4-client</artifactId>
+            <version>6.4.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+        </dependency>
+
         <!--GIS相关依赖-->
         <!-- https://mvnrepository.com/artifact/com.vividsolutions/jts -->
         <dependency>
