@@ -1,6 +1,8 @@
 package cc.wanshan.gis.entity.usermanagement;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
 import java.util.List;
 import javax.validation.constraints.NotBlank;
@@ -11,6 +13,8 @@ import org.hibernate.validator.constraints.Length;
  * @Date 14:47 2019/5/18
  **/
 @Data
+@JsonIgnoreProperties(value = {"handler"})//排除mybatis懒加载json序列化中的异常
+@JsonInclude(JsonInclude.Include.NON_NULL)	//注解控制null不序列化
 public class Authority implements Serializable {
 
   private static final long serialVersionUID = 1L;

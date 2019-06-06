@@ -12,10 +12,16 @@ import cc.wanshan.gis.service.thematicuser.ThematicUserService;
 import cc.wanshan.gis.service.user.UserService;
 import cc.wanshan.gis.utils.ResultUtil;
 import com.alibaba.fastjson.JSONObject;
+import java.util.Collection;
+import java.util.HashMap;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
-import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -28,7 +34,6 @@ import java.net.URISyntaxException;
 import java.util.Date;
 
 @Controller
-@MapperScan("cc.wanshan.demo.entity")
 @EnableTransactionManagement(proxyTargetClass = true)
 @RequestMapping("/user")
 public class UserController {
@@ -54,58 +59,55 @@ public class UserController {
         }
     }
 
-    @RequestMapping("/insertuser")
-    @ResponseBody
-    public Result insertUser(@RequestBody JSONObject jsonObject) {
-        logger.info("insertUser::jsonObject = [{}]", jsonObject);
-        User user = new User();
-        if (jsonObject != null && StringUtils.isNotBlank(jsonObject.getString("username"))
-                && StringUtils.isNotBlank(jsonObject.getString("password"))) {
-            Role role = new Role();
-            Store store = new Store();
-            String[] thematicId = {"52ffd62e7c7311e9a07b20040ff72212",
-                    "4194542c7e0411e9b9dc20040ff72212"};
-            ThematicUser thematicUser = new ThematicUser();
-            Thematic thematic = new Thematic();
-            user.setUsername(jsonObject.getString("username"));
-            user.setPassword(jsonObject.getString("password"));
-            user.setStatus(0);
-            user.setDelete(0);
-            user.setUpdateTime(new Date());
-            user.setInsertTime(new Date());
-            Result i = userServiceImpl.insertUser(user);
-            logger.info("userServiceImpl.insertUser::" + i);
-            if (i.getCode() == 0) {
-                thematic.setThematicId("72f0f0747bad11e9ac6420040ff72212");
-                role.setRoleId("2d8aa47c7c2911e9a6f820040ff72212");
-                user.setSecurity("秘密");
-                user.setStatus(1);
-                user.setRole(role);
-                user.setThematic(thematic);
-                user.setUpdateTime(new Date());
-                Result updateUserStatus = userServiceImpl.updateUserStatus(user);
-                logger.info("userServiceImpl.updateUserStatus::" + updateUserStatus);
-                if (updateUserStatus.getCode() == 0) {
-                    for (String s : thematicId) {
-                        thematicUser.setThematicId(s);
-                        thematicUser.setUserId(user.getUserId());
-                        thematicUser.setInsertTime(new Date());
-                        thematicUser.setUpdateTime(new Date());
-                        Boolean aBoolean = thematicUserServiceImpl.insertThematicUser(thematicUser);
-                        logger.info("thematicUserServiceImpl.insertThematicUser::" + aBoolean);
-                        if (aBoolean) {
-                            store.setStoreName("newStore");
-                            store.setUser(user);
-                            store.setInsertTime(new Date());
-                            store.setUpdateTime(new Date());
-                            Boolean insertStore = storeServiceImpl.insertStore(store);
-                            logger.info("insertStore::" + insertStore);
-                            if (insertStore) {
-                                return ResultUtil.success();
-                            }
-                        }
-                    }
-                }
+  @RequestMapping("/insertuser")
+  @ResponseBody
+  public Result insertUser(@RequestBody JSONObject jsonObject) {
+    logger.info("insertUser::jsonObject = [{}]", jsonObject);
+    User user = new User();
+    if (jsonObject != null && StringUtils.isNotBlank(jsonObject.getString("username"))
+        && StringUtils.isNotBlank(jsonObject.getString("password"))) {
+      Role role = new Role();
+      Store store = new Store();
+      String[] thematicId = {"52ffd62e7c7311e9a07b20040ff72212",
+          "4194542c7e0411e9b9dc20040ff72212"};
+      ThematicUser thematicUser = new ThematicUser();
+      Thematic thematic = new Thematic();
+      user.setUsername(jsonObject.getString("username"));
+      user.setPassword(jsonObject.getString("password"));
+      user.setStatus(0);
+      user.setDelete(0);
+      user.setUpdateTime(new Date());
+      user.setInsertTime(new Date());
+      Result i = userServiceImpl.insertUser(user);
+      logger.info("userServiceImpl.insertUser::" + i);
+      if (i.getCode() == 0) {
+        thematic.setThematicId("72f0f0747bad11e9ac6420040ff72212");
+        role.setRoleId("2d8aa47c7c2911e9a6f820040ff72212");
+        user.setSecurity("秘密");
+        user.setStatus(1);
+        user.setRole(role);
+        user.setThematic(thematic);
+        user.setUpdateTime(new Date());
+        Result updateUserStatus = userServiceImpl.updateUserStatus(user);
+        logger.info("userServiceImpl.updateUserStatus::" + updateUserStatus);
+        if (updateUserStatus.getCode() == 0) {
+          for (String s : thematicId) {
+            thematicUser.setThematicId(s);
+            thematicUser.setUserId(user.getUserId());
+            thematicUser.setInsertTime(new Date());
+            thematicUser.setUpdateTime(new Date());
+            Boolean aBoolean = thematicUserServiceImpl.insertThematicUser(thematicUser);
+            logger.info("thematicUserServiceImpl.insertThematicUser::" + aBoolean);
+            if (aBoolean) {
+              store.setStoreName("newStore");
+              store.setUser(user);
+              store.setInsertTime(new Date());
+              store.setUpdateTime(new Date());
+              Boolean insertStore = storeServiceImpl.insertStore(store);
+              logger.info("insertStore::" + insertStore);
+              if (insertStore) {
+                return ResultUtil.success();
+              }
             }
             return ResultUtil.error(1, "新增失败");
         } else {
@@ -278,4 +280,31 @@ public class UserController {
             return ResultUtil.error(1, "json为null");
         }
     }
+  }
+
+  @RequestMapping(value = "/finduser")
+  @ResponseBody
+  public Result findUser(HttpServletRequest request) {
+    logger.info("user::request = [{}]", request);
+    Cookie[] cookies = request.getCookies();
+    for (Cookie cookie : cookies) {
+      String value = cookie.getValue();
+      logger.info("cookie" + value);
+    }
+    SecurityContextImpl securityContextImpl = (SecurityContextImpl) request
+        .getSession().getAttribute("SPRING_SECURITY_CONTEXT");
+    logger.info("securityContextImpl" + securityContextImpl.toString());
+    String username = securityContextImpl.getAuthentication().getName();
+    User user = userServiceImpl.findUserByUsername(username);
+    HashMap<String, String> map = new HashMap<>();
+    Authentication authentication = securityContextImpl.getAuthentication();
+    Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+    for (GrantedAuthority authority : authorities) {
+      String authority1 = authority.getAuthority();
+      map.put("role", authority1);
+    }
+    map.put("username", username);
+    map.put("userId", user.getUserId());
+    return ResultUtil.success(map);
+  }
 }

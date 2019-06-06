@@ -14,7 +14,7 @@ spring:
     password: wanshan
     driver-class-name: org.postgresql.Driver
   jackson:
-    ##default-property-inclusion: non_empty
+    default-property-inclusion: non_empty
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
     serialization:
