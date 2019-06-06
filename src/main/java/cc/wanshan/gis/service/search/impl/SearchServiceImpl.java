@@ -275,4 +275,12 @@ public class SearchServiceImpl implements SearchService {
         return ResultUtil.success();
     }
 
+    /**
+     * 获得客户端真实IP地址
+     *
+     * @param request 客户端请求
+     * @return
+     */
+
+
 }
