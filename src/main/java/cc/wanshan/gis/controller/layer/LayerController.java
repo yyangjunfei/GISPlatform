@@ -1,12 +1,11 @@
 package cc.wanshan.gis.controller.layer;
 
 import cc.wanshan.gis.entity.Result;
-import cc.wanshan.gis.entity.drawlayer.Feature;
 import cc.wanshan.gis.entity.drawlayer.Layer;
-import cc.wanshan.gis.entity.drawlayer.Properties;
-import cc.wanshan.gis.entity.drawlayer.Store;
+import cc.wanshan.gis.entity.drawlayer.LineString;
+import cc.wanshan.gis.entity.drawlayer.Point;
+import cc.wanshan.gis.entity.drawlayer.Polygon;
 import cc.wanshan.gis.entity.style.Style;
-import cc.wanshan.gis.entity.thematic.FirstClassification;
 import cc.wanshan.gis.entity.thematic.Thematic;
 import cc.wanshan.gis.service.layer.LayerService;
 import cc.wanshan.gis.service.style.StyleService;
@@ -20,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
-import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -33,11 +31,9 @@ import javax.annotation.Resource;
 import java.io.IOException;
 
 @Controller
-@MapperScan("cc.wanshan.demo.entity")
 @EnableTransactionManagement(proxyTargetClass = true)
 @RequestMapping("/layer")
 public class LayerController {
-
   private static final Logger logger = LoggerFactory.getLogger(LayerController.class);
   @Resource(name = "layerServiceImpl")
   private LayerService layerService;
@@ -47,91 +43,51 @@ public class LayerController {
   private ThematicUserService thematicUserServiceImpl;
   @Resource(name = "styleServiceImpl")
   private StyleService styleServiceImpl;
- /* @RequestMapping("/newlayer")
-  @ResponseBody
-  public Result newLayer(@RequestBody JSONObject jsonObject) {
-    logger.info("newLayer::jsonObject = [{}]", jsonObject);
-    if (jsonObject.getInteger("storeId") != null && jsonObject.getInteger("storeId") != 0
-        && StringUtils.isNotBlank(jsonObject.getString("layerName")) && StringUtils
-        .isNotBlank(jsonObject.getString("type")) && StringUtils
-        .isNotBlank(jsonObject.getString("EPSG")) && StringUtils
-        .isNotBlank(jsonObject.getString("workspace"))) {
-      Store store = new Store();
-      store.setStoreId(jsonObject.getString("storeId"));
-      String workspace = jsonObject.getString("workspace");
-      layer.setLayerName(jsonObject.getString("layerName"));
-      layer.setStore(store);
-      layer.setType(jsonObject.getString("type"));
-      layer.setEpsg(jsonObject.getString("EPSG"));
-      return layerService.insertLayer(layer, workspace);
-    } else {
-      logger.warn("图层参数为null:" + jsonObject.toString());
-      return ResultUtil.error(2, "jsonObject为空");
-    }
-  }*/
 
   @RequestMapping("/savelayer")
   @ResponseBody
   public Result saveLayer(@RequestBody JSONObject jsonObject) throws IOException {
     Layer layer = null;
-    Thematic thematic = null;
-    Store store = null;
     logger.info("saveLayer::jsonObject = [{}]", jsonObject);
-    if (jsonObject != null && StringUtils.isNotBlank(jsonObject.getString("thematicName"))
-        && StringUtils.isNotBlank(jsonObject.getString("thematicNameZH"))
-        && StringUtils.isNotBlank(jsonObject.getString("thematicId"))
+    if (jsonObject != null
         && StringUtils.isNotBlank(jsonObject.getString("layerNameZH"))
         && StringUtils.isNotBlank(jsonObject.getString("layerName"))
         && StringUtils.isNotBlank(jsonObject.getString("epsg"))
         && StringUtils.isNotBlank(jsonObject.getString("type"))
-        && StringUtils.isNotBlank(jsonObject.getString("security"))
         && StringUtils.isNotBlank(jsonObject.getString("userId"))
-        && StringUtils.isNotBlank(jsonObject.getString("storeId"))
     ) {
       layer = JSON.parseObject(jsonObject.toJSONString(), Layer.class);
       logger.info("saveLayer::layer值为：" + layer.toString());
-      thematic = new Thematic();
-      store = new Store();
-      String thematicName = jsonObject.getString("thematicName");
       String layerName = jsonObject.getString("layerName");
-      String storeName = jsonObject.getString("storeName");
-      thematic.setThematicId(jsonObject.getString("thematicId"));
-      thematic.setThematicName(thematicName);
-      thematic.setThematicNameZH(jsonObject.getString("thematicNameZH"));
-      //layer.setLayerNameZH(jsonObject.getString("layerNameZH"));
-      //layer.setLayerName(layerName);
-      //layer.setEpsg(jsonObject.getString("epsg"));
-      //layer.setType(jsonObject.getString("type"));
-      //layer.setFirstClassification(jsonObject.getString("firstClassification"));
-      //layer.setSecondClassification(jsonObject.getString("secondClassification"));
-      //layer.setSecurity(jsonObject.getString("security"));
+      String userId = jsonObject.getString("userId");
+      String type = jsonObject.getString("type");
       layer.setPublishTime(new Date());
       layer.setUpdateTime(new Date());
       layer.setUploadTime(new Date());
-      store.setStoreId(jsonObject.getString("storeId"));
-      layer.setStore(store);
-      //layer.setUserId(jsonObject.getString("userId"));
-      layer.setThematic(thematic);
       JSONArray features = jsonObject.getJSONArray("features");
-      List<Feature> featureList = getFeatures(features);
-      if (featureList != null) {
-        Result searchLayer = layerService.searchLayer(thematicName, layerName);
-        if (searchLayer.getCode() == 0) {
+      Layer searchLayer = layerService.findLayer(userId, layerName);
+      if (features.size() > 0) {
+        List featureList = getFeatures(features, type, searchLayer);
+        if (searchLayer != null) {
           Result result = layerService
-              .insertFeatures(thematicName, layerName, storeName, featureList);
+              .insertFeatures(layerName, type, featureList);
           if (result.getCode() == 0) {
-            return ResultUtil.success();
+            Layer newLayer = layerService.findLayerByLayerId(searchLayer.getLayerId());
+            return ResultUtil.success(newLayer);
           } else {
             logger.warn("警告:" + result.getMsg());
             return ResultUtil.error(1, result.getMsg());
           }
         } else {
-          Result insertLayer = layerService.insertLayer(layer, thematicName);
+          Result insertLayer = layerService.insertLayer(layer);
           if (insertLayer.getCode() == 0) {
+            Layer newlayer = (Layer) insertLayer.getData();
+            List features1 = getFeatures(features, type, newlayer);
             Result result = layerService
-                .insertFeatures(thematicName, layerName, storeName, featureList);
+                .insertFeatures(layerName, type, features1);
             if (result.getCode() == 0) {
-              return ResultUtil.success();
+              Layer newLayer = layerService.findLayerByLayerId(newlayer.getLayerId());
+              return ResultUtil.success(newLayer);
             } else {
               logger.warn("警告:" + result.getMsg());
               return ResultUtil.error(1, result.getMsg());
@@ -148,35 +104,66 @@ public class LayerController {
       logger.warn("图层参数为null:" + jsonObject);
       return ResultUtil.error(2, "jsonObject为空");
     }
-
   }
 
   @RequestMapping("/deletelayer")
   @ResponseBody
-  public Result deleteLayer(@RequestBody JSONObject jsonObject) {
-    logger.info("deleteLayer::jsonObject = [{}]", jsonObject);
-    if (jsonObject != null && StringUtils.isNotBlank(jsonObject.getString("layerName"))
-        && StringUtils.isNotBlank(jsonObject.getString("thematicName"))
-        && StringUtils.isNotBlank(jsonObject.getString("storeId"))
-        && StringUtils.isNotBlank(jsonObject.getString("storeName"))
+  public Result deleteLayer(@RequestBody JSONArray jsonArray) {
+    logger.info("deleteLayer::jsonArray = [{}]",jsonArray);
+    if (jsonArray != null && jsonArray.size() > 0
     ) {
-      String layerName = jsonObject.getString("layerName");
-      String thematicName = jsonObject.getString("thematicName");
-      String storeId = jsonObject.getString("storeId");
-      String storeName = jsonObject.getString("storeName");
-      return layerService.deleteLayer(layerName, thematicName, storeId, storeName);
+      List<Layer> layers = JSON.parseArray(jsonArray.toJSONString(), Layer.class);
+      return layerService.deleteLayer(layers);
     }
-    logger.error("deleteLayer::jsonObject = [{}]", jsonObject + "参数为null");
+    logger.error("deleteLayer::jsonObject = [{}]", jsonArray + "参数为null");
     return ResultUtil.error("参数为null");
   }
 
-  @RequestMapping("/findLayerCountByLayerName")
+
+  @RequestMapping("/deletefeature")
   @ResponseBody
-  public Result findLayerCountByLayerName(@RequestParam String workspace, String layerName) {
-    logger.info("findLayerCountByLayerName::workspace = [{}], layerName = [{}]", workspace,
-        layerName);
-    if (StringUtils.isNotBlank(workspace) && StringUtils.isNotBlank(layerName)) {
-      return layerService.findLayerCountByUsernameAndLayerName(workspace, layerName);
+  public Result deleteFeature(@RequestBody JSONObject jsonObject) {
+    logger.info("deleteFeature::jsonObject = [{}]", jsonObject);
+    if (jsonObject != null && jsonObject.getJSONArray("features").size() > 0 && StringUtils
+        .isNotBlank(jsonObject.getString("type"))) {
+      String type = jsonObject.getString("type");
+      if ("point".equals(type.toLowerCase())) {
+        List<Point> points = JSON.parseArray(jsonObject.getJSONArray("features").toJSONString(), Point.class);
+        Boolean aBoolean = layerService.deleteFeature(points, type);
+        if (aBoolean) {
+          return ResultUtil.success();
+        }
+      }
+      if ("linestring".equals(type.toLowerCase())) {
+        List<LineString> lineStrings = JSON
+            .parseArray(jsonObject.getJSONArray("features").toJSONString(), LineString.class);
+        Boolean aBoolean = layerService.deleteFeature(lineStrings, type);
+        if (aBoolean) {
+          return ResultUtil.success();
+        }
+      }
+      if ("polygon".equals(type.toLowerCase())) {
+        List<Polygon> polygons = JSON.parseArray(jsonObject.getJSONArray("features").toJSONString(), Polygon.class);
+        Boolean aBoolean = layerService.deleteFeature(polygons, type);
+        if (aBoolean) {
+          return ResultUtil.success();
+        }
+      }
+    }
+    return ResultUtil.error(4, "参数为null");
+  }
+
+  @RequestMapping("/findlayerbyuseridlayername")
+  @ResponseBody
+  public Result findLayerCountByLayerName(@RequestParam String userId, String layerName) {
+    logger.info("findLayerCountByLayerName::userId = [{}], layerName = [{}]", userId, layerName);
+    if (StringUtils.isNotBlank(userId) && StringUtils.isNotBlank(layerName)) {
+      Layer layer = layerService.findLayer(userId, layerName);
+      if (layer != null) {
+        return ResultUtil.success(layer);
+      } else {
+        return ResultUtil.error(1, "图层不存在");
+      }
     } else {
       logger.warn("警告！传入参数存在null值");
       return ResultUtil.error(1, "传入参数存在null值");
@@ -204,26 +191,79 @@ public class LayerController {
     }
   }
 
-  private static List<Feature> getFeatures(JSONArray features) {
-    logger.info("getFeatures::features = [{}]", features);
-    List<Feature> featuresList = new ArrayList<>();
+  private final List getFeatures(JSONArray features, String type, Layer layer) {
+    logger.info("getFeatures::features = [{}]", features, type);
+    List<Point> pointList = new ArrayList<>();
+    List<LineString> lineStringList = new ArrayList<>();
+    List<Polygon> polygonList = new ArrayList<>();
+    Point point = null;
+    LineString lineString = null;
+    Polygon polygon = null;
     if (features.size() > 0) {
-      for (int i = 0; i < features.size(); i++) {
-        Feature feature = new Feature();
-        Properties newProperties = new Properties();
-        logger.info("geometry:" + features.getJSONObject(i).getJSONObject("geometry"));
-        feature.setGeometry(features.getJSONObject(i).getJSONObject("geometry"));
-        feature.setGeoId(i);
-        JSONObject properties = features.getJSONObject(i).getJSONObject("properties");
-        logger.info("properties" + properties.toString());
-        newProperties.setFclass(properties.getString("featureClass"));
-        newProperties.setName(properties.getString("name"));
-        feature.setProperties(newProperties);
-        logger.info("getFeatures::features = [{}]", feature);
-        featuresList.add(feature);
-        logger.info("getFeatures::featuresList = [{}]", featuresList);
+      if ("point".equals(type.toLowerCase())) {
+        List<Point> deletePoint=new ArrayList<>();
+        for (int i = 0; i < features.size(); i++) {
+          point = JSON.parseObject(features.getJSONObject(i).toString(), Point.class);
+          point.setLayer(layer);
+          point.setInsertTime(new Date());
+          point.setUpdateTime(new Date());
+          if (point.getFeatureId()!=null){
+            deletePoint.add(point);
+            logger.info("deletePoint.add(point)::"+deletePoint);
+          }
+          pointList.add(point);
+          logger.info("pointList.add(point)::"+pointList);
+        }
+        if (deletePoint.size()>0){
+          //删除已存在point元素
+          Boolean point1 = layerService.deleteFeature(deletePoint, "point");
+          logger.info("layerService.deleteFeature(deletePoint, \"point\")::"+point1);
+        }
+        return pointList;
       }
-      return featuresList;
+      if ("linestring".equals(type.toLowerCase())) {
+        List<LineString> deleteLineString =new ArrayList<>();
+        for (int i = 0; i < features.size(); i++) {
+          lineString = JSON.parseObject(features.getJSONObject(i).toString(), LineString.class);
+          lineString.setLayer(layer);
+          lineString.setInsertTime(new Date());
+          lineString.setUpdateTime(new Date());
+          if (lineString.getFeatureId()!=null){
+            deleteLineString.add(lineString);
+            logger.info("deleteLineString.add(lineString)"+deleteLineString);
+          }
+          lineStringList.add(lineString);
+          logger.info("lineStringList.add(lineString)::"+lineStringList);
+        }
+        if (deleteLineString.size()>0){
+          Boolean linestring = layerService.deleteFeature(deleteLineString, "linestring");
+          logger.info("layerService.deleteFeature(deleteLineString, \"linestring\")::"+linestring);
+        }
+        return lineStringList;
+      }
+      if ("polygon".equals(type.toLowerCase())) {
+        List<Polygon> deletePolygon=new ArrayList<>();
+        for (int i = 0; i < features.size(); i++) {
+          polygon = JSON.parseObject(features.getJSONObject(i).toString(), Polygon.class);
+          polygon.setLayer(layer);
+          polygon.setInsertTime(new Date());
+          polygon.setUpdateTime(new Date());
+          if (polygon.getFeatureId()!=null){
+            deletePolygon.add(polygon);
+            logger.info("deletePolygon.add(polygon)::"+deletePolygon);
+          }
+          polygonList.add(polygon);
+          logger.info("polygonList.add(polygon)::"+polygonList);
+        }
+        if (deletePolygon.size()>0){
+          Boolean polygon1 = layerService.deleteFeature(deletePolygon, "polygon");
+          logger.info("layerService.deleteFeature(deletePolygon, polygon)::"+polygon1);
+        }
+        return polygonList;
+      } else {
+        logger.error("type异常", type);
+        return null;
+      }
     } else {
       logger.error("features为null", features);
       return null;
@@ -248,24 +288,13 @@ public class LayerController {
   @ResponseBody
   public Result updateLayer(@RequestBody JSONObject jsonObject) {
     logger.info("updateLayer::jsonObject = [{}]", jsonObject);
-    if (jsonObject != null && StringUtils.isNotBlank(jsonObject.getString("thematicName"))
-        && StringUtils.isNotBlank(jsonObject.getString("thematicNameZH"))
-        && StringUtils.isNotBlank(jsonObject.getString("thematicId"))
+    if (jsonObject != null
         && StringUtils.isNotBlank(jsonObject.getString("layerNameZH"))
         && StringUtils.isNotBlank(jsonObject.getString("security"))
         && StringUtils.isNotBlank(jsonObject.getString("userId"))
-        && StringUtils.isNotBlank(jsonObject.getString("storeId"))
         && StringUtils.isNotBlank(jsonObject.getString("layerId"))
     ) {
-      Thematic thematic = new Thematic();
-      Store store = new Store();
-      store.setStoreId(jsonObject.getString("storeId"));
-      thematic.setThematicId(jsonObject.getString("thematicId"));
-      thematic.setThematicName(jsonObject.getString("thematicName"));
-      thematic.setThematicNameZH(jsonObject.getString("thematicNameZH"));
       Layer layer = JSON.parseObject(jsonObject.toJSONString(), Layer.class);
-      layer.setThematic(thematic);
-      layer.setStore(store);
       layer.setUpdateTime(new Date());
       Boolean updateLayer = layerService.updateLayer(layer);
       if (updateLayer) {
@@ -319,7 +348,17 @@ public class LayerController {
         return ResultUtil.success(jsonArray);
       }
     }
-    logger.error("参数为null",jsonObject);
-    return ResultUtil.error(1,"参数为null");
+    logger.error("参数为null", jsonObject);
+    return ResultUtil.error(1, "参数为null");
+  }
+  @RequestMapping("/findlayerbyuserid")
+  @ResponseBody
+  public Result findLayerByUserId(@RequestBody JSONObject jsonObject){
+    if (jsonObject!=null&&StringUtils.isNotBlank(jsonObject.getString("userId"))) {
+      List<Layer> layerList = layerService.findByUserId(jsonObject.getString("userId"));
+      JSONArray o = (JSONArray) JSONObject.toJSON(layerList);
+      return ResultUtil.success(layerList);
+    }
+    return ResultUtil.error(4,"参数为null");
   }
 }

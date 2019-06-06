@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 
 @Controller
-@MapperScan("cc.wanshan.demo.entity")
 @EnableTransactionManagement(proxyTargetClass = true)
 @RequestMapping("/role")
 public class RoleController {

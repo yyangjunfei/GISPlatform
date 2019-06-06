@@ -8,6 +8,8 @@ import cc.wanshan.gis.entity.drawlayer.Store;
 import cc.wanshan.gis.entity.thematic.FirstClassification;
 import cc.wanshan.gis.entity.thematic.Thematic;
 import cc.wanshan.gis.service.layer.LayerService;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
@@ -79,5 +81,19 @@ public class LayerTest {
     logger.info("findLayerByThematicIdNullUserId::");
     List<FirstClassification> layers = layerService
         .findLayerByThematicIdAndNullUserId("52ffd62e7c7311e9a07b20040ff72212");
+  }
+  @Test
+  public void findLayerByLayerId(){
+    logger.info("findLayerByLayerId::");
+    Layer layer = layerService.findLayerByLayerId("b3cb721282bb11e9b38720040ff72212");
+    JSONObject o = (JSONObject) JSONObject.toJSON(layer);
+    logger.info("findLayerByLayerId::"+o);
+  }
+  @Test
+  public void findByUserId(){
+    logger.info("findByUserId::");
+    List<Layer> layers = layerService.findByUserId("bd36ade480f411e99b8820040ff72212");
+    JSONArray o = (JSONArray) JSONObject.toJSON(layers);
+    logger.info("findLayerByLayerId::"+o);
   }
 }

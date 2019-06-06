@@ -13,10 +13,16 @@ import cc.wanshan.gis.service.thematicuser.ThematicUserService;
 import cc.wanshan.gis.service.user.UserService;
 import cc.wanshan.gis.utils.ResultUtil;
 import com.alibaba.fastjson.JSONObject;
+import java.util.Collection;
+import java.util.HashMap;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
-import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -29,7 +35,6 @@ import java.net.URISyntaxException;
 import java.util.Date;
 
 @Controller
-@MapperScan("cc.wanshan.demo.entity")
 @EnableTransactionManagement(proxyTargetClass = true)
 @RequestMapping("/user")
 public class UserController {
@@ -101,7 +106,7 @@ public class UserController {
               store.setUpdateTime(new Date());
               Boolean insertStore = storeServiceImpl.insertStore(store);
               logger.info("insertStore::" + insertStore);
-              if (insertStore){
+              if (insertStore) {
                 return ResultUtil.success();
               }
             }
@@ -278,5 +283,31 @@ public class UserController {
       logger.warn("json为null");
       return ResultUtil.error(1, "json为null");
     }
+  }
+
+  @RequestMapping(value = "/finduser")
+  @ResponseBody
+  public Result findUser(HttpServletRequest request) {
+    logger.info("user::request = [{}]", request);
+    Cookie[] cookies = request.getCookies();
+    for (Cookie cookie : cookies) {
+      String value = cookie.getValue();
+      logger.info("cookie" + value);
+    }
+    SecurityContextImpl securityContextImpl = (SecurityContextImpl) request
+        .getSession().getAttribute("SPRING_SECURITY_CONTEXT");
+    logger.info("securityContextImpl" + securityContextImpl.toString());
+    String username = securityContextImpl.getAuthentication().getName();
+    User user = userServiceImpl.findUserByUsername(username);
+    HashMap<String, String> map = new HashMap<>();
+    Authentication authentication = securityContextImpl.getAuthentication();
+    Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+    for (GrantedAuthority authority : authorities) {
+      String authority1 = authority.getAuthority();
+      map.put("role", authority1);
+    }
+    map.put("username", username);
+    map.put("userId", user.getUserId());
+    return ResultUtil.success(map);
   }
 }
