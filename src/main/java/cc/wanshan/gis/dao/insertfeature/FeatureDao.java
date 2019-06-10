@@ -13,7 +13,7 @@ import java.util.List;
  * @Date 16:52 2019/2/27
 
  **/
-public interface InsertFeatureDao {
+public interface FeatureDao {
     /**  图层实体类
      * @Author Li Cheng
      * @Description 图层实体类
@@ -22,5 +22,11 @@ public interface InsertFeatureDao {
      * @return java.lang.Boolean
      **/
     public Result insertFeatures(List<Feature> features, String tableName, String schema);
-
+    /**
+     * description: 根据图层id查询相关元素
+     *
+     * @param layerId 图层Id
+     * @return java.util.List<cc.wanshan.gis.entity.drawlayer.Feature>
+     **/
+    public List<Feature> findFeatureByLayerId(String layerId);
 }

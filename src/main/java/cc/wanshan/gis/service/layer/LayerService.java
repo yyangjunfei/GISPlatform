@@ -4,7 +4,6 @@ import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.entity.drawlayer.Feature;
 import cc.wanshan.gis.entity.drawlayer.Layer;
 import cc.wanshan.gis.entity.thematic.FirstClassification;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -24,7 +23,7 @@ public interface LayerService {
      * @Param layer图层实体类
      * @return cc.wanshan.demo.entity.Result
      **/
-    public Result insertLayer(Layer layer, String workspace);
+    public Result insertLayer(Layer layer);
     /**
      * @Author Li Cheng
      * @Description 根据分装的layer实体类的layerId和storeId删除对应的layer
@@ -32,7 +31,7 @@ public interface LayerService {
      * @Param [jsonObject] 封装了layer信息的json对象
      * @return cc.wanshan.demo.entity.Result
      **/
-    public Result deleteLayer(String layerName,String thematicName,String storeId,String storeName);
+    public Result deleteLayer(List<Layer> layers);
     /**
      * @Author Li Cheng
      * @Description 查找图层是否为已发布图层
@@ -48,15 +47,7 @@ public interface LayerService {
      * @Param [object]
      * @return void
      **/
-    public Result insertFeatures(String thematicName,String layerName, String storeName,List<Feature> features) throws IOException;
-    /**
-     * description:
-     *
-     * @param username
-     * @param layerName
-     * @return
-     */
-    public Result findLayerCountByUsernameAndLayerName(String username, String layerName);
+    public Result insertFeatures(String layerName, String type,List<Feature> features) throws IOException;
     /**
      * description: 根据thematicId和nullUserId查询layer
      *
@@ -78,4 +69,27 @@ public interface LayerService {
      * @return cc.wanshan.gis.entity.drawlayer.Layer
      **/
     public Layer findLayerByLayerId(String layerId);
+    /**
+     * description: 根据用户名和图层名查询图层是否存在
+     *
+     * @param userId 用户名
+    	* @param layerName 图层名
+     * @return java.lang.Boolean
+     **/
+    public Layer findLayer(String userId,String layerName);
+    /**
+     * description: 根据featuresId批量删除feature
+     *
+     * @param features 元素集合
+    	* @param type 元素类型
+     * @return int
+     **/
+    public Boolean deleteFeature(List features,String type);
+    /**
+     * description: 根据用户Id查询所有图层
+     *
+     * @param userId 用户Id
+     * @return java.util.List<cc.wanshan.gis.entity.drawlayer.Layer>
+     **/
+    public List<Layer> findByUserId(String userId);
 }

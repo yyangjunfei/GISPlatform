@@ -1,22 +1,27 @@
 package cc.wanshan.gis.service.layer.impl;
 
 import cc.wanshan.gis.dao.LayerDao;
-import cc.wanshan.gis.dao.createschema.impl.CreateSchemaDaoImpl;
+import cc.wanshan.gis.dao.LineStringDao;
+import cc.wanshan.gis.dao.PointDao;
+import cc.wanshan.gis.dao.PolygonDao;
 import cc.wanshan.gis.dao.cretelayerstable.CreatLayerTableDao;
 import cc.wanshan.gis.dao.droplayer.DropLayerDao;
-import cc.wanshan.gis.dao.insertfeature.InsertFeatureDao;
+import cc.wanshan.gis.dao.insertfeature.FeatureDao;
 import cc.wanshan.gis.dao.searchlayertable.SearchLayerTableDao;
-import cc.wanshan.gis.dao.searchschema.impl.SearchSchemaDaoImpl;
 import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.entity.drawlayer.Feature;
 import cc.wanshan.gis.entity.drawlayer.Layer;
+import cc.wanshan.gis.entity.drawlayer.LineString;
 import cc.wanshan.gis.entity.thematic.FirstClassification;
-import cc.wanshan.gis.service.geoserver.GeoServerService;
+import cc.wanshan.gis.service.geoserver.GeoserverService;
 import cc.wanshan.gis.service.layer.LayerService;
 import cc.wanshan.gis.utils.GeoServerUtils;
 import cc.wanshan.gis.utils.ResultUtil;
 import io.micrometer.core.instrument.util.StringUtils;
 import it.geosolutions.geoserver.rest.decoder.RESTLayer;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.commons.math3.geometry.euclidean.twod.PolygonsSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -29,77 +34,106 @@ import java.util.List;
 @Service(value = "layerServiceImpl")
 public class LayerServiceImpl implements LayerService {
 
-    private static final Logger logger = LoggerFactory.getLogger(LayerServiceImpl.class);
-    @Resource
-    private LayerDao layerDao;
-    @Resource
-    private DropLayerDao dropLayerDao;
-    @Resource
-    private CreateSchemaDaoImpl createSchemaDao;
-    @Resource
-    private SearchSchemaDaoImpl searchSchemaDao;
-    @Resource(name = "searchLayerTableDaoImpl")
-    private SearchLayerTableDao searchLayerTableDao;
-    @Resource(name = "createLayerTableDaoImpl")
-    private CreatLayerTableDao createLayerTableDao;
-    @Resource(name = "insertLayerDaoImpl")
-    private InsertFeatureDao insertFeatureDao;
-    @Resource(name = "geoServerServiceImpl")
-    private GeoServerService geoServerServiceImpl;
+  private static final Logger logger = LoggerFactory.getLogger(LayerServiceImpl.class);
+  private static final String POINT = "point";
+  private static final String LINESTRING = "linestring";
+  private static final String POLYGON = "polygon";
+  @Resource
+  private LayerDao layerDao;
+  @Resource
+  private DropLayerDao dropLayerDao;
+  @Resource
+  private PointDao pointDao;
+  @Resource
+  private LineStringDao lineStringDao;
+  @Resource
+  private PolygonDao polygonDao;
+  @Resource
+  private GeoserverUtils geoserverUtils;
+  @Resource(name = "searchLayerTableDaoImpl")
+  private SearchLayerTableDao searchLayerTableDao;
+  @Resource(name = "createLayerTableDaoImpl")
+  private CreatLayerTableDao createLayerTableDao;
+  @Resource(name = "insertLayerDaoImpl")
+  private FeatureDao featureDao;
+  @Resource(name = "geoserverServiceImpl")
+  private GeoserverService geoserverServiceImpl;
 
-    @Override
-    @Transactional
-    public Result insertLayer(Layer layer, String workspace) {
-        logger.info("insertLayer::layer = [{}], workspace = [{}]", layer, workspace);
-        //在layer中插入新记录
-        int i = layerDao.insertLayer(layer);
-        if (i == 1) {
-            //在对应Thematic中创建对应layer表
-            Result result = newLayer(workspace, layer.getLayerName(), layer.getType(), layer.getEpsg());
-            if (result.getCode() == 0) {
-                return ResultUtil.success(layer);
-            } else {
-                logger.warn("新建图层失败", result.toString());
-                return result;
-            }
-        } else {
-            logger.warn("保存出错" + layer.toString());
-            return ResultUtil.error(2, "保存出错");
-        }
+  @Override
+  @Transactional
+  public Result insertLayer(Layer layer) {
+    logger.info("insertLayer::layer = [{}], workspace = [{}]", layer);
+    //在layer中插入新记录
+    int i = layerDao.insertLayer(layer);
+    if (i == 1) {
+      return ResultUtil.success(layer);
+    } else {
+      logger.warn("保存出错" + layer.toString());
+      return ResultUtil.error(2, "保存出错");
     }
 
-    @Override
-    @Transactional
-    public Result deleteLayer(String layerName, String thematicName, String storeId,
-                              String storeName) {
-        logger.info(
-                "deleteLayer::layerName = [{}], thematicName = [{}], storeId = [{}], StoreName = [{}]",
-                layerName, thematicName, storeId, storeName);
-        Boolean searchLayer = geoServerServiceImpl.searchLayer(thematicName, layerName);
-        if (searchLayer) {
-            Boolean deleteLayer = geoServerServiceImpl.deleteLayer(thematicName, storeName, layerName);
-            if (deleteLayer) {
-                Result result = dropLayerDao.dropLayer(thematicName, layerName);
-                if (result.getCode() == 0) {
-                    int i = layerDao.deleteLayerByLayerNameAndStoreId(layerName, storeId);
-                    if (i == 1) {
-                        return ResultUtil.success();
-                    } else {
-                        logger.warn("删除layer记录失败" + layerName);
-                        return ResultUtil.error(1, "异常操作");
-                    }
-                } else {
-                    logger.error("删除图层对应表失败", layerName, thematicName, storeId, storeName);
-                    return ResultUtil.error(1, "异常操作");
-                }
-            } else {
-                logger.warn("删除geoserver图层删除失败");
-                return ResultUtil.error(1, "异常操作");
-            }
+  @Override
+  @Transactional
+  public Result deleteLayer(List<Layer> layers) {
+    logger.info("deleteLayer::layers = [{}]", layers);
+    List<Layer> pointLayer = new ArrayList<>();
+    List<Layer> lineStringLayer = new ArrayList<>();
+    List<Layer> polygonLayer = new ArrayList<>();
+    boolean point = false;
+    boolean lineString = false;
+    boolean polygon = false;
+    for (int i = 0; i < layers.size(); i++) {
+      if (POINT.equals(layers.get(i).getType().toLowerCase())) {
+        pointLayer.add(layers.get(i));
+      } else if (LINESTRING.equals(layers.get(i).getType().toLowerCase())) {
+        lineStringLayer.add(layers.get(i));
+      } else if (POLYGON.equals(layers.get(i).getType().toLowerCase())) {
+        polygonLayer.add(layers.get(i));
+      }
+    }
+    if (pointLayer.size() > 0) {
+      int i = pointDao.deleteAllByLayerId(pointLayer);
+      if (i >= 0) {
+        int deletePoint = layerDao.deleteAll(pointLayer);
+        if (pointLayer.size() != deletePoint) {
+
         } else {
-            logger.error("geoserver未找到当前图层", layerName, thematicName, storeId, storeName);
-            return ResultUtil.error(1, "异常操作");
+          point = true;
         }
+      }
+    } else {
+      point = true;
+    }
+    if (lineStringLayer.size() > 0) {
+      int i = lineStringDao.deleteAllByLayerId(lineStringLayer);
+      if (i >= 0) {
+        int deleteLineString = layerDao.deleteAll(lineStringLayer);
+        if (lineStringLayer.size() != deleteLineString) {
+
+        } else {
+          lineString = true;
+        }
+      }
+    } else {
+      lineString = true;
+    }
+    if (polygonLayer.size() > 0) {
+      int i = polygonDao.deleteAllByLayerId(polygonLayer);
+      if (i >= 0) {
+        int deletePolygon = layerDao.deleteAll(polygonLayer);
+        if (polygonLayer.size() != deletePolygon) {
+
+        } else {
+          polygon = true;
+        }
+      }
+    } else {
+      polygon = true;
+    }
+    if (point && lineString && polygon) {
+      return ResultUtil.success();
+    } else {
+      return ResultUtil.error(1, "删除失败");
     }
 
     @Override
@@ -133,41 +167,33 @@ public class LayerServiceImpl implements LayerService {
         }
     }
 
-    @Override
-    @Transactional
-    public Result insertFeatures(String thematicName, String layerName, String storeName,
-                                 List<Feature> features)
-            throws IOException {
-        if (features != null && StringUtils.isNotBlank(layerName) && StringUtils
-                .isNotBlank(thematicName)) {
-            Result insertLayers = insertFeatureDao.insertFeatures(features, layerName, thematicName);
-            if (insertLayers.getCode() == 0) {
-                return publishLayer(thematicName, storeName, layerName);
-            } else {
-                logger.warn(layerName + "插入失败");
-                return insertLayers;
-            }
+  @Override
+  @Transactional
+  public Result insertFeatures(String layerName, String type, List features)
+      throws IOException {
+    logger.info("insertFeatures::layerName = [{}], type = [{}], features = [{}]", layerName, type,
+        features);
+    if (features != null && StringUtils.isNotBlank(layerName) && StringUtils.isNotBlank(type)) {
+      if (POINT.equals(type.toLowerCase())) {
+        int i = pointDao.insertAllPoint(features);
+        if (i > 0) {
+          return ResultUtil.success();
         }
-        logger.warn("参数为空");
-        return ResultUtil.error(2, "参数为空");
+      } else if (LINESTRING.equals(type.toLowerCase())) {
+        int i = lineStringDao.insertAllLineString(features);
+        if (i > 0) {
+          return ResultUtil.success();
+        }
+      } else if (POLYGON.equals(type.toLowerCase())) {
+        int i = polygonDao.insertAllPolygon(features);
+        if (i > 0) {
+          return ResultUtil.success();
+        }
+      }
     }
 
-    @Override
-    public Result findLayerCountByUsernameAndLayerName(String username, String layerName) {
-        logger.info("findLayerCountByUsernameAndLayerName::username = [{}], layerName = [{}]", username,
-                layerName);
-        int layerCount = layerDao.findLayerCountByUsernameAndLayerName(username, layerName);
-        Result result = searchLayerTableDao.searchLayer(layerName, username);
-        if (layerCount > 0 || result.getCode() == 0) {
-            logger.warn(layerName + "图层名已存在，请重新命名");
-            return ResultUtil.error(1, "图层名已存在，请重新命名");
-        } else {
-            return ResultUtil.success();
-        }
-    }
-
-    @Override
-    public List<FirstClassification> findLayerByThematicIdAndNullUserId(String thematicId) {
+  @Override
+  public List<FirstClassification> findLayerByThematicIdAndNullUserId(String thematicId) {
     /*logger.info("findLayerByThematicIdAndNullUserId::thematicId = [{}]", thematicId);
     List<FirstClassification> firstClassifications = new ArrayList<>();
     List<Layer> layers = layerDao
@@ -206,16 +232,15 @@ public class LayerServiceImpl implements LayerService {
         return null;
     }
 
-    @Override
-    public Boolean updateLayer(Layer layer) {
-        logger.info("updateLayer::layer = [{}]", layer);
-        int i = layerDao.updateLayer(layer);
-        if (i > 0) {
-            return true;
-        } else {
-            logger.error("更新失败" + i);
-            return false;
-        }
+  @Override
+  public Boolean updateLayer(Layer layer) {
+    logger.info("updateLayer::layer = [{}]", layer);
+    int i = layerDao.updateLayer(layer);
+    if (i > 0) {
+      return true;
+    } else {
+      logger.error("更新失败" + i);
+      return false;
     }
 
     @Override
@@ -223,20 +248,59 @@ public class LayerServiceImpl implements LayerService {
         return layerDao.findLayerByLayerId(layerId);
     }
 
-    private Result publishLayer(String workspace, String store, String layerName) {
-        logger.info("publishLayer::workspace = [{}], store = [{}], layerName = [{}]", workspace, store,
-                layerName);
-        RESTLayer layer = GeoServerUtils.manager.getReader().getLayer(workspace, layerName);
-        if (layer == null) {
-            Result result = geoServerServiceImpl.publishLayer(workspace, store, layerName);
-            if (result.getCode() == 0 || result.getCode() == 1) {
-                return ResultUtil.success();
-            } else {
-                logger.warn(layerName + "发布失败");
-                return result;
-            }
-        } else {
-            return ResultUtil.success();
-        }
+  @Override
+  public Layer findLayer(String userId, String layerName) {
+    logger.info("findLayer::userId = [{}], layerName = [{}]", userId, layerName);
+    return layerDao.findLayerByUserIdAndLayerName(userId, layerName);
+  }
+
+  @Override
+  public Boolean deleteFeature(List features, String type) {
+    logger.info("deleteFeature::features = [{}], type = [{}]", features, type);
+    if (POINT.equals(type.toLowerCase())) {
+      int i = pointDao.deleteAll(features);
+      if (i > 0) {
+        return true;
+      }
+    }
+    if (LINESTRING.equals(type.toLowerCase())) {
+      int i = lineStringDao.deleteAll(features);
+      if (i > 0) {
+        return true;
+      }
+    }
+    if (POLYGON.equals(type.toLowerCase())) {
+      int i = polygonDao.deleteAll(features);
+      if (i > 0) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  @Override
+  public List<Layer> findByUserId(String userId) {
+    logger.info("findByUserId::userId = [{}]", userId);
+    List<Layer> layers = layerDao.findByUserId(userId);
+    if (layers.size() > 0) {
+      return layers;
+    }
+    return null;
+  }
+
+  private Result publishLayer(String workspace, String store, String layerName) {
+    logger.info("publishLayer::workspace = [{}], store = [{}], layerName = [{}]", workspace, store,
+        layerName);
+    RESTLayer layer = GeoserverUtils.manager.getReader().getLayer(workspace, layerName);
+    if (layer == null) {
+      Result result = geoserverUtils.publishLayer(workspace, store, layerName);
+      if (result.getCode() == 0 || result.getCode() == 1) {
+        return ResultUtil.success();
+      } else {
+        logger.warn(layerName + "发布失败");
+        return result;
+      }
+    } else {
+      return ResultUtil.success();
     }
 }

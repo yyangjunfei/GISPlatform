@@ -3,7 +3,6 @@ package cc.wanshan.gis;
 import com.bedatadriven.jackson.datatype.jts.JtsModule;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vividsolutions.jts.io.WKTReader;
-import java.io.Serializable;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;

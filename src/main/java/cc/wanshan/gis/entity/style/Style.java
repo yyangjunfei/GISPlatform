@@ -1,6 +1,7 @@
 package cc.wanshan.gis.entity.style;
 
-import cc.wanshan.gis.entity.drawlayer.Layer;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.List;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
@@ -12,6 +13,8 @@ import java.util.Date;
 
 
 @Data
+@JsonIgnoreProperties(value = {"handler"})//排除mybatis懒加载json序列化中的异常
+@JsonInclude(JsonInclude.Include.NON_NULL)	//注解控制null不序列化
 public class Style implements Serializable {
     private static final long serialVersionUID = 1L;
     @NotBlank(message = "风格id不为null")

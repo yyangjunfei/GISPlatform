@@ -1,3 +1,4 @@
+/*
 package cc.wanshan.gis.controller.user;
 
 
@@ -10,7 +11,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -47,3 +47,4 @@ public class MapController {
         return ResultUtil.success(map);
     }
 }
+*/

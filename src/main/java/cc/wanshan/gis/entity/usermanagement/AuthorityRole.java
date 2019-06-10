@@ -1,5 +1,7 @@
 package cc.wanshan.gis.entity.usermanagement;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
@@ -13,6 +15,8 @@ import java.io.Serializable;
  * @Date 14:46 2019/5/18
  **/
 @Data
+@JsonIgnoreProperties(value = {"handler"})//排除mybatis懒加载json序列化中的异常
+@JsonInclude(JsonInclude.Include.NON_NULL)	//注解控制null不序列化
 public class AuthorityRole implements Serializable {
     private static final long serialVersionUID = 1L;
     @NotBlank(message = "权限角色中间表id不为null")
