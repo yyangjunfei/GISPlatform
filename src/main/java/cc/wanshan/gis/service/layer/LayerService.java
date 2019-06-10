@@ -92,4 +92,11 @@ public interface LayerService {
      * @return java.util.List<cc.wanshan.gis.entity.drawlayer.Layer>
      **/
     public List<Layer> findByUserId(String userId);
+    /**
+     * description: 保存图层
+     *
+     * @param layer 图层对象
+     * @return java.lang.Boolean
+     **/
+    public Result saveLayer(Layer layer);
 }
