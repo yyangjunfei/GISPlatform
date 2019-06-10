@@ -9,9 +9,10 @@ import cc.wanshan.gis.dao.droplayer.DropLayerDao;
 import cc.wanshan.gis.dao.insertfeature.FeatureDao;
 import cc.wanshan.gis.dao.searchlayertable.SearchLayerTableDao;
 import cc.wanshan.gis.entity.Result;
-import cc.wanshan.gis.entity.drawlayer.Feature;
 import cc.wanshan.gis.entity.drawlayer.Layer;
 import cc.wanshan.gis.entity.drawlayer.LineString;
+import cc.wanshan.gis.entity.drawlayer.Point;
+import cc.wanshan.gis.entity.drawlayer.Polygon;
 import cc.wanshan.gis.entity.thematic.FirstClassification;
 import cc.wanshan.gis.service.geoserver.GeoserverService;
 import cc.wanshan.gis.service.layer.LayerService;
@@ -20,8 +21,8 @@ import cc.wanshan.gis.utils.ResultUtil;
 import io.micrometer.core.instrument.util.StringUtils;
 import it.geosolutions.geoserver.rest.decoder.RESTLayer;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import org.apache.commons.math3.geometry.euclidean.twod.PolygonsSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -169,8 +170,7 @@ public class LayerServiceImpl implements LayerService {
 
   @Override
   @Transactional
-  public Result insertFeatures(String layerName, String type, List features)
-      throws IOException {
+  public Result insertFeatures(String layerName, String type, List features) {
     logger.info("insertFeatures::layerName = [{}], type = [{}], features = [{}]", layerName, type,
         features);
     if (features != null && StringUtils.isNotBlank(layerName) && StringUtils.isNotBlank(type)) {
@@ -286,6 +286,123 @@ public class LayerServiceImpl implements LayerService {
       return layers;
     }
     return null;
+  }
+
+  @Override
+  public Result saveLayer(Layer layer) {
+    Layer newLayer = new Layer();
+    logger.info("saveLayer::layer = [{}]", layer);
+    if (layer != null) {
+      logger.info("saveLayer::layer值为：" + layer.toString());
+      String layerName = layer.getLayerName();
+      String userId = layer.getUserId();
+      String type = layer.getType();
+      layer.setPublishTime(new Date());
+      layer.setUpdateTime(new Date());
+      layer.setUploadTime(new Date());
+      List<Point> pointList = layer.getPointList();
+      List<LineString> lineStringList = layer.getLineStringList();
+      List<Polygon> polygonList = layer.getPolygonList();
+      Layer searchLayer = findLayer(userId, layerName);
+      if (pointList != null && pointList.size() > 0
+          || lineStringList != null && lineStringList.size() > 0
+          || polygonList != null && polygonList.size() > 0) {
+        if (searchLayer != null) {
+          newLayer.setLayerId(searchLayer.getLayerId());
+          Result result = null;
+          if (pointList != null && pointList.size() > 0) {
+            Boolean point = deleteFeature(pointList, "point");
+            logger.info("saveLayer::layer = [{}]" + point);
+            for (Point point1 : pointList) {
+              point1.setLayer(newLayer);
+              point1.setUpdateTime(new Date());
+              point1.setInsertTime(new Date());
+            }
+            result = insertFeatures(layerName, type, pointList);
+          }
+          if (lineStringList != null && lineStringList.size() > 0) {
+            Boolean lineString = deleteFeature(lineStringList, "linestring");
+            logger.info("saveLayer::layer = [{}]" + lineString);
+            for (LineString string : lineStringList) {
+              string.setLayer(newLayer);
+              string.setInsertTime(new Date());
+              string.setUpdateTime(new Date());
+            }
+            result = insertFeatures(layerName, type, lineStringList);
+          }
+          if (polygonList != null && polygonList.size() > 0) {
+            Boolean polygon = deleteFeature(polygonList, "polygon");
+            logger.info("saveLayer::layer = [{}]" + polygon);
+            for (Polygon polygon1 : polygonList) {
+              polygon1.setLayer(newLayer);
+              polygon1.setInsertTime(new Date());
+              polygon1.setUpdateTime(new Date());
+            }
+            result = insertFeatures(layerName, type, polygonList);
+          }
+          assert result != null;
+          if (result.getCode() == 0) {
+            Layer newLayer1 = findLayerByLayerId(searchLayer.getLayerId());
+            return ResultUtil.success(newLayer1);
+          } else {
+            logger.warn("警告:" + result.getMsg());
+            return ResultUtil.error(1, result.getMsg());
+          }
+        } else {
+          Result insertLayer = insertLayer(layer);
+          if (insertLayer.getCode() == 0) {
+            Layer newlayer = (Layer) insertLayer.getData();
+            Result result = null;
+            if (pointList != null && pointList.size() > 0) {
+              Boolean point = deleteFeature(pointList, "point");
+              logger.info("saveLayer::layer = [{}]" + point);
+              for (Point point1 : pointList) {
+                point1.setLayer(newlayer);
+                point1.setUpdateTime(new Date());
+                point1.setInsertTime(new Date());
+              }
+              result = insertFeatures(layerName, type, pointList);
+            }
+            if (lineStringList != null && lineStringList.size() > 0) {
+              Boolean lineString = deleteFeature(lineStringList, "linestring");
+              logger.info("saveLayer::layer = [{}]" + lineString);
+              for (LineString lineString1 : lineStringList) {
+                lineString1.setLayer(newlayer);
+                lineString1.setUpdateTime(new Date());
+                lineString1.setInsertTime(new Date());
+              }
+              result = insertFeatures(layerName, type, lineStringList);
+            }
+            if (polygonList != null && polygonList.size() > 0) {
+              Boolean polygon = deleteFeature(polygonList, "polygon");
+              logger.info("saveLayer::layer = [{}]" + polygon);
+              for (Polygon polygon1 : polygonList) {
+                polygon1.setLayer(newlayer);
+                polygon1.setUpdateTime(new Date());
+                polygon1.setInsertTime(new Date());
+              }
+              result = insertFeatures(layerName, type, polygonList);
+            }
+            assert result != null;
+            if (result.getCode() == 0) {
+              Layer newLayer1 = findLayerByLayerId(newlayer.getLayerId());
+              return ResultUtil.success(newLayer1);
+            } else {
+              logger.warn("警告:" + result.getMsg());
+              return ResultUtil.error(1, result.getMsg());
+            }
+          } else {
+            logger.warn("警告：saveLayer::jsonObject = [{}]", insertLayer.getMsg());
+            return insertLayer;
+          }
+        }
+      } else {
+        return ResultUtil.error(2, "要素为null");
+      }
+    } else {
+      logger.warn("图层参数为null:" + layer);
+      return ResultUtil.error(2, "jsonObject为空");
+    }
   }
 
   private Result publishLayer(String workspace, String store, String layerName) {
