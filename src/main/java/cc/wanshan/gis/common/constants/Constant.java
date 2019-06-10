@@ -6,7 +6,14 @@ public class Constant {
      * 类型
      */
     public static final String TYPE = "type";
-
+    /**
+     * 关键字
+     */
+    public static final String KEYWORD = "keyword";
+    /**
+     * 字符拆分
+     */
+    public static final String split = ",";
     /** 元数据类型 */
     /**
      * 矢量数据
@@ -58,4 +65,14 @@ public class Constant {
      * 几何集合
      */
     public static final String GEO_GEOMETRYCOLLECTION = "GeometryCollection";
+    /**
+     * 搜索包围形
+     */
+    public static final String SEARCH_RECTANGLE = "rectangle";
+    /**
+     * 搜索级别
+     */
+    public static final String SEARCH_LEVEL = "level";
+
+
 }

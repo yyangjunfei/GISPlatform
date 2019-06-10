@@ -5,7 +5,7 @@
         <id column="gid" jdbcType="INTEGER" property="gid"/>
         <result column="name" jdbcType="VARCHAR" property="name"/>
         <result column="geom" jdbcType="OTHER" property="geom"/>
-        <result column="boundary" jdbcType="VARCHAR" property="boundary"/>
+        <result column="centroid" jdbcType="VARCHAR" property="centroid"/>
         <result column="min_x" jdbcType="VARCHAR" property="minX"/>
         <result column="min_y" jdbcType="VARCHAR" property="minY"/>
         <result column="max_x" jdbcType="VARCHAR" property="maxX"/>
@@ -15,7 +15,7 @@
         <result column="rectangle" jdbcType="VARCHAR" property="rectangle"/>
     </resultMap>
     <sql id="Base_Column_List">
-    gid, name, geom, boundary, min_x, min_y, max_x, max_y, remarks, envelope, rectangle
+    gid, name, geom, centroid, min_x, min_y, max_x, max_y, remarks, envelope, rectangle
   </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -29,11 +29,11 @@
   </delete>
     <insert id="insert" parameterType="cc.wanshan.gis.entity.area.Province">
     insert into province (gid, name, geom, 
-      boundary, min_x, min_y, 
+      centroid, min_x, min_y,
       max_x, max_y, remarks, 
       envelope, rectangle)
     values (#{gid,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{geom,jdbcType=OTHER}, 
-      #{boundary,jdbcType=VARCHAR}, #{minX,jdbcType=VARCHAR}, #{minY,jdbcType=VARCHAR}, 
+      #{centroid,jdbcType=VARCHAR}, #{minX,jdbcType=VARCHAR}, #{minY,jdbcType=VARCHAR},
       #{maxX,jdbcType=VARCHAR}, #{maxY,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR}, 
       #{envelope,jdbcType=VARCHAR}, #{rectangle,jdbcType=VARCHAR})
   </insert>
@@ -49,8 +49,8 @@
             <if test="geom != null">
                 geom,
             </if>
-            <if test="boundary != null">
-                boundary,
+            <if test="centroid != null">
+                centroid,
             </if>
             <if test="minX != null">
                 min_x,
@@ -84,8 +84,8 @@
             <if test="geom != null">
                 #{geom,jdbcType=OTHER},
             </if>
-            <if test="boundary != null">
-                #{boundary,jdbcType=VARCHAR},
+            <if test="centroid != null">
+                #{centroid,jdbcType=VARCHAR},
             </if>
             <if test="minX != null">
                 #{minX,jdbcType=VARCHAR},
@@ -119,8 +119,8 @@
             <if test="geom != null">
                 geom = #{geom,jdbcType=OTHER},
             </if>
-            <if test="boundary != null">
-                boundary = #{boundary,jdbcType=VARCHAR},
+            <if test="centroid != null">
+                centroid = #{centroid,jdbcType=VARCHAR},
             </if>
             <if test="minX != null">
                 min_x = #{minX,jdbcType=VARCHAR},
@@ -150,7 +150,7 @@
     update province
     set name = #{name,jdbcType=VARCHAR},
       geom = #{geom,jdbcType=OTHER},
-      boundary = #{boundary,jdbcType=VARCHAR},
+      centroid = #{centroid,jdbcType=VARCHAR},
       min_x = #{minX,jdbcType=VARCHAR},
       min_y = #{minY,jdbcType=VARCHAR},
       max_x = #{maxX,jdbcType=VARCHAR},

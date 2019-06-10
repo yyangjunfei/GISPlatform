@@ -4,6 +4,8 @@ package cc.wanshan.gis.entity.drawlayer;
 import cc.wanshan.gis.entity.style.RuleName;
 import cc.wanshan.gis.entity.style.Style;
 import cc.wanshan.gis.entity.thematic.Thematic;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.List;
 import lombok.Data;
 import javax.validation.constraints.NotBlank;
@@ -14,6 +16,8 @@ import java.util.Date;
 import org.hibernate.validator.constraints.Length;
 
 @Data
+@JsonIgnoreProperties(value = {"handler"})//排除mybatis懒加载json序列化中的异常
+@JsonInclude(JsonInclude.Include.NON_NULL)	//注解控制null不序列化
 public class Layer implements Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -65,4 +69,7 @@ public class Layer implements Serializable {
   private Integer opacity;
   private String department;
   private List<RuleName> ruleNameList;
+  private List<Point> pointList;
+  private List<LineString> lineStringList;
+  private List<Polygon> polygonList;
 }

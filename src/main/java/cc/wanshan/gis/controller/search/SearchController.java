@@ -1,4 +1,3 @@
-/*
 package cc.wanshan.gis.controller.search;
 
 import cc.wanshan.gis.entity.Result;
@@ -41,5 +40,23 @@ public class SearchController {
         return searchService.searchAreaGeo(name);
     }
 
+    @ApiOperation(value = "查询POI", notes = "查询POI")
+    @GetMapping("/place")
+    public Result searchPlace(@RequestParam String jsonString) {
+
+        LOG.info("SearchController::searchPlace jsonString = [{}]", jsonString);
+
+        return searchService.searchPlace(jsonString);
+    }
+
+    @ApiOperation(value = "searchTest", notes = "searchTest")
+    @GetMapping("/test")
+    public Result searchTest() {
+
+        LOG.info("SearchController::searchTest");
+
+        return searchService.searchTest();
+    }
+
+
 }
-*/

@@ -259,4 +259,84 @@ CREATE TABLE public.tb_firstClassification
                 ON DELETE CASCADE,
     CONSTRAINT tb_firstClassification_pkey PRIMARY KEY (firstClassification_id)
 )
--- tb_point_layer表
+
+-- tb_point表
+CREATE TABLE public.tb_point
+   (
+       feature_id character varying(32) COLLATE pg_catalog."default" NOT NULL DEFAULT replace((uuid_generate_v1())::text, '-'::text, ''::text),
+           feature_name character varying(32) COLLATE pg_catalog."default" NOT NULL,
+           update_time timestamp(0) with time zone NOT NULL,
+           insert_time timestamp(0) with time zone NOT NULL,
+           epsg character varying(4) COLLATE pg_catalog."default" NOT NULL,
+           layer_id character varying(32) COLLATE pg_catalog."default" NOT NULL,
+           geom geometry(Point) NOT NULL,
+           feature_class character varying(16) COLLATE pg_catalog."default",
+           describe character varying(100) COLLATE pg_catalog."default",
+           fill_color character varying(16) COLLATE pg_catalog."default",
+           stroke_color character varying(16) COLLATE pg_catalog."default",
+           stroke_width character varying(16) COLLATE pg_catalog."default",
+           opacity integer,
+           CONSTRAINT tb_point_pkey PRIMARY KEY (feature_id),
+           CONSTRAINT fkiefpj8xb3nyh5e8s6w5vc23qk FOREIGN KEY (layer_id)
+               REFERENCES public.tb_layer (layer_id) MATCH SIMPLE
+               ON UPDATE NO ACTION
+               ON DELETE NO ACTION,
+           CONSTRAINT tb_point_layer_id_fkey FOREIGN KEY (layer_id)
+               REFERENCES public.tb_layer (layer_id) MATCH SIMPLE
+               ON UPDATE CASCADE
+               ON DELETE CASCADE
+   )
+
+-- tb_polygon表
+CREATE TABLE public.tb_polygon
+   (
+       feature_id character varying(32) COLLATE pg_catalog."default" NOT NULL DEFAULT replace((uuid_generate_v1())::text, '-'::text, ''::text),
+           feature_name character varying(32) COLLATE pg_catalog."default" NOT NULL,
+           update_time timestamp(0) with time zone NOT NULL,
+           insert_time timestamp(0) with time zone NOT NULL,
+           epsg character varying(4) COLLATE pg_catalog."default" NOT NULL,
+           layer_id character varying(32) COLLATE pg_catalog."default" NOT NULL,
+           geom geometry(Polygon) NOT NULL,
+           feature_class character varying(16) COLLATE pg_catalog."default",
+           describe character varying(100) COLLATE pg_catalog."default",
+           fill_color character varying(16) COLLATE pg_catalog."default",
+           stroke_color character varying(16) COLLATE pg_catalog."default",
+           stroke_width character varying(16) COLLATE pg_catalog."default",
+           opacity integer,
+           CONSTRAINT tb_polygon_pkey PRIMARY KEY (feature_id),
+           CONSTRAINT fkiefpj8xb3nyh5e8s6w5vc23qk FOREIGN KEY (layer_id)
+               REFERENCES public.tb_layer (layer_id) MATCH SIMPLE
+               ON UPDATE NO ACTION
+               ON DELETE NO ACTION,
+           CONSTRAINT tb_polygon_layer_id_fkey FOREIGN KEY (layer_id)
+               REFERENCES public.tb_layer (layer_id) MATCH SIMPLE
+               ON UPDATE CASCADE
+               ON DELETE CASCADE
+   )
+
+--tb_linestring
+CREATE TABLE public.tb_linestring
+   (
+       feature_id character varying(32) COLLATE pg_catalog."default" NOT NULL DEFAULT replace((uuid_generate_v1())::text, '-'::text, ''::text),
+           feature_name character varying(32) COLLATE pg_catalog."default" NOT NULL,
+           update_time timestamp(0) with time zone NOT NULL,
+           insert_time timestamp(0) with time zone NOT NULL,
+           epsg character varying(4) COLLATE pg_catalog."default" NOT NULL,
+           layer_id character varying(32) COLLATE pg_catalog."default" NOT NULL,
+           geom geometry(LineString) NOT NULL,
+           feature_class character varying(16) COLLATE pg_catalog."default",
+           describe character varying(100) COLLATE pg_catalog."default",
+           fill_color character varying(16) COLLATE pg_catalog."default",
+           stroke_color character varying(16) COLLATE pg_catalog."default",
+           stroke_width character varying(16) COLLATE pg_catalog."default",
+           opacity integer,
+           CONSTRAINT tb_linestring_pkey PRIMARY KEY (feature_id),
+           CONSTRAINT fkiefpj8xb3nyh5e8s6w5vc23qk FOREIGN KEY (layer_id)
+               REFERENCES public.tb_layer (layer_id) MATCH SIMPLE
+               ON UPDATE NO ACTION
+               ON DELETE NO ACTION,
+           CONSTRAINT tb_polygon_layer_id_fkey FOREIGN KEY (layer_id)
+               REFERENCES public.tb_layer (layer_id) MATCH SIMPLE
+               ON UPDATE CASCADE
+               ON DELETE CASCADE
+   )

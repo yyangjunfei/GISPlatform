@@ -20,7 +20,6 @@ import javax.annotation.Resource;
 import java.util.List;
 
 @Controller
-@MapperScan("cc.wanshan.demo.entity")
 @EnableTransactionManagement(proxyTargetClass = true)
 @RequestMapping("/store")
 public class StoreController {

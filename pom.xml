@@ -80,6 +80,7 @@
         <pagehelper-starter.version>1.2.10</pagehelper-starter.version>
         <mybatis-ehcache.version>1.1.0</mybatis-ehcache.version>
         <mybatis-plus.version>3.1.1</mybatis-plus.version>
+        <geoip2.version>2.12.0</geoip2.version>
 
     </properties>
 
@@ -510,6 +511,13 @@
             <artifactId>thumbnailator</artifactId>
             <version>${thumbnailator.version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.maxmind.geoip2/geoip2 -->
+        <dependency>
+            <groupId>com.maxmind.geoip2</groupId>
+            <artifactId>geoip2</artifactId>
+            <version>${geoip2.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
