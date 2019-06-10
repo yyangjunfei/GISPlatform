@@ -20,8 +20,8 @@ public class City {
     @ApiModelProperty(value = "空间数据")
     private String geometry;
 
-    @ApiModelProperty(value = "边界")
-    private String boundary;
+    @ApiModelProperty(value = "中心点")
+    private String centroid;
 
     @ApiModelProperty(value = "边界范围")
     private String envelope;

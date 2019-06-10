@@ -32,16 +32,16 @@ public interface SearchDao {
     /**
      * 查询所有（关键参数）用于生成关键字段数据
      */
-    @Select("select p.gid,p.name,st_xmin(p.geom) min_x,st_ymin(p.geom) min_y,st_xmax(p.geom) max_x,st_ymax(p.geom) max_y,ST_AsGeoJSON(ST_Envelope(p.geom)) envelope,ST_AsGeoJSON(p.geom) boundary from country p")
+    @Select("select p.gid,p.name,st_xmin(p.geom) min_x,st_ymin(p.geom) min_y,st_xmax(p.geom) max_x,st_ymax(p.geom) max_y,ST_AsGeoJSON(ST_Envelope(p.geom)) envelope,ST_AsGeoJSON(ST_Centroid(p.geom)) centroid from country p")
     public List<Country> queryAllCountry();
 
-    @Select("select p.gid,p.name,st_xmin(p.geom) min_x,st_ymin(p.geom) min_y,st_xmax(p.geom) max_x,st_ymax(p.geom) max_y,ST_AsGeoJSON(ST_Envelope(p.geom)) envelope,ST_AsGeoJSON(p.geom) boundary from province p")
+    @Select("select p.gid,p.name,st_xmin(p.geom) min_x,st_ymin(p.geom) min_y,st_xmax(p.geom) max_x,st_ymax(p.geom) max_y,ST_AsGeoJSON(ST_Envelope(p.geom)) envelope,ST_AsGeoJSON(ST_Centroid(p.geom)) centroid from province p")
     public List<Province> queryAllProvince();
 
-    @Select("select p.gid,p.name,st_xmin(p.geom) min_x,st_ymin(p.geom) min_y,st_xmax(p.geom) max_x,st_ymax(p.geom) max_y,ST_AsGeoJSON(ST_Envelope(p.geom)) envelope,ST_AsGeoJSON(p.geom) boundary from city p")
+    @Select("select p.gid,p.name,st_xmin(p.geom) min_x,st_ymin(p.geom) min_y,st_xmax(p.geom) max_x,st_ymax(p.geom) max_y,ST_AsGeoJSON(ST_Envelope(p.geom)) envelope,ST_AsGeoJSON(ST_Centroid(p.geom)) centroid from city p")
     public List<City> queryAllCity();
 
-    @Select("select p.gid,p.name,st_xmin(p.geom) min_x,st_ymin(p.geom) min_y,st_xmax(p.geom) max_x,st_ymax(p.geom) max_y,ST_AsGeoJSON(ST_Envelope(p.geom)) envelope,ST_AsGeoJSON(p.geom) boundary from town p")
+    @Select("select p.gid,p.name,st_xmin(p.geom) min_x,st_ymin(p.geom) min_y,st_xmax(p.geom) max_x,st_ymax(p.geom) max_y,ST_AsGeoJSON(ST_Envelope(p.geom)) envelope,ST_AsGeoJSON(ST_Centroid(p.geom)) centroid from town p")
     public List<Town> queryAllTown();
 
     /**
