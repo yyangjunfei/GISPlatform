@@ -11,11 +11,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 /***
- *@program: es-demo
+ *@program: Elasticsearch
  *@description: es增删查改
  *@author: Yang
  *@create: 2019-05-31 13:35
  */
+
 @Api(value = "SercherController", tags = "搜索接口")
 @RestController
 @RequestMapping("/rest/sercher")
@@ -70,6 +71,11 @@ public ResponseEntity query(@RequestParam(value = "id", required = false) String
 
    return esCrudService.query(id,provinces_name,city_name,area_name,first_name,second_name, baidu_first_name,baidu_second_name,name,addr,phone);
 }
+    /****
+     * 搜索查询省数据
+     * @param inputValue
+     * @return
+     */
 
 @ApiOperation(value = "搜索查询省数据", notes = "搜索查询省数据")
 @PostMapping("/queryDataByInputValue")
@@ -77,6 +83,12 @@ public ResponseEntity queryDataByInputValue(@RequestParam(value = "inputValue", 
 
     return esCrudService.queryDataByInputValue(inputValue);
 }
+
+    /****
+     * 搜索查询市经纬度
+     * @param inputCityName
+     * @return
+     */
 
 @ApiOperation(value = "搜索查询市经纬度", notes = "搜索查询市经纬度")
 @PostMapping("/queryCityCoordinatesByInputValue")
@@ -130,6 +142,13 @@ public ResponseEntity findCountyDataByPoiValue(@RequestParam(value = "poiValue",
 
     return esCrudService.findCountyDataByPoiValue(poiValue,countyListName);
 }
+
+    /***
+     * POI按照县级以下查询数据(县级以下)
+     * @param poiValue
+     * @param townListName
+     * @return
+     */
 
 @ApiOperation(value = "POI按照县级以下查询数据(县级以下)", notes = "POI按照县级以下查询数据(县级以下)")
 @PostMapping("/findTownDataByPoiValue")

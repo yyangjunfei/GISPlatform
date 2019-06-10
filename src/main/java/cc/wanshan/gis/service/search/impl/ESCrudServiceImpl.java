@@ -33,6 +33,12 @@ public class ESCrudServiceImpl implements ESCrudService {
     @Autowired
     private TransportClient client;
 
+    /****
+     * 按照ID 查询
+     * @param id
+     * @return ResponseEntity
+     */
+
     @Override
     public ResponseEntity searchById(String id) {
         if (id.isEmpty()){
@@ -46,7 +52,21 @@ public class ESCrudServiceImpl implements ESCrudService {
         //返回查询到的数据
         return new ResponseEntity(response.getSource(),HttpStatus.OK);
     }
-
+    /***
+     *
+     * 复合查询接口
+     * @param id
+     * @param provinces_name
+     * @param city_name
+     * @param area_name
+     * @param first_name
+     * @param second_name
+     * @param baidu_first_name
+     * @param baidu_second_name
+     * @param name
+     * @param addr
+     * @param phone
+     */
     @Override
     public ResponseEntity query(String id, String provinces_name, String city_name, String area_name, String first_name, String second_name, String baidu_first_name, String baidu_second_name, String name, String addr, String phone) {
         // 组装查询条件
@@ -85,13 +105,6 @@ public class ESCrudServiceImpl implements ESCrudService {
             boolQuery.must(QueryBuilders.matchQuery("properties.phone", phone));
         }
 
-        // 以id作为条件范围
-/*    RangeQueryBuilder rangeQuery = QueryBuilders.rangeQuery("id").from(gtWordCount);
-    if (ltWordCount != null && ltWordCount > 0) {
-        rangeQuery.to(ltWordCount);
-    }
-    boolQuery.filter(rangeQuery);*/
-
         // 组装查询请求
         SearchRequestBuilder requestBuilder = client.prepareSearch("map_data")
                 .setTypes("Feature")
@@ -110,6 +123,12 @@ public class ESCrudServiceImpl implements ESCrudService {
         }
         return new ResponseEntity(result, HttpStatus.OK);
     }
+
+    /****
+     * 搜索查询省数据
+     * @param inputValue
+     * @return
+     */
 
     @Override
     public ResponseEntity queryDataByInputValue(String inputValue) {
@@ -145,7 +164,11 @@ public class ESCrudServiceImpl implements ESCrudService {
         }
         return new ResponseEntity(result, HttpStatus.OK);
     }
-
+    /****
+     * 搜索查询市经纬度
+     * @param inputCityName
+     * @return
+     */
     @Override
     public String queryCityCoordinatesByInputValue(String inputCityName) {
         String coordinates =null;
@@ -181,6 +204,11 @@ public class ESCrudServiceImpl implements ESCrudService {
         }
         return coordinates;
     }
+
+    /***
+     *
+     * POI按照省市县村分组聚和查询（全国）
+     */
 
     @Override
     public ResponseEntity queryPoiValue(String poiValue) {
@@ -230,6 +258,10 @@ public class ESCrudServiceImpl implements ESCrudService {
         return new ResponseEntity(result, HttpStatus.OK);
     }
 
+    /***
+     * POI按照省分组聚和查询（省级）
+     */
+
     @Override
     public ResponseEntity findProvinceDataByPoiValue(String poiValue, List<String> provinceListName) {
         AggregationBuilder termsBuilder = AggregationBuilders.terms("by_provinces_name").field("properties.provinces_name.keyword");
@@ -274,6 +306,10 @@ public class ESCrudServiceImpl implements ESCrudService {
         result.add(map);
         return new ResponseEntity(result, HttpStatus.OK);
     }
+
+    /***
+     * POI按照市分组聚和查询（市级）
+     */
 
     @Override
     public ResponseEntity findCityDataByPoiValue(String poiValue, List<String> cityListName) {
@@ -329,6 +365,10 @@ public class ESCrudServiceImpl implements ESCrudService {
         result.add(map);
         return new ResponseEntity(result, HttpStatus.OK);
     }
+
+    /***
+     * POI按照县/区分组聚和查询（县/区级）
+     */
 
     @Override
     public ResponseEntity findCountyDataByPoiValue(String poiValue, List<String> countyListName) {
@@ -389,6 +429,13 @@ public class ESCrudServiceImpl implements ESCrudService {
         return new ResponseEntity(result, HttpStatus.OK);
     }
 
+    /***
+     * POI按照县级以下查询数据(县级以下)
+     * @param poiValue
+     * @param townListName
+     * @return
+     */
+
     @Override
     public ResponseEntity findTownDataByPoiValue(String poiValue, List<String> townListName) {
         // 组装查询条件
@@ -419,6 +466,12 @@ public class ESCrudServiceImpl implements ESCrudService {
         }
         return new ResponseEntity(result, HttpStatus.OK);
     }
+
+    /**
+     * 按id删除数据
+     * @param id
+     * @return
+     */
 
     @Override
     public ResponseEntity delete(String id) {
