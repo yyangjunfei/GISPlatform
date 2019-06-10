@@ -47,6 +47,10 @@ public class SearchServiceImpl implements SearchService {
     @Autowired
     private SearchDao searchDao;
 
+
+
+     /** 初始化方法*/
+
     @Resource
     private CountryMapper countryMapper;
 
@@ -62,6 +66,7 @@ public class SearchServiceImpl implements SearchService {
     /**
      * 初始化
      */
+
     @PostConstruct
     public void init() {
         countryList = searchDao.findAllCountry();
@@ -332,3 +337,4 @@ public class SearchServiceImpl implements SearchService {
     }
 
 }
+

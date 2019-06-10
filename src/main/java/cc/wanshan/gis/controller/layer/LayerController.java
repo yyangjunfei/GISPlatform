@@ -1,3 +1,4 @@
+/*
 package cc.wanshan.gis.controller.layer;
 
 import cc.wanshan.gis.entity.Result;
@@ -335,3 +336,4 @@ public class LayerController {
     return ResultUtil.error(4, "参数为null");
   }
 }
+*/
