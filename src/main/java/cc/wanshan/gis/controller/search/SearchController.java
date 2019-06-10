@@ -1,3 +1,4 @@
+/*
 package cc.wanshan.gis.controller.search;
 
 import cc.wanshan.gis.entity.Result;
@@ -41,3 +42,4 @@ public class SearchController {
     }
 
 }
+*/

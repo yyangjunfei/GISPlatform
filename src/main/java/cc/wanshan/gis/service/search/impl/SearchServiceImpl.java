@@ -1,5 +1,4 @@
 package cc.wanshan.gis.service.search.impl;
-
 import cc.wanshan.gis.common.enums.ResultCode;
 import cc.wanshan.gis.dao.search.SearchDao;
 import cc.wanshan.gis.entity.Result;
@@ -35,9 +34,10 @@ public class SearchServiceImpl implements SearchService {
     @Autowired
     private SearchDao searchDao;
 
-    /**
+/**
      * 初始化方法
      */
+
     @PostConstruct
     public void init() {
         countryList = searchDao.findAllCountry();
@@ -153,3 +153,4 @@ public class SearchServiceImpl implements SearchService {
     }
 
 }
+
