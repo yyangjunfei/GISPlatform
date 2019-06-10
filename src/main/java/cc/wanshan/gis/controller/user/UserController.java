@@ -37,26 +37,26 @@ import java.util.Date;
 @RequestMapping("/user")
 public class UserController {
 
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-    @Resource(name = "userServiceImpl")
-    private UserService userServiceImpl;
-    @Resource(name = "geoServerServiceImpl")
-    private GeoServerService geoserverService;
-    @Resource(name = "thematicUserServiceImpl")
-    private ThematicUserService thematicUserServiceImpl;
-    @Resource(name = "storeServiceImpl")
-    private StoreService storeServiceImpl;
+  private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+  @Resource(name = "userServiceImpl")
+  private UserService userServiceImpl;
+  @Resource(name = "geoServerServiceImpl")
+  private GeoServerService geoServerService;
+  @Resource(name = "thematicUserServiceImpl")
+  private ThematicUserService thematicUserServiceImpl;
+  @Resource(name = "storeServiceImpl")
+  private StoreService storeServiceImpl;
 
-    @RequestMapping("/findalluser")
-    @ResponseBody
-    public Result findAllUser() {
-        Result user = userServiceImpl.findAllUser();
-        if (user.getCode() == 0) {
-            return ResultUtil.success(user.getData());
-        } else {
-            return ResultUtil.error(1, user.getMsg());
-        }
+  @RequestMapping("/findalluser")
+  @ResponseBody
+  public Result findAllUser() {
+    Result user = userServiceImpl.findAllUser();
+    if (user.getCode() == 0) {
+      return ResultUtil.success(user.getData());
+    } else {
+      return ResultUtil.error(1, user.getMsg());
     }
+  }
 
   @RequestMapping("/insertuser")
   @ResponseBody
@@ -108,176 +108,178 @@ public class UserController {
                 return ResultUtil.success();
               }
             }
-            return ResultUtil.error(1, "新增失败");
-        } else {
-            logger.warn("json为null");
-            return ResultUtil.error(1, "json为null");
+          }
         }
+      }
+      return ResultUtil.error(1, "新增失败");
+    } else {
+      logger.warn("json为null");
+      return ResultUtil.error(1, "json为null");
     }
+  }
 
-    @RequestMapping("/findusercountbyusername")
-    @ResponseBody
-    public Result findUserCountByUsername(@RequestBody JSONObject jsonObject) {
-        logger.info("findUserCountByUsername::username = [{}]", jsonObject);
-        if (jsonObject != null && StringUtils.isNotBlank(jsonObject.getString("username"))) {
-            Result result = userServiceImpl.findUserCountByUsername(jsonObject.getString("username"));
-            if (result.getCode() == 0) {
-                return ResultUtil.success();
-            } else {
-                return ResultUtil.error(1, result.getMsg());
-            }
-        } else {
-            logger.warn("用户名为null");
-            return ResultUtil.error(1, "用户名为null");
-        }
+  @RequestMapping("/findusercountbyusername")
+  @ResponseBody
+  public Result findUserCountByUsername(@RequestBody JSONObject jsonObject) {
+    logger.info("findUserCountByUsername::username = [{}]", jsonObject);
+    if (jsonObject != null && StringUtils.isNotBlank(jsonObject.getString("username"))) {
+      Result result = userServiceImpl.findUserCountByUsername(jsonObject.getString("username"));
+      if (result.getCode() == 0) {
+        return ResultUtil.success();
+      } else {
+        return ResultUtil.error(1, result.getMsg());
+      }
+    } else {
+      logger.warn("用户名为null");
+      return ResultUtil.error(1, "用户名为null");
     }
+  }
 
-    @RequestMapping("/finduserbyusername")
-    @ResponseBody
-    public Result findUserByUsername(@RequestBody JSONObject jsonObject) {
-        logger.info("findUserByUsername::username = [{}]", jsonObject);
-        if (jsonObject != null && StringUtils.isNotBlank(jsonObject.getString("username"))) {
-            User user = userServiceImpl.findUserByUsername(jsonObject.getString("username"));
-            if (user != null) {
-                return ResultUtil.success();
-            } else {
-                logger.warn("当前用户不存在");
-                return ResultUtil.error(1, "当前用户不存在");
-            }
-        } else {
-            logger.warn("username为null");
-            return ResultUtil.error(2, "username为null");
-        }
+  @RequestMapping("/finduserbyusername")
+  @ResponseBody
+  public Result findUserByUsername(@RequestBody JSONObject jsonObject) {
+    logger.info("findUserByUsername::username = [{}]", jsonObject);
+    if (jsonObject != null && StringUtils.isNotBlank(jsonObject.getString("username"))) {
+      User user = userServiceImpl.findUserByUsername(jsonObject.getString("username"));
+      if (user != null) {
+        return ResultUtil.success();
+      } else {
+        logger.warn("当前用户不存在");
+        return ResultUtil.error(1, "当前用户不存在");
+      }
+    } else {
+      logger.warn("username为null");
+      return ResultUtil.error(2, "username为null");
     }
+  }
 
-    @RequestMapping("/finduserbyuserid")
-    @ResponseBody
-    public Result findUserByUserId(@RequestBody JSONObject jsonObject) {
-        logger.info("findUserByUserId::userId = [{}]", jsonObject);
-        if (jsonObject != null && StringUtils.isNotBlank(jsonObject.getString("userId"))) {
-            Result user = userServiceImpl.findUserByUserId(jsonObject.getString("userId"));
-            if (user.getCode() == 0) {
-                return ResultUtil.success(user.getData());
-            } else {
-                return ResultUtil.error(1, user.getMsg());
-            }
-        } else {
-            logger.warn("userId为null");
-            return ResultUtil.error(1, "userId为null");
-        }
+  @RequestMapping("/finduserbyuserid")
+  @ResponseBody
+  public Result findUserByUserId(@RequestBody JSONObject jsonObject) {
+    logger.info("findUserByUserId::userId = [{}]", jsonObject);
+    if (jsonObject != null && StringUtils.isNotBlank(jsonObject.getString("userId"))) {
+      Result user = userServiceImpl.findUserByUserId(jsonObject.getString("userId"));
+      if (user.getCode() == 0) {
+        return ResultUtil.success(user.getData());
+      } else {
+        return ResultUtil.error(1, user.getMsg());
+      }
+    } else {
+      logger.warn("userId为null");
+      return ResultUtil.error(1, "userId为null");
     }
+  }
 
-    @RequestMapping("/updateUser")
-    @ResponseBody
-    public Result updateUser(@RequestBody JSONObject jsonObject) {
-        logger.info("updateUser::jsonObject = [{}]", jsonObject);
-        User user = new User();
-        Role role = new Role();
-        if (jsonObject != null && jsonObject.getInteger("userId") != null
-                && jsonObject.getInteger("roleId") != null) {
-            role.setRoleId(jsonObject.getString("roleId"));
-            user.setUserId(jsonObject.getString("userId"));
-            user.setRole(role);
-            user.setUpdateTime(new Date());
-            if (StringUtils.isNotBlank(jsonObject.getString("password"))) {
-                user.setPassword(jsonObject.getString("password"));
-                Result result = userServiceImpl.updateUserPassword(user);
-                if (result.getCode() == 0) {
-                    return ResultUtil.success();
-                } else {
-                    return ResultUtil.error(1, result.getMsg());
-                }
-            } else {
-                Result result = userServiceImpl.updateUser(user);
-                if (result.getCode() == 0) {
-                    return ResultUtil.success();
-                } else {
-                    return ResultUtil.error(1, result.getMsg());
-                }
-            }
+  @RequestMapping("/updateUser")
+  @ResponseBody
+  public Result updateUser(@RequestBody JSONObject jsonObject) {
+    logger.info("updateUser::jsonObject = [{}]", jsonObject);
+    User user = new User();
+    Role role = new Role();
+    if (jsonObject != null && jsonObject.getInteger("userId") != null
+        && jsonObject.getInteger("roleId") != null) {
+      role.setRoleId(jsonObject.getString("roleId"));
+      user.setUserId(jsonObject.getString("userId"));
+      user.setRole(role);
+      user.setUpdateTime(new Date());
+      if (StringUtils.isNotBlank(jsonObject.getString("password"))) {
+        user.setPassword(jsonObject.getString("password"));
+        Result result = userServiceImpl.updateUserPassword(user);
+        if (result.getCode() == 0) {
+          return ResultUtil.success();
         } else {
-            logger.warn("json为null");
-            return ResultUtil.error(1, "json为null");
+          return ResultUtil.error(1, result.getMsg());
         }
+      } else {
+        Result result = userServiceImpl.updateUser(user);
+        if (result.getCode() == 0) {
+          return ResultUtil.success();
+        } else {
+          return ResultUtil.error(1, result.getMsg());
+        }
+      }
+    } else {
+      logger.warn("json为null");
+      return ResultUtil.error(1, "json为null");
     }
+  }
 
-    @RequestMapping("/updateUserStatus")
-    @ResponseBody
-    public Result updateUserStatus(@RequestBody JSONObject jsonObject) throws URISyntaxException {
-        logger.info("updateUserStatus::userId = [{}], status = [{}], username = [{}]", jsonObject);
-        if (jsonObject != null && StringUtils.isNotBlank(jsonObject.getString("userId"))
-                && StringUtils.isNotBlank(jsonObject.getString("username"))
-                && jsonObject.getInteger("status") != null) {
-            User user = new User();
-            user.setUserId(jsonObject.getString("userId"));
-            user.setStatus(jsonObject.getInteger("status"));
-            user.setUpdateTime(new Date());
-            Result result = userServiceImpl.updateUserStatus(user);
-            if (result.getCode() == 0) {
-                Result creatWorkspace = geoserverService.creatWorkspace(jsonObject.getString("username"));
-                if (creatWorkspace.getCode() == 0 || creatWorkspace.getCode() == 1) {
-                    return ResultUtil.success();
-                } else {
-                    return creatWorkspace;
-                }
-            } else {
-                return result;
-            }
+  @RequestMapping("/updateUserStatus")
+  @ResponseBody
+  public Result updateUserStatus(@RequestBody JSONObject jsonObject) throws URISyntaxException {
+    logger.info("updateUserStatus::userId = [{}], status = [{}], username = [{}]", jsonObject);
+    if (jsonObject != null && StringUtils.isNotBlank(jsonObject.getString("userId"))
+        && StringUtils.isNotBlank(jsonObject.getString("username"))
+        && jsonObject.getInteger("status") != null) {
+      User user = new User();
+      user.setUserId(jsonObject.getString("userId"));
+      user.setStatus(jsonObject.getInteger("status"));
+      user.setUpdateTime(new Date());
+      Result result = userServiceImpl.updateUserStatus(user);
+      if (result.getCode() == 0) {
+        Result creatWorkspace = geoServerService.creatWorkspace(jsonObject.getString("username"));
+        if (creatWorkspace.getCode() == 0 || creatWorkspace.getCode() == 1) {
+          return ResultUtil.success();
         } else {
-            logger.warn("json为null");
-            return ResultUtil.error(1, "json为null");
+          return creatWorkspace;
         }
+      } else {
+        return result;
+      }
+    } else {
+      logger.warn("json为null");
+      return ResultUtil.error(1, "json为null");
     }
+  }
 
-    @RequestMapping("/updatePassword")
-    @ResponseBody
-    public Result updatePassword(@RequestBody JSONObject jsonObject) {
-        logger.info("updatePassword::jsonObject = [{}]", jsonObject);
-        if (jsonObject != null) {
-            if (StringUtils.isNotBlank(jsonObject.getString("username"))
-                    && StringUtils.isNotBlank(jsonObject.getString("oldPassword"))
-                    && StringUtils.isNotBlank(jsonObject.getString("newpassword"))) {
-                User user = userServiceImpl.findUserByUsername(jsonObject.getString("username"));
-                BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-                boolean matches = encoder.matches(jsonObject.getString("oldPassword"), user.getPassword());
-                if (matches) {
-                    user.setPassword(jsonObject.getString("newpassword"));
-                    Result result = userServiceImpl.updateUserPassword(user);
-                    if (result.getCode() == 0) {
-                        return ResultUtil.success();
-                    } else {
-                        return result;
-                    }
-                } else {
-                    logger.warn("旧密码输入错误，请重新输入");
-                    return ResultUtil.error(1, "旧密码输入错误，请重新输入");
-                }
-            } else {
-                logger.warn("参数为null");
-                return ResultUtil.error(1, "参数为null");
-            }
+  @RequestMapping("/updatePassword")
+  @ResponseBody
+  public Result updatePassword(@RequestBody JSONObject jsonObject) {
+    logger.info("updatePassword::jsonObject = [{}]", jsonObject);
+    if (jsonObject != null) {
+      if (StringUtils.isNotBlank(jsonObject.getString("username"))
+          && StringUtils.isNotBlank(jsonObject.getString("oldPassword"))
+          && StringUtils.isNotBlank(jsonObject.getString("newpassword"))) {
+        User user = userServiceImpl.findUserByUsername(jsonObject.getString("username"));
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        boolean matches = encoder.matches(jsonObject.getString("oldPassword"), user.getPassword());
+        if (matches) {
+          user.setPassword(jsonObject.getString("newpassword"));
+          Result result = userServiceImpl.updateUserPassword(user);
+          if (result.getCode() == 0) {
+            return ResultUtil.success();
+          } else {
+            return result;
+          }
         } else {
-            logger.warn("json为null");
-            return ResultUtil.error(1, "json为null");
+          logger.warn("旧密码输入错误，请重新输入");
+          return ResultUtil.error(1, "旧密码输入错误，请重新输入");
         }
+      } else {
+        logger.warn("参数为null");
+        return ResultUtil.error(1, "参数为null");
+      }
+    } else {
+      logger.warn("json为null");
+      return ResultUtil.error(1, "json为null");
     }
+  }
 
-    @RequestMapping("/deleteuser")
-    @ResponseBody
-    public Result deleteUser(@RequestBody JSONObject jsonObject) {
-        logger.info("deleteUser::jsonObject = [{}]", jsonObject);
-        if (jsonObject != null) {
-            String userId = jsonObject.getString("userId");
-            Result result = userServiceImpl.deleteUser(userId);
-            if (result.getCode() == 0) {
-                return ResultUtil.success();
-            } else {
-                return ResultUtil.error(1, result.getMsg());
-            }
-        } else {
-            logger.warn("json为null");
-            return ResultUtil.error(1, "json为null");
-        }
+  @RequestMapping("/deleteuser")
+  @ResponseBody
+  public Result deleteUser(@RequestBody JSONObject jsonObject) {
+    logger.info("deleteUser::jsonObject = [{}]", jsonObject);
+    if (jsonObject != null) {
+      String userId = jsonObject.getString("userId");
+      Result result = userServiceImpl.deleteUser(userId);
+      if (result.getCode() == 0) {
+        return ResultUtil.success();
+      } else {
+        return ResultUtil.error(1, result.getMsg());
+      }
+    } else {
+      logger.warn("json为null");
+      return ResultUtil.error(1, "json为null");
     }
   }
 
