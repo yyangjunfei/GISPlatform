@@ -8,6 +8,9 @@ import cc.wanshan.gis.entity.area.City;
 import cc.wanshan.gis.entity.area.Country;
 import cc.wanshan.gis.entity.area.Province;
 import cc.wanshan.gis.entity.area.Town;
+import cc.wanshan.gis.entity.search.Poi;
+import cc.wanshan.gis.entity.search.RegionInput;
+import cc.wanshan.gis.entity.search.RegionOutput;
 import cc.wanshan.gis.mapper.search.CityMapper;
 import cc.wanshan.gis.mapper.search.CountryMapper;
 import cc.wanshan.gis.mapper.search.ProvinceMapper;
@@ -200,12 +203,13 @@ public class SearchServiceImpl implements SearchService {
         List<Province> provinces = Lists.newArrayList();
         List<City> cities = Lists.newArrayList();
         List<Town> towns = Lists.newArrayList();
+        List<String> regionNameList = Lists.newArrayList();
         Geometry polygon = null;
         try {
+            //根据包围形封装成geometry格式的面数据
             polygon = GeoToolsUtils.polygon2Geometry(minX, minY, maxX, maxY);
 
             //级别[8, 22]查询省市，其他级别查询国家，查不到返回未找到
-
             if (level <= 8) {
                 for (Country country : countryList) {
                     Geometry geometry = GeoToolsUtils.geoJson2Geometry(country.getEnvelope());
@@ -222,10 +226,16 @@ public class SearchServiceImpl implements SearchService {
                     Geometry geometry = GeoToolsUtils.geoJson2Geometry(envelope);
                     if (geometry.intersects(polygon)) {
                         provinces.add(province);
+                        regionNameList.add(province.getName());
                     }
                 }
                 if (provinces != null) {
-                    return ResultUtil.success(provinces);
+                    RegionInput regionInput = RegionInput.builder().level(level).keyword(keyword).regionNameList(regionNameList).build();
+
+                    //TODO 从es查询数据
+
+                    RegionOutput regionOutput = RegionOutput.builder().name("").count(22).geometry("").centroid("").build();
+                    return ResultUtil.success(regionOutput);
                 }
 
             } else if (level > 11 && level <= 14) {
@@ -233,25 +243,47 @@ public class SearchServiceImpl implements SearchService {
                     String envelope = city.getEnvelope();
                     Geometry geometry = GeoToolsUtils.geoJson2Geometry(envelope);
                     if (polygon.intersects(geometry)) {
+                        regionNameList.add(city.getName());
                         cities.add(city);
                     }
                 }
                 if (cities != null) {
-                    return ResultUtil.success(cities);
+                    RegionInput regionInput = RegionInput.builder().level(level).keyword(keyword).regionNameList(regionNameList).build();
+
+                    //TODO 从es查询数据
+
+                    RegionOutput regionOutput = RegionOutput.builder().name("").count(22).geometry("").centroid("").build();
+
+                    return ResultUtil.success(regionOutput);
                 }
             } else if (level > 14 && level <= 22) {
                 for (Town town : townList) {
                     String envelope = town.getEnvelope();
                     Geometry geometry = GeoToolsUtils.geoJson2Geometry(envelope);
                     if (polygon.intersects(geometry)) {
+                        regionNameList.add(town.getName());
                         towns.add(town);
                     }
                 }
                 if (cities != null) {
-                    return ResultUtil.success(towns);
+                    RegionInput regionInput = RegionInput.builder().level(level).keyword(keyword).regionNameList(regionNameList).build();
+
+                    RegionOutput regionOutput = RegionOutput.builder().name("").count(22).poiList(null).centroid("").build();
+
+                    List<Poi> poiList = regionOutput.getPoiList();
+
+                    //判断点是否在包围形中
+                    List<Poi> pois = Lists.newArrayList();
+                    for (Poi poi : poiList) {
+                        Geometry geometry = GeoToolsUtils.geoJson2Geometry(poi.getGeometry());
+                        if (polygon.contains(geometry)) {
+                            pois.add(poi);
+                        }
+                    }
+                    regionOutput.setPoiList(poiList);
+                    return ResultUtil.success(regionInput);
                 }
             }
-
 
             return ResultUtil.error(ResultCode.DATA_NOT_FOUND);
         } catch (IOException e) {
@@ -266,21 +298,37 @@ public class SearchServiceImpl implements SearchService {
         /**
          * 国家数据更新
          */
-//        List<Country> countryList = searchDao.queryAllCountry();
-//        for (Country country : countryList) {
-//            country.setRectangle(country.getMinX() + "," + country.getMinY() + "," + country.getMaxX() + "," + country.getMaxY());
-//            countryMapper.updateByPrimaryKeySelective(country);
-//        }
+        List<Country> countryList = searchDao.queryAllCountry();
+        for (Country country : countryList) {
+            country.setRectangle(country.getMinX() + "," + country.getMinY() + "," + country.getMaxX() + "," + country.getMaxY());
+            countryMapper.updateByPrimaryKeySelective(country);
+        }
+        /**
+         * 省级数据更新
+         */
+        List<Province> provinceList = searchDao.queryAllProvince();
+        for (Province province : provinceList) {
+            province.setRectangle(province.getMinX() + "," + province.getMinY() + "," + province.getMaxX() + "," + province.getMaxY());
+            provinceMapper.updateByPrimaryKeySelective(province);
+        }
+        /**
+         * 城市数据更新
+         */
+        List<City> cityList = searchDao.queryAllCity();
+        for (City city : cityList) {
+            city.setRectangle(city.getMinX() + "," + city.getMinY() + "," + city.getMaxX() + "," + city.getMaxY());
+            cityMapper.updateByPrimaryKeySelective(city);
+        }
+        /**
+         * 县区数据更新
+         */
+        List<Town> townList = searchDao.queryAllTown();
+        for (Town town : townList) {
+            town.setRectangle(town.getMinX() + "," + town.getMinY() + "," + town.getMaxX() + "," + town.getMaxY());
+            townMapper.updateByPrimaryKeySelective(town);
+        }
 
         return ResultUtil.success();
     }
-
-    /**
-     * 获得客户端真实IP地址
-     *
-     * @param request 客户端请求
-     * @return
-     */
-
 
 }
