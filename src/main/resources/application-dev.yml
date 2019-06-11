@@ -32,6 +32,14 @@ spring:
           tcp:
             connect_timeout: 120s
         enabled: true
+  elasticsearch:
+    rest:
+      uris: ["http://192.168.1.88:9200"]
+management:
+  security:
+    health:
+      elasticsearch:
+        enabled: false
 
 # mybatis配置
 mybatis:
