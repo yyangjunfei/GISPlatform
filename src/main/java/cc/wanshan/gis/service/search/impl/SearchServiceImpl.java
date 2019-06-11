@@ -15,6 +15,7 @@ import cc.wanshan.gis.mapper.search.CityMapper;
 import cc.wanshan.gis.mapper.search.CountryMapper;
 import cc.wanshan.gis.mapper.search.ProvinceMapper;
 import cc.wanshan.gis.mapper.search.TownMapper;
+import cc.wanshan.gis.service.search.ESCrudService;
 import cc.wanshan.gis.service.search.SearchService;
 import cc.wanshan.gis.utils.GeoToolsUtils;
 import cc.wanshan.gis.utils.GeometryCreator;
@@ -47,9 +48,12 @@ public class SearchServiceImpl implements SearchService {
     @Autowired
     private SearchDao searchDao;
 
+    @Autowired
+    private ESCrudService esCrudService;
 
-
-     /** 初始化方法*/
+    /**
+     * 初始化方法
+     */
 
     @Resource
     private CountryMapper countryMapper;
@@ -205,10 +209,8 @@ public class SearchServiceImpl implements SearchService {
         double maxY = Double.parseDouble(arr[3]);
 
         List<Country> countries = Lists.newArrayList();
-        List<Province> provinces = Lists.newArrayList();
-        List<City> cities = Lists.newArrayList();
-        List<Town> towns = Lists.newArrayList();
-        List<String> regionNameList = Lists.newArrayList();
+
+        List<RegionInput> regionInputList = Lists.newArrayList();
         Geometry polygon = null;
         try {
             //根据包围形封装成geometry格式的面数据
@@ -223,24 +225,24 @@ public class SearchServiceImpl implements SearchService {
                     }
                 }
                 if (countries != null) {
-                    return ResultUtil.success(countries);
+                    return ResultUtil.success();
                 }
             } else if (level > 8 && level <= 11) {
                 for (Province province : provinceList) {
                     String envelope = province.getEnvelope();
                     Geometry geometry = GeoToolsUtils.geoJson2Geometry(envelope);
                     if (geometry.intersects(polygon)) {
-                        provinces.add(province);
-                        regionNameList.add(province.getName());
+                        //es入参
+                        RegionInput regionInput = RegionInput.builder().name(province.getName()).centroid(province.getCentroid()).build();
+                        regionInputList.add(regionInput);
                     }
                 }
-                if (provinces != null) {
-                    RegionInput regionInput = RegionInput.builder().level(level).keyword(keyword).regionNameList(regionNameList).build();
+                if (regionInputList != null) {
 
-                    //TODO 从es查询数据
+                    //从es查询省份的聚合数据
+                    List<RegionOutput> regionOutputList = esCrudService.findProvinceByKeyword(keyword, regionInputList);
 
-                    RegionOutput regionOutput = RegionOutput.builder().name("").count(22).geometry("").centroid("").build();
-                    return ResultUtil.success(regionOutput);
+                    return ResultUtil.success(regionOutputList);
                 }
 
             } else if (level > 11 && level <= 14) {
@@ -248,48 +250,52 @@ public class SearchServiceImpl implements SearchService {
                     String envelope = city.getEnvelope();
                     Geometry geometry = GeoToolsUtils.geoJson2Geometry(envelope);
                     if (polygon.intersects(geometry)) {
-                        regionNameList.add(city.getName());
-                        cities.add(city);
+                        //es入参
+                        RegionInput regionInput = RegionInput.builder().name(city.getName()).centroid(city.getCentroid()).build();
+                        regionInputList.add(regionInput);
                     }
                 }
-                if (cities != null) {
-                    RegionInput regionInput = RegionInput.builder().level(level).keyword(keyword).regionNameList(regionNameList).build();
-
-                    //TODO 从es查询数据
-
-                    RegionOutput regionOutput = RegionOutput.builder().name("").count(22).geometry("").centroid("").build();
-
-                    return ResultUtil.success(regionOutput);
+                if (regionInputList != null) {
+                    //从es查询市份的聚合数据
+                    List<RegionOutput> regionOutputList = esCrudService.findCityByKeyword(keyword, regionInputList);
+                    return ResultUtil.success(regionOutputList);
                 }
             } else if (level > 14 && level <= 22) {
                 for (Town town : townList) {
                     String envelope = town.getEnvelope();
                     Geometry geometry = GeoToolsUtils.geoJson2Geometry(envelope);
                     if (polygon.intersects(geometry)) {
-                        regionNameList.add(town.getName());
-                        towns.add(town);
+                        //es入参
+                        RegionInput regionInput = RegionInput.builder().name(town.getName()).centroid(town.getCentroid()).build();
+                        regionInputList.add(regionInput);
                     }
                 }
-                if (cities != null) {
-                    RegionInput regionInput = RegionInput.builder().level(level).keyword(keyword).regionNameList(regionNameList).build();
 
-                    RegionOutput regionOutput = RegionOutput.builder().name("").count(22).poiList(null).centroid("").build();
+                if (regionInputList != null) {
 
-                    List<Poi> poiList = regionOutput.getPoiList();
+                    //从es查询区县份的聚合数据
+                    List<RegionOutput> regionOutputList = esCrudService.findTownByKeyword(keyword, regionInputList);
+                    List<RegionOutput> regionOutputs = Lists.newArrayList();
 
-                    //判断点是否在包围形中
-                    List<Poi> pois = Lists.newArrayList();
-                    for (Poi poi : poiList) {
-                        Geometry geometry = GeoToolsUtils.geoJson2Geometry(poi.getGeometry());
-                        if (polygon.contains(geometry)) {
-                            pois.add(poi);
+                    for (RegionOutput regionOutput : regionOutputList) {
+
+                        List<Poi> poiList = regionOutput.getPoiList();
+
+                        //判断点是否在包围形中
+                        List<Poi> pois = Lists.newArrayList();
+                        for (Poi poi : poiList) {
+                            Geometry geometry = GeoToolsUtils.geoJson2Geometry(poi.getGeometry());
+                            if (polygon.contains(geometry)) {
+                                pois.add(poi);
+                            }
                         }
+                        regionOutput.setPoiList(null);
+                        regionOutput.setPoiList(pois);
+                        regionOutputs.add(regionOutput);
                     }
-                    regionOutput.setPoiList(poiList);
-                    return ResultUtil.success(regionInput);
+                    return ResultUtil.success(regionOutputList);
                 }
             }
-
             return ResultUtil.error(ResultCode.DATA_NOT_FOUND);
         } catch (IOException e) {
             e.printStackTrace();
@@ -332,7 +338,6 @@ public class SearchServiceImpl implements SearchService {
             town.setRectangle(town.getMinX() + "," + town.getMinY() + "," + town.getMaxX() + "," + town.getMaxY());
             townMapper.updateByPrimaryKeySelective(town);
         }
-
         return ResultUtil.success();
     }
 

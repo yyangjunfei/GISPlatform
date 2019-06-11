@@ -1,8 +1,14 @@
 package cc.wanshan.gis.service.search.impl;
+
+import cc.wanshan.gis.entity.search.Poi;
+import cc.wanshan.gis.entity.search.RegionInput;
+import cc.wanshan.gis.entity.search.RegionOutput;
 import cc.wanshan.gis.entity.sercher.City;
 import cc.wanshan.gis.entity.sercher.JsonRootBean;
 import cc.wanshan.gis.entity.sercher.Province;
 import cc.wanshan.gis.service.search.ESCrudService;
+import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Lists;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -18,10 +24,13 @@ import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +38,8 @@ import java.util.Map;
 
 @Service
 public class ESCrudServiceImpl implements ESCrudService {
+
+    private static Logger LOG = LoggerFactory.getLogger(ESCrudServiceImpl.class);
 
     @Autowired
     private TransportClient client;
@@ -41,17 +52,18 @@ public class ESCrudServiceImpl implements ESCrudService {
 
     @Override
     public ResponseEntity searchById(String id) {
-        if (id.isEmpty()){
+        if (id.isEmpty()) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
         //通过索引 、类型、id 向es进行查询数据
-        GetResponse response = client.prepareGet("map_data","Feature",id).get();
-        if (!response.isExists()){
+        GetResponse response = client.prepareGet("map_data", "Feature", id).get();
+        if (!response.isExists()) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
         //返回查询到的数据
-        return new ResponseEntity(response.getSource(),HttpStatus.OK);
+        return new ResponseEntity(response.getSource(), HttpStatus.OK);
     }
+
     /***
      *
      * 复合查询接口
@@ -132,9 +144,9 @@ public class ESCrudServiceImpl implements ESCrudService {
 
     @Override
     public ResponseEntity queryDataByInputValue(String inputValue) {
-        BoolQueryBuilder boolQuery=null;
-        if(inputValue !=null) {
-            boolQuery= QueryBuilders.boolQuery().must(QueryBuilders.termQuery("properties.xzqmc.keyword",inputValue));
+        BoolQueryBuilder boolQuery = null;
+        if (inputValue != null) {
+            boolQuery = QueryBuilders.boolQuery().must(QueryBuilders.termQuery("properties.xzqmc.keyword", inputValue));
         }
         // 组装查询请求
         SearchRequestBuilder requestBuilder = client.prepareSearch("provincial_data")
@@ -150,20 +162,21 @@ public class ESCrudServiceImpl implements ESCrudService {
         long length = response.getHits().totalHits;
 
         // 组装查询到的数据集
-        List<Map<String, Object>> result=null;
+        List<Map<String, Object>> result = null;
 
-        if (length!=0){
+        if (length != 0) {
             // 组装查询到的数据集
             result = new ArrayList<>();
             for (SearchHit searchHitFields : response.getHits()) {
                 result.add(searchHitFields.getSourceAsMap());
             }
 
-        }else {
+        } else {
 
         }
         return new ResponseEntity(result, HttpStatus.OK);
     }
+
     /****
      * 搜索查询市经纬度
      * @param inputCityName
@@ -171,10 +184,10 @@ public class ESCrudServiceImpl implements ESCrudService {
      */
     @Override
     public String queryCityCoordinatesByInputValue(String inputCityName) {
-        String coordinates =null;
-        BoolQueryBuilder boolQuery=null;
-        if(inputCityName !=null) {
-            boolQuery= QueryBuilders.boolQuery().must(QueryBuilders.termQuery("properties.xzqdmc.keyword",inputCityName));
+        String coordinates = null;
+        BoolQueryBuilder boolQuery = null;
+        if (inputCityName != null) {
+            boolQuery = QueryBuilders.boolQuery().must(QueryBuilders.termQuery("properties.xzqdmc.keyword", inputCityName));
         }
         // 组装查询请求
         SearchRequestBuilder requestBuilder = client.prepareSearch("map_data")
@@ -187,16 +200,16 @@ public class ESCrudServiceImpl implements ESCrudService {
         // 发送查询请求
         SearchResponse response = requestBuilder.get();
         long length = response.getHits().totalHits;
-        if (length!=0){
+        if (length != 0) {
             for (SearchHit searchHitFields : response.getHits()) {
                 //获取城市经纬度坐标
-                for(String key:searchHitFields.getSourceAsMap().keySet()){
-                    if (key.equals("geometry")){
+                for (String key : searchHitFields.getSourceAsMap().keySet()) {
+                    if (key.equals("geometry")) {
                         //System.out.println("Key="+key+"\tvalue="+searchHitFields.getSourceAsMap().get(key));
                         String subValue = searchHitFields.getSourceAsMap().get(key).toString().split(",")[0];
-                        String subValue2= subValue.substring(1,subValue.length()).split("=")[1];
+                        String subValue2 = subValue.substring(1, subValue.length()).split("=")[1];
                         //经纬度坐标
-                        coordinates= subValue2.substring(1,subValue2.length()-1);
+                        coordinates = subValue2.substring(1, subValue2.length() - 1);
                         //System.out.println("coordinates:"+coordinates);
                     }
                 }
@@ -241,18 +254,18 @@ public class ESCrudServiceImpl implements ESCrudService {
         // 组装查询到的数据集
         List<JsonRootBean> result = new ArrayList<>();
 
-        for (Aggregation a:terms){
-            StringTerms stringTerms= (StringTerms)a;
-            for(StringTerms.Bucket bucket:stringTerms.getBuckets()){
-                System.out.println(bucket.getKeyAsString()+"   "+bucket.getDocCount());
+        for (Aggregation a : terms) {
+            StringTerms stringTerms = (StringTerms) a;
+            for (StringTerms.Bucket bucket : stringTerms.getBuckets()) {
+                System.out.println(bucket.getKeyAsString() + "   " + bucket.getDocCount());
                 Aggregation aggs = bucket.getAggregations().getAsMap().get("by_city_name");
                 StringTerms terms1 = (StringTerms) aggs;
                 List<City> cityList = new ArrayList<>();
                 for (StringTerms.Bucket bu : terms1.getBuckets()) {
                     System.out.println(bucket.getKeyAsString() + "  " + bu.getKeyAsString() + " " + bu.getDocCount());
-                    cityList.add(new City(bu.getKeyAsString(),String.valueOf(bu.getDocCount())));
+                    cityList.add(new City(bu.getKeyAsString(), String.valueOf(bu.getDocCount())));
                 }
-                result.add(new JsonRootBean(new Province(bucket.getKeyAsString(),String.valueOf(bucket.getDocCount())),cityList));
+                result.add(new JsonRootBean(new Province(bucket.getKeyAsString(), String.valueOf(bucket.getDocCount())), cityList));
             }
         }
         return new ResponseEntity(result, HttpStatus.OK);
@@ -267,11 +280,11 @@ public class ESCrudServiceImpl implements ESCrudService {
         AggregationBuilder termsBuilder = AggregationBuilders.terms("by_provinces_name").field("properties.provinces_name.keyword");
 
         // 多个字段匹配某一个值
-        QueryBuilder queryBuilder =null;
+        QueryBuilder queryBuilder = null;
 
-        if(poiValue != null){
+        if (poiValue != null) {
             //第一个参数是查询的值，后面的参数是字段名，可以跟多个字段，用逗号隔开
-            queryBuilder = QueryBuilders.multiMatchQuery(poiValue,"properties.first_name","properties.second_name","properties.baidu_first_name","properties.baidu_second_name");
+            queryBuilder = QueryBuilders.multiMatchQuery(poiValue, "properties.first_name", "properties.second_name", "properties.baidu_first_name", "properties.baidu_second_name");
         }
 
         // 组装查询请求
@@ -285,26 +298,175 @@ public class ESCrudServiceImpl implements ESCrudService {
 
         // 发送查询请求
         SearchResponse response = requestBuilder.get();
-        Aggregations terms= response.getAggregations();
+        Aggregations terms = response.getAggregations();
 
         // 组装查询到的数据集
         List<Map<String, Object>> result = new ArrayList<>();
         Map<String, Object> map = new HashMap<String, Object>();
 
-        for (Aggregation a:terms){
-            StringTerms stringTerms= (StringTerms)a;
-            for(StringTerms.Bucket bucket:stringTerms.getBuckets()){
+        for (Aggregation a : terms) {
+            StringTerms stringTerms = (StringTerms) a;
+            for (StringTerms.Bucket bucket : stringTerms.getBuckets()) {
                 //获取传入的省名List的POI计数
-                for(String name :provinceListName){
-                    if (name.equals(bucket.getKeyAsString())){
+                for (String name : provinceListName) {
+                    if (name.equals(bucket.getKeyAsString())) {
                         // System.out.println(bucket.getKeyAsString()+"   "+bucket.getDocCount());
-                        map.put(bucket.getKeyAsString(),bucket.getDocCount());
+                        map.put(bucket.getKeyAsString(), bucket.getDocCount());
                     }
                 }
             }
         }
         result.add(map);
         return new ResponseEntity(result, HttpStatus.OK);
+    }
+
+    /***
+     * POI按照省分组聚和查询（省级）
+     */
+
+    @Override
+    public List<RegionOutput> findProvinceByKeyword(String keyword, List<RegionInput> regionInputList) {
+
+        LOG.info("ESCrudServiceImpl::findProvinceByKeyword keyword = [{}],keyword = [{}]", keyword, regionInputList);
+
+        AggregationBuilder termsBuilder = AggregationBuilders.terms("by_provinces_name").field("properties.provinces_name.keyword");
+
+        // 多个字段匹配某一个值
+        QueryBuilder queryBuilder = null;
+
+        if (keyword != null && keyword.length() > 0) {
+            //第一个参数是查询的值，后面的参数是字段名，可以跟多个字段，用逗号隔开
+            queryBuilder = QueryBuilders.multiMatchQuery(keyword, "properties.first_name", "properties.second_name", "properties.baidu_first_name", "properties.baidu_second_name");
+        }
+
+        // 组装查询请求
+        SearchRequestBuilder requestBuilder = client.prepareSearch("map_data")
+                .setTypes("Feature")
+                .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
+                .setQuery(queryBuilder)
+                .setFrom(0)
+                .setSize(100)
+                .addAggregation(termsBuilder);
+
+        // 发送查询请求
+        SearchResponse response = requestBuilder.get();
+        Aggregations aggregations = response.getAggregations();
+
+        // 组装查询到的数据集
+        List<RegionOutput> regionOutputList = Lists.newArrayList();
+
+        for (Aggregation aggregation : aggregations) {
+            StringTerms stringTerms = (StringTerms) aggregation;
+            for (StringTerms.Bucket bucket : stringTerms.getBuckets()) {
+                //获取传入的省名List的POI计数
+                for (RegionInput regionInput : regionInputList) {
+                    //判断名称是否相等
+                    if (bucket.getKeyAsString().equals(regionInput.getName())) {
+
+                        LOG.info("regionOutput name = [{}],count = [{}]", bucket.getKeyAsString(), bucket.getDocCount());
+                        RegionOutput regionOutput = RegionOutput.builder().name(bucket.getKeyAsString()).count(bucket.getDocCount()).centroid(regionInput.getCentroid()).build();
+                        regionOutputList.add(regionOutput);
+                    }
+                }
+            }
+        }
+        return regionOutputList;
+    }
+
+    @Override
+    public List<RegionOutput> findCityByKeyword(String keyword, List<RegionInput> regionInputList) {
+
+        LOG.info("ESCrudServiceImpl::findProvinceByKeyword keyword = [{}],keyword = [{}]", keyword, regionInputList);
+
+        AggregationBuilder termsBuilder = AggregationBuilders.terms("by_provinces_name").field("properties.provinces_name.keyword");
+        AggregationBuilder cityTermsBuilder = AggregationBuilders.terms("by_city_name").field("properties.city_name.keyword");
+        termsBuilder.subAggregation(cityTermsBuilder);
+
+        // 多个字段匹配某一个值
+        QueryBuilder queryBuilder = null;
+
+        if (keyword != null) {
+            //第一个参数是查询的值，后面的参数是字段名，可以跟多个字段，用逗号隔开
+            queryBuilder = QueryBuilders.multiMatchQuery(keyword, "properties.first_name", "properties.second_name", "properties.baidu_first_name", "properties.baidu_second_name");
+        }
+
+        // 组装查询请求
+        SearchRequestBuilder requestBuilder = client.prepareSearch("map_data")
+                .setTypes("Feature")
+                .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
+                .setQuery(queryBuilder)
+                .setFrom(0)
+                .setSize(100)
+                .addAggregation(termsBuilder);
+
+        // 发送查询请求
+        SearchResponse response = requestBuilder.get();
+        Aggregations aggregations = response.getAggregations();
+
+        // 组装查询到的数据集
+        List<RegionOutput> regionOutputList = Lists.newArrayList();
+
+        for (Aggregation aggregation : aggregations) {
+            StringTerms stringTerms = (StringTerms) aggregation;
+            //获取省
+            for (StringTerms.Bucket bucket : stringTerms.getBuckets()) {
+                Aggregation aggs = bucket.getAggregations().getAsMap().get("by_city_name");
+                StringTerms terms1 = (StringTerms) aggs;
+                //获取市
+                for (StringTerms.Bucket bu : terms1.getBuckets()) {
+                    //获取传入的市名的POI计数
+                    for (RegionInput regionInput : regionInputList) {
+                        //判断名称是否相等
+                        if (bucket.getKeyAsString().equals(regionInput.getName())) {
+
+                            LOG.info("regionOutput name = [{}],count = [{}]", bu.getKeyAsString(), bu.getDocCount());
+                            RegionOutput regionOutput = RegionOutput.builder().name(bu.getKeyAsString()).count(bu.getDocCount()).centroid(regionInput.getCentroid()).build();
+                            regionOutputList.add(regionOutput);
+                        }
+                    }
+                }
+            }
+        }
+        return regionOutputList;
+    }
+
+    @Override
+    public List<RegionOutput> findTownByKeyword(String keyword, List<RegionInput> regionInputList) {
+
+        // 组装查询到的数据集
+        List<RegionOutput> regionOutputList = Lists.newArrayList();
+
+        //获取传入的区县名的POI数据
+        for (RegionInput regionInput : regionInputList) {
+
+            // 组装查询条件
+            BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
+
+            //第一个参数是查询的值，后面的参数是字段名，可以跟多个字段，用逗号隔开
+            boolQuery.must(QueryBuilders.multiMatchQuery(keyword, "properties.first_name", "properties.second_name", "properties.baidu_first_name", "properties.baidu_second_name"))
+                    .must(QueryBuilders.matchQuery("properties.area_name.keyword", regionInput.getName()));
+
+            // 组装查询请求
+            SearchRequestBuilder requestBuilder = client.prepareSearch("map_data")
+                    .setTypes("Feature")
+                    .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
+                    .setQuery(boolQuery)
+                    .setFrom(0)
+                    .setSize(2000);
+
+            // 发送查询请求
+            SearchResponse response = requestBuilder.get();
+            RegionOutput regionOutput = RegionOutput.builder().name(regionInput.getName()).build();
+            List<Poi> poiList = Lists.newArrayList();
+            for (SearchHit searchHitFields : response.getHits()) {
+                Poi poi = JSON.parseObject(JSON.toJSONString(searchHitFields.getSourceAsMap()), Poi.class);
+                poiList.add(poi);
+            }
+            regionOutput.setPoiList(poiList);
+            regionOutputList.add(regionOutput);
+
+        }
+        return regionOutputList;
     }
 
     /***
@@ -318,11 +480,11 @@ public class ESCrudServiceImpl implements ESCrudService {
         termsBuilder.subAggregation(cityTermsBuilder);
 
         // 多个字段匹配某一个值
-        QueryBuilder queryBuilder =null;
+        QueryBuilder queryBuilder = null;
 
-        if(poiValue != null){
+        if (poiValue != null) {
             //第一个参数是查询的值，后面的参数是字段名，可以跟多个字段，用逗号隔开
-            queryBuilder = QueryBuilders.multiMatchQuery(poiValue,"properties.first_name","properties.second_name","properties.baidu_first_name","properties.baidu_second_name");
+            queryBuilder = QueryBuilders.multiMatchQuery(poiValue, "properties.first_name", "properties.second_name", "properties.baidu_first_name", "properties.baidu_second_name");
         }
 
         // 组装查询请求
@@ -336,26 +498,26 @@ public class ESCrudServiceImpl implements ESCrudService {
 
         // 发送查询请求
         SearchResponse response = requestBuilder.get();
-        Aggregations terms= response.getAggregations();
+        Aggregations terms = response.getAggregations();
         // 组装查询到的数据集
         List<Map<String, Object>> result = new ArrayList<>();
 
         Map<String, Object> map = new HashMap<String, Object>();
-        for (Aggregation a:terms){
-            StringTerms stringTerms= (StringTerms)a;
+        for (Aggregation a : terms) {
+            StringTerms stringTerms = (StringTerms) a;
             //获取省
-            for(StringTerms.Bucket bucket:stringTerms.getBuckets()){
+            for (StringTerms.Bucket bucket : stringTerms.getBuckets()) {
                 Aggregation aggs = bucket.getAggregations().getAsMap().get("by_city_name");
                 StringTerms terms1 = (StringTerms) aggs;
                 //获取市
                 for (StringTerms.Bucket bu : terms1.getBuckets()) {
                     //获取传入的市名List的POI计数
-                    for(String name :cityListName){
-                        if (name.equals(bu.getKeyAsString())){
+                    for (String name : cityListName) {
+                        if (name.equals(bu.getKeyAsString())) {
                             //查询城市经纬度
                             //String coordinates= queryCityCoordinatesByInputValue(name);
                             //  System.out.println(bu.getKeyAsString()+"   "+bu.getDocCount()+"  "+coordinates);
-                            map.put(bu.getKeyAsString(),bu.getDocCount());
+                            map.put(bu.getKeyAsString(), bu.getDocCount());
                         }
                     }
                 }
@@ -372,17 +534,18 @@ public class ESCrudServiceImpl implements ESCrudService {
 
     @Override
     public ResponseEntity findCountyDataByPoiValue(String poiValue, List<String> countyListName) {
+
         AggregationBuilder termsBuilder = AggregationBuilders.terms("by_provinces_name").field("properties.provinces_name.keyword");
         AggregationBuilder cityTermsBuilder = AggregationBuilders.terms("by_city_name").field("properties.city_name.keyword");
         AggregationBuilder areaBuilder = AggregationBuilders.terms("by_area_name").field("properties.area_name.keyword");
         termsBuilder.subAggregation(cityTermsBuilder.subAggregation(areaBuilder));
 
         // 多个字段匹配某一个值
-        QueryBuilder queryBuilder =null;
+        QueryBuilder queryBuilder = null;
 
-        if(poiValue != null){
+        if (poiValue != null) {
             //第一个参数是查询的值，后面的参数是字段名，可以跟多个字段，用逗号隔开
-            queryBuilder = QueryBuilders.multiMatchQuery(poiValue,"properties.first_name","properties.second_name","properties.baidu_first_name","properties.baidu_second_name");
+            queryBuilder = QueryBuilders.multiMatchQuery(poiValue, "properties.first_name", "properties.second_name", "properties.baidu_first_name", "properties.baidu_second_name");
         }
 
         // 组装查询请求
@@ -396,29 +559,29 @@ public class ESCrudServiceImpl implements ESCrudService {
 
         // 发送查询请求
         SearchResponse response = requestBuilder.get();
-        Aggregations terms= response.getAggregations();
+        Aggregations terms = response.getAggregations();
 
         // 组装查询到的数据集
         List<Map<String, Object>> result = new ArrayList<>();
         Map<String, Object> map = new HashMap<String, Object>();
 
-        for (Aggregation a:terms){
-            StringTerms stringTerms= (StringTerms)a;
+        for (Aggregation a : terms) {
+            StringTerms stringTerms = (StringTerms) a;
             //获取省
-            for(StringTerms.Bucket bucket:stringTerms.getBuckets()){
+            for (StringTerms.Bucket bucket : stringTerms.getBuckets()) {
                 Aggregation aggs = bucket.getAggregations().getAsMap().get("by_city_name");
                 StringTerms terms1 = (StringTerms) aggs;
                 //获取市
                 for (StringTerms.Bucket buc : terms1.getBuckets()) {
-                    Aggregation agg= buc.getAggregations().getAsMap().get("by_area_name");
+                    Aggregation agg = buc.getAggregations().getAsMap().get("by_area_name");
                     StringTerms terms2 = (StringTerms) agg;
                     //获取县
-                    for (StringTerms.Bucket bu : terms2.getBuckets()){
+                    for (StringTerms.Bucket bu : terms2.getBuckets()) {
                         //获取传入的县名List的POI计数
-                        for(String name :countyListName){
-                            if (name.equals(bu.getKeyAsString())){
+                        for (String name : countyListName) {
+                            if (name.equals(bu.getKeyAsString())) {
                                 // System.out.println(bucket.getKeyAsString()+"   "+bucket.getDocCount());
-                                map.put(bu.getKeyAsString(),bu.getDocCount());
+                                map.put(bu.getKeyAsString(), bu.getDocCount());
                             }
                         }
                     }
@@ -444,9 +607,9 @@ public class ESCrudServiceImpl implements ESCrudService {
         List<Map<String, Object>> result = new ArrayList<>();
 
         //获取传入的县名List的POI计数
-        for(String townName :townListName){
+        for (String townName : townListName) {
             //第一个参数是查询的值，后面的参数是字段名，可以跟多个字段，用逗号隔开
-            boolQuery.must(QueryBuilders.multiMatchQuery(poiValue,"properties.first_name","properties.second_name","properties.baidu_first_name","properties.baidu_second_name"))
+            boolQuery.must(QueryBuilders.multiMatchQuery(poiValue, "properties.first_name", "properties.second_name", "properties.baidu_first_name", "properties.baidu_second_name"))
                     .must(QueryBuilders.matchQuery("properties.name.keyword", townName));
 
             // 组装查询请求
@@ -461,6 +624,8 @@ public class ESCrudServiceImpl implements ESCrudService {
             SearchResponse response = requestBuilder.get();
 
             for (SearchHit searchHitFields : response.getHits()) {
+                LOG.info("=====" + searchHitFields.getSourceAsMap());
+
                 result.add(searchHitFields.getSourceAsMap());
             }
         }
@@ -469,6 +634,7 @@ public class ESCrudServiceImpl implements ESCrudService {
 
     /**
      * 按id删除数据
+     *
      * @param id
      * @return
      */
@@ -478,4 +644,6 @@ public class ESCrudServiceImpl implements ESCrudService {
         DeleteResponse response = client.prepareDelete("map_data", "Feature", id).get();
         return new ResponseEntity(response.getResult(), HttpStatus.OK);
     }
+
+
 }

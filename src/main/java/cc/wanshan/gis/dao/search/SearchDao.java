@@ -17,16 +17,16 @@ public interface SearchDao {
     /**
      * 查询所有（参数 name envelope）
      */
-    @Select("select c.gid,c.name,c.envelope from country c")
+    @Select("select c.gid,c.name,c.centroid,c.envelope from country c")
     public List<Country> findAllCountry();
 
-    @Select("select p.gid,p.name,p.envelope from province p")
+    @Select("select p.gid,p.name,p.centroid,p.envelope from province p")
     public List<Province> findAllProvince();
 
-    @Select("select c.gid,c.name,c.envelope from city c")
+    @Select("select c.gid,c.name,c.centroid,c.envelope from city c")
     public List<City> findAllCity();
 
-    @Select("select t.gid,t.name,t.envelope from town t")
+    @Select("select t.gid,t.name,t.centroid,t.envelope from town t")
     public List<Town> findAllTown();
 
     /**
