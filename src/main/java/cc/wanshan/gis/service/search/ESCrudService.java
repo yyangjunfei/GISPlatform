@@ -1,9 +1,7 @@
 package cc.wanshan.gis.service.search;
-
 import cc.wanshan.gis.entity.search.RegionInput;
 import cc.wanshan.gis.entity.search.RegionOutput;
 import org.springframework.http.ResponseEntity;
-
 import java.util.List;
 
 public interface ESCrudService {
@@ -99,5 +97,21 @@ public interface ESCrudService {
      * @return
      */
     ResponseEntity delete(String id);
+
+    /**
+     * @param indexName
+     * 删除elasticsearch索引库
+     * @return
+     */
+
+    ResponseEntity deleteElasticsearchIndex(String indexName);
+
+
+    /***
+     * 导入postgis 数据库到Elasticsearch
+     * @return ResponseEntity
+     */
+
+    ResponseEntity postGisDb2es(String dbURL,String dbUserName,String dbPassword,String driverClassName,String sql,String esindexName,String esTypeName);
 
 }
