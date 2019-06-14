@@ -3,6 +3,7 @@ package cc.wanshan.gis.entity;
 import cc.wanshan.gis.common.enums.ResultCode;
 
 /** 请求返回类型的最外层封装 */
+
 public class Result<T> {
 
   /** 错误码. */

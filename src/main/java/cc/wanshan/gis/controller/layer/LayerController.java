@@ -19,9 +19,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import java.util.Date;
+import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,12 +55,24 @@ public class LayerController {
     @Resource(name = "styleServiceImpl")
     private StyleService styleServiceImpl;
 
-    @ApiOperation(value = "保存标绘图层", notes = "新增标绘图层或者根据图层Id更新图层")
-    @ApiImplicitParam(name = "layer", value = "实体类对象", required = true)
-    @PostMapping("/savelayer")
-    public Result saveLayer(@RequestBody Layer layer) {
-        logger.info("saveLayer::layer = [{}]", layer);
-        return layerService.saveLayer(layer);
+  @ApiOperation(value = "保存标绘图层", notes = "新增标绘图层或者根据图层Id更新图层")
+  @ApiImplicitParam(name = "layer", value = "实体类对象", required = true)
+  @PostMapping("/savelayer")
+  @ResponseBody
+  public Result saveLayer(@RequestBody Layer layer) {
+    logger.info("saveLayer::layer = [{}]", layer);
+    return layerService.saveLayer(layer);
+  }
+
+  @ApiOperation(value = "删除标绘图层", notes = "根据图层集合批量删除图层,只需要封装layerId即可")
+  @ApiImplicitParam(name = "layerList", value = "封装了layerId的layer集合", required = true)
+  @PostMapping("/deletelayer")
+  @ResponseBody
+  public Result deleteLayer(@RequestBody List<Layer> layerList) {
+    logger.info("deleteLayer::layerList = [{}]", layerList);
+    if (layerList != null && layerList.size() > 0
+    ) {
+      return layerService.deleteLayer(layerList);
     }
 
     @ApiOperation(value = "删除标绘图层", notes = "根据图层集合批量删除图层,只需要封装layerId即可")
@@ -111,25 +126,24 @@ public class LayerController {
         return ResultUtil.error(4, "参数为null");
     }
 
-    @ApiOperation(value = "查询图层", notes = "根据userId和layerName查询图层")
-    @ApiImplicitParams({@ApiImplicitParam(name = "layerName", value = "图层名", required = true),
-            @ApiImplicitParam(name = "userId", value = "用户Id", required = true)})
-    @GetMapping("/findbyuseridlayername/{userId}/{layerName}")
-    @ResponseBody
-    public Result findLayerCountByLayerName(@PathVariable String userId,
-                                            @PathVariable String layerName) {
-        logger.info("findLayerCountByLayerName::userId = [{}], layerName = [{}]", userId, layerName);
-        if (StringUtils.isNotBlank(userId) && StringUtils.isNotBlank(layerName)) {
-            Layer layer = layerService.findLayer(userId, layerName);
-            if (layer != null) {
-                return ResultUtil.success(layer);
-            } else {
-                return ResultUtil.error(1, "图层不存在");
-            }
-        } else {
-            logger.warn("警告！传入参数存在null值");
-            return ResultUtil.error(1, "传入参数存在null值");
-        }
+  @ApiOperation(value = "查询图层", notes = "根据userId和layerName查询图层")
+  @ApiImplicitParams({@ApiImplicitParam(name = "layerName", value = "图层名", required = true),
+      @ApiImplicitParam(name = "userId", value = "用户Id", required = true)})
+  @GetMapping(value="/findbyuseridlayername/{userId}/{layerName}")
+  @ResponseBody
+  public Result findLayerCountByLayerName(@PathVariable String userId,
+      @PathVariable String layerName) {
+    logger.info("findLayerCountByLayerName::userId = [{}], layerName = [{}]", userId, layerName);
+    if (StringUtils.isNotBlank(userId) && StringUtils.isNotBlank(layerName)) {
+      Layer layer = layerService.findLayer(userId, layerName);
+      if (layer != null) {
+        return ResultUtil.success(layer);
+      } else {
+        return ResultUtil.error(1, "图层不存在");
+      }
+    } else {
+      logger.warn("警告！传入参数存在null值");
+      return ResultUtil.error(1, "传入参数存在null值");
     }
 
     @PostMapping("/searchlayer")
@@ -246,30 +260,27 @@ public class LayerController {
         }
         return ResultUtil.error("参数为null");
     }
-
-    @RequestMapping(value = "/updatelayer")
-    @ResponseBody
-    public Result updateLayer(@RequestBody JSONObject jsonObject) {
-        logger.info("updateLayer::jsonObject = [{}]", jsonObject);
-        if (jsonObject != null
-                && StringUtils.isNotBlank(jsonObject.getString("layerNameZH"))
-                && StringUtils.isNotBlank(jsonObject.getString("security"))
-                && StringUtils.isNotBlank(jsonObject.getString("userId"))
-                && StringUtils.isNotBlank(jsonObject.getString("layerId"))
-        ) {
-            Layer layer = JSON.parseObject(jsonObject.toJSONString(), Layer.class);
-            layer.setUpdateTime(new Date());
-            Boolean updateLayer = layerService.updateLayer(layer);
-            if (updateLayer) {
-                return ResultUtil.success();
-            } else {
-                logger.error("更新失败" + updateLayer);
-                return ResultUtil.error(1, "操作异常");
-            }
-        }
-        logger.error("参数为null", jsonObject);
-        return ResultUtil.error(2, "参数为null");
+    return ResultUtil.error("参数为null");
+  }
+  @ApiOperation(value = "修改图层", notes = "修改图层属性")
+  @ApiImplicitParam(name = "layer", value = "实体类对象", required = true)
+  @PostMapping(value = "/updatelayer")
+  @ResponseBody
+  public Result updateLayer(@RequestBody Layer layer) {
+    logger.info("updateLayer::layer = [{}]",layer);
+    if (layer!=null) {
+      layer.setUpdateTime(new Date());
+      Boolean updateLayer = layerService.updateLayer(layer);
+      if (updateLayer) {
+        return ResultUtil.success();
+      } else {
+        logger.error("更新失败" + updateLayer);
+        return ResultUtil.error(1, "操作异常");
+      }
     }
+    logger.error("参数为null", layer);
+    return ResultUtil.error(2, "参数为null");
+  }
 
     @ApiOperation(value = "查询图层", notes = "根据layerId查询图层信息")
     @ApiImplicitParam(name = "layerId", value = "图层 Id", required = true)
