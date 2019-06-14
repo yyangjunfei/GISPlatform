@@ -16,7 +16,7 @@ public class RegionOutput {
 
     private String geometry;
 
-    private Integer count;
+    private Long count;
 
     private List<Poi> poiList;
 
