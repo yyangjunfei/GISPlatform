@@ -1,8 +1,6 @@
 package cc.wanshan.gis.service.firstclassification;
 
 import cc.wanshan.gis.entity.thematic.FirstClassification;
-import cc.wanshan.gis.entity.thematic.SecondClassification;
-import java.util.List;
 
 /**
  * @author Li Cheng

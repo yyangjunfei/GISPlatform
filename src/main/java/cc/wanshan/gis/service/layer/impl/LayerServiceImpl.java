@@ -304,9 +304,6 @@ public class LayerServiceImpl implements LayerService {
       List<LineString> lineStringList = layer.getLineStringList();
       List<Polygon> polygonList = layer.getPolygonList();
       Layer searchLayer = findLayer(userId, layerName);
-      if (pointList != null && pointList.size() > 0
-          || lineStringList != null && lineStringList.size() > 0
-          || polygonList != null && polygonList.size() > 0) {
         if (searchLayer != null) {
           newLayer.setLayerId(searchLayer.getLayerId());
           Result result = null;
@@ -322,7 +319,7 @@ public class LayerServiceImpl implements LayerService {
           }
           if (lineStringList != null && lineStringList.size() > 0) {
             Boolean lineString = deleteFeature(lineStringList, "linestring");
-            logger.info("saveLayer::layer = [{}]" + lineString);
+            logger.info("deleteFeature(lineStringList, \"linestring\")" + lineString);
             for (LineString string : lineStringList) {
               string.setLayer(newLayer);
               string.setInsertTime(new Date());
@@ -345,19 +342,19 @@ public class LayerServiceImpl implements LayerService {
             Layer newLayer1 = findLayerByLayerId(searchLayer.getLayerId());
             return ResultUtil.success(newLayer1);
           } else {
-            logger.warn("警告:" + result.getMsg());
-            return ResultUtil.error(1, result.getMsg());
+            logger.warn("警告:" + "参数异常");
+            return ResultUtil.error(1, "参数异常");
           }
         } else {
           Result insertLayer = insertLayer(layer);
           if (insertLayer.getCode() == 0) {
-            Layer newlayer = (Layer) insertLayer.getData();
+            Layer newLayer1 = (Layer) insertLayer.getData();
             Result result = null;
             if (pointList != null && pointList.size() > 0) {
               Boolean point = deleteFeature(pointList, "point");
               logger.info("saveLayer::layer = [{}]" + point);
               for (Point point1 : pointList) {
-                point1.setLayer(newlayer);
+                point1.setLayer(newLayer1);
                 point1.setUpdateTime(new Date());
                 point1.setInsertTime(new Date());
               }
@@ -367,7 +364,7 @@ public class LayerServiceImpl implements LayerService {
               Boolean lineString = deleteFeature(lineStringList, "linestring");
               logger.info("saveLayer::layer = [{}]" + lineString);
               for (LineString lineString1 : lineStringList) {
-                lineString1.setLayer(newlayer);
+                lineString1.setLayer(newLayer1);
                 lineString1.setUpdateTime(new Date());
                 lineString1.setInsertTime(new Date());
               }
@@ -377,17 +374,18 @@ public class LayerServiceImpl implements LayerService {
               Boolean polygon = deleteFeature(polygonList, "polygon");
               logger.info("saveLayer::layer = [{}]" + polygon);
               for (Polygon polygon1 : polygonList) {
-                polygon1.setLayer(newlayer);
+                polygon1.setLayer(newLayer1);
                 polygon1.setUpdateTime(new Date());
                 polygon1.setInsertTime(new Date());
               }
               result = insertFeatures(layerName, type, polygonList);
             }
-            assert result != null;
-            if (result.getCode() == 0) {
-              Layer newLayer1 = findLayerByLayerId(newlayer.getLayerId());
-              return ResultUtil.success(newLayer1);
-            } else {
+            if (result!=null&&result.getCode() == 0) {
+              Layer newLayer2 = findLayerByLayerId(newLayer1.getLayerId());
+              return ResultUtil.success(newLayer2);
+            } else if (result==null){
+             return insertLayer;
+            }else {
               logger.warn("警告:" + result.getMsg());
               return ResultUtil.error(1, result.getMsg());
             }
@@ -396,9 +394,6 @@ public class LayerServiceImpl implements LayerService {
             return insertLayer;
           }
         }
-      } else {
-        return ResultUtil.error(2, "要素为null");
-      }
     } else {
       logger.warn("图层参数为null:" + layer);
       return ResultUtil.error(2, "jsonObject为空");

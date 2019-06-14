@@ -19,12 +19,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -55,6 +55,7 @@ public class LayerController {
   @ApiOperation(value = "保存标绘图层", notes = "新增标绘图层或者根据图层Id更新图层")
   @ApiImplicitParam(name = "layer", value = "实体类对象", required = true)
   @PostMapping("/savelayer")
+  @ResponseBody
   public Result saveLayer(@RequestBody Layer layer) {
     logger.info("saveLayer::layer = [{}]", layer);
     return layerService.saveLayer(layer);
@@ -114,7 +115,7 @@ public class LayerController {
   @ApiOperation(value = "查询图层", notes = "根据userId和layerName查询图层")
   @ApiImplicitParams({@ApiImplicitParam(name = "layerName", value = "图层名", required = true),
       @ApiImplicitParam(name = "userId", value = "用户Id", required = true)})
-  @GetMapping("/findbyuseridlayername/{userId}/{layerName}")
+  @GetMapping(value="/findbyuseridlayername/{userId}/{layerName}")
   @ResponseBody
   public Result findLayerCountByLayerName(@PathVariable String userId,
       @PathVariable String layerName) {
@@ -246,18 +247,13 @@ public class LayerController {
     }
     return ResultUtil.error("参数为null");
   }
-
-  @RequestMapping(value = "/updatelayer")
+  @ApiOperation(value = "修改图层", notes = "修改图层属性")
+  @ApiImplicitParam(name = "layer", value = "实体类对象", required = true)
+  @PostMapping(value = "/updatelayer")
   @ResponseBody
-  public Result updateLayer(@RequestBody JSONObject jsonObject) {
-    logger.info("updateLayer::jsonObject = [{}]", jsonObject);
-    if (jsonObject != null
-        && StringUtils.isNotBlank(jsonObject.getString("layerNameZH"))
-        && StringUtils.isNotBlank(jsonObject.getString("security"))
-        && StringUtils.isNotBlank(jsonObject.getString("userId"))
-        && StringUtils.isNotBlank(jsonObject.getString("layerId"))
-    ) {
-      Layer layer = JSON.parseObject(jsonObject.toJSONString(), Layer.class);
+  public Result updateLayer(@RequestBody Layer layer) {
+    logger.info("updateLayer::layer = [{}]",layer);
+    if (layer!=null) {
       layer.setUpdateTime(new Date());
       Boolean updateLayer = layerService.updateLayer(layer);
       if (updateLayer) {
@@ -267,7 +263,7 @@ public class LayerController {
         return ResultUtil.error(1, "操作异常");
       }
     }
-    logger.error("参数为null", jsonObject);
+    logger.error("参数为null", layer);
     return ResultUtil.error(2, "参数为null");
   }
 
