@@ -9,11 +9,15 @@ import cc.wanshan.gis.entity.sercher.JsonRootBean;
 import cc.wanshan.gis.entity.sercher.Province;
 import cc.wanshan.gis.service.search.ESCrudService;
 import cc.wanshan.gis.utils.ResultUtil;
+import cc.wanshan.gis.utils.importDB2Es;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import org.elasticsearch.action.admin.indices.analyze.AnalyzeRequest;
 import org.elasticsearch.action.admin.indices.analyze.AnalyzeResponse;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
+import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
+import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -682,7 +686,6 @@ public class ESCrudServiceImpl implements ESCrudService {
 
         List<JSONObject> list = Lists.newArrayList();
 
-
         objectList.add(tokens);
 
         // 发送查询请求
@@ -704,4 +707,54 @@ public class ESCrudServiceImpl implements ESCrudService {
         objectList.add(list);
         return ResultUtil.success(objectList);
     }
+
+    /**
+     * 删除elasticsearch索引库
+     *
+     * @return
+     */
+
+    @Override
+    public ResponseEntity deleteElasticsearchIndex(String indexName) {
+        ResponseEntity responseEntity = null;
+        //判断索引是否存在
+        IndicesExistsRequest inExistsRequest = new IndicesExistsRequest(indexName);
+        IndicesExistsResponse inExistsResponse = client.admin().indices().exists(inExistsRequest).actionGet();
+
+        if (!inExistsResponse.isExists()) {
+            LOG.info(indexName + " not exists");
+        } else {
+            DeleteIndexResponse dResponse = client.admin().indices().prepareDelete(indexName).execute().actionGet();
+            // isAcknowledged()方法判断删除是否成功
+            if (dResponse.isAcknowledged()) {
+                responseEntity = new ResponseEntity("delete index " + indexName + "  successfully!", HttpStatus.OK);
+            } else {
+                responseEntity = new ResponseEntity("Fail to delete index " + indexName, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+        return responseEntity;
+    }
+
+    /***
+     * 导入postgis 数据库到Elasticsearch
+     * @return ResponseEntity
+     */
+
+    @Override
+    public ResponseEntity postGisDb2es(String dbURL, String dbUserName, String dbPassword, String
+            driverClassName, String sql, String esindexName, String esTypeName) {
+        ResponseEntity responseEntity = null;
+        importDB2Es.transportClient = client;
+        long count;
+        try {
+            count = importDB2Es.importData(dbURL, dbUserName, dbPassword, driverClassName, sql, esindexName, esTypeName);
+            if (count == 0) {
+                responseEntity = new ResponseEntity("导入postGisDb到Elasticsearch成功", HttpStatus.OK);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return responseEntity;
+    }
+
 }

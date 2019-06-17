@@ -101,5 +101,22 @@ public interface ESCrudService {
      */
     ResponseEntity delete(String id);
 
+
     Result searchAreaGeoFromES(String name);
+
+    /**
+     * @param indexName 删除elasticsearch索引库
+     * @return
+     */
+
+    ResponseEntity deleteElasticsearchIndex(String indexName);
+
+
+    /***
+     * 导入postgis 数据库到Elasticsearch
+     * @return ResponseEntity
+     */
+
+    ResponseEntity postGisDb2es(String dbURL, String dbUserName, String dbPassword, String driverClassName, String sql, String esindexName, String esTypeName);
+
 }

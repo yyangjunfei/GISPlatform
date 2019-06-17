@@ -19,9 +19,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class FirstClass {
-private static final Logger logger= LoggerFactory.getLogger(FirstClass.class);
-  private FirstClassification firstClassification =new FirstClassification();
-  private Thematic thematic =new Thematic();
+
+  private static final Logger logger = LoggerFactory.getLogger(FirstClass.class);
+  private FirstClassification firstClassification = new FirstClassification();
+  private Thematic thematic = new Thematic();
   @Resource
   private FirstClassificationService firstClassificationService;
 
@@ -34,6 +35,6 @@ private static final Logger logger= LoggerFactory.getLogger(FirstClass.class);
     firstClassification.setInsertTime(new Date());
     firstClassification.setUpdateTime(new Date());
     Boolean aBoolean = firstClassificationService.insertFirstClassification(firstClassification);
-    logger.info("insertFirstClass::"+aBoolean);
+    logger.info("insertFirstClass::" + aBoolean);
   }
 }

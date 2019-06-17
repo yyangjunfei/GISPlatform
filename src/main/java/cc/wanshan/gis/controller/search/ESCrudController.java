@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+
 /***
  *@program: Elasticsearch
  *@description: es增删查改
@@ -179,5 +180,30 @@ public class ESCrudController {
     public ResponseEntity delete(@RequestParam(value = "id") String id) {
 
         return esCrudService.delete(id);
+    }
+
+    /**
+     * 删除elasticsearch索引库
+     *
+     * @return
+     */
+
+    @ApiOperation(value = "删除elasticsearch索引库", notes = "删除elasticsearch索引库")
+    @DeleteMapping("deleteElasticsearchIndex")
+    public ResponseEntity deleteElasticsearchIndex(@RequestParam(value = "indexName") String indexName) {
+
+        return esCrudService.deleteElasticsearchIndex(indexName);
+    }
+
+    /***
+     * 导入postgis 数据库到Elasticsearch
+     * @return ResponseEntity
+     */
+
+    @ApiOperation(value = "导入postGis数据到ES", notes = "导入postGis数据到ES")
+    @GetMapping("postGisDb2es")
+    public ResponseEntity postGisDb2es(@RequestParam(value = "dbURL") String dbURL, @RequestParam(value = "dbUserName") String dbUserName, @RequestParam(value = "dbPassword") String dbPassword, @RequestParam(value = "driverClassName") String driverClassName, @RequestParam(value = "sql") String sql, @RequestParam(value = "esindexName") String esindexName, @RequestParam(value = "esTypeName") String esTypeName) {
+
+        return esCrudService.postGisDb2es(dbURL, dbUserName, dbPassword, driverClassName, sql, esindexName, esTypeName);
     }
 }
