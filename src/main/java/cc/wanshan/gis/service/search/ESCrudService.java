@@ -1,5 +1,6 @@
 package cc.wanshan.gis.service.search;
 
+import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.entity.search.RegionInput;
 import cc.wanshan.gis.entity.search.RegionOutput;
 import org.springframework.http.ResponseEntity;
@@ -100,4 +101,5 @@ public interface ESCrudService {
      */
     ResponseEntity delete(String id);
 
+    Result searchAreaGeoFromES(String name);
 }

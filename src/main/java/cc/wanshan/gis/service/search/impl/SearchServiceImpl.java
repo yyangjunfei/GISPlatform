@@ -19,7 +19,6 @@ import cc.wanshan.gis.service.search.ESCrudService;
 import cc.wanshan.gis.service.search.SearchService;
 import cc.wanshan.gis.utils.GeoToolsUtils;
 import cc.wanshan.gis.utils.GeometryCreator;
-import cc.wanshan.gis.utils.JsonUtils;
 import cc.wanshan.gis.utils.ResultUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
@@ -187,13 +186,13 @@ public class SearchServiceImpl implements SearchService {
     }
 
     @Override
-    public Result searchPlace(String jsonString) {
+    public Result searchAreaGeoFromES(String name) {
 
-        if (!JsonUtils.validate(jsonString)) {
-            return ResultUtil.error(ResultCode.PARAM_NOT_JSON);
-        }
+        return esCrudService.searchAreaGeoFromES(name);
+    }
 
-        JSONObject jsonObject = JSONObject.parseObject(jsonString);
+    @Override
+    public Result searchPlace(JSONObject jsonObject) {
 
         double level = jsonObject.getDouble(Constant.SEARCH_LEVEL);
         String rectangle = jsonObject.getString(Constant.SEARCH_RECTANGLE);
@@ -208,7 +207,6 @@ public class SearchServiceImpl implements SearchService {
         double maxX = Double.parseDouble(arr[2]);
         double maxY = Double.parseDouble(arr[3]);
 
-        List<Country> countries = Lists.newArrayList();
 
         List<RegionInput> regionInputList = Lists.newArrayList();
         Geometry polygon = null;
@@ -218,15 +216,8 @@ public class SearchServiceImpl implements SearchService {
 
             //级别[8, 22]查询省市，其他级别查询国家，查不到返回未找到
             if (level <= 8) {
-                for (Country country : countryList) {
-                    Geometry geometry = GeoToolsUtils.geoJson2Geometry(country.getEnvelope());
-                    if (geometry.intersects(polygon)) {
-                        countries.add(country);
-                    }
-                }
-                if (countries != null) {
-                    return ResultUtil.success();
-                }
+                //级别低于8，（国家级别）数据不显示
+                return ResultUtil.error(ResultCode.DATA_NOT_SUPPORT);
             } else if (level > 8 && level <= 11) {
                 for (Province province : provinceList) {
                     String envelope = province.getEnvelope();
@@ -303,8 +294,9 @@ public class SearchServiceImpl implements SearchService {
         }
     }
 
+
     @Override
-    public Result searchTest() {
+    public Result test() {
 
         /**
          * 国家数据更新

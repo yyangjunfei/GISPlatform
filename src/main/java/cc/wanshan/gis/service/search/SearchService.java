@@ -1,6 +1,7 @@
 package cc.wanshan.gis.service.search;
 
 import cc.wanshan.gis.entity.Result;
+import com.alibaba.fastjson.JSONObject;
 
 public interface SearchService {
 
@@ -8,7 +9,10 @@ public interface SearchService {
 
     Result searchAreaGeo(String name);
 
-    Result searchTest();
+    Result searchAreaGeoFromES(String name);
 
-    Result searchPlace(String jsonString);
+    Result searchPlace(JSONObject jsonObject);
+
+    Result test();
+
 }
