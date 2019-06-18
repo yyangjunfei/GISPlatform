@@ -1,5 +1,6 @@
 package cc.wanshan.gis.service.search.impl;
 
+import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.entity.search.Poi;
 import cc.wanshan.gis.entity.search.RegionInput;
 import cc.wanshan.gis.entity.search.RegionOutput;
@@ -7,9 +8,13 @@ import cc.wanshan.gis.entity.sercher.City;
 import cc.wanshan.gis.entity.sercher.JsonRootBean;
 import cc.wanshan.gis.entity.sercher.Province;
 import cc.wanshan.gis.service.search.ESCrudService;
+import cc.wanshan.gis.utils.ResultUtil;
 import cc.wanshan.gis.utils.importDB2Es;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
+import org.elasticsearch.action.admin.indices.analyze.AnalyzeRequest;
+import org.elasticsearch.action.admin.indices.analyze.AnalyzeResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
@@ -22,6 +27,7 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
@@ -31,7 +37,6 @@ import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -332,16 +337,16 @@ public class ESCrudServiceImpl implements ESCrudService {
     @Override
     public List<RegionOutput> findProvinceByKeyword(String keyword, List<RegionInput> regionInputList) {
 
-        LOG.info("ESCrudServiceImpl::findProvinceByKeyword keyword = [{}],keyword = [{}]", keyword, regionInputList);
+        LOG.info("ESCrudServiceImpl::findProvinceByKeyword keyword = [{}],regionInputList = [{}]", keyword, regionInputList);
 
-        AggregationBuilder termsBuilder = AggregationBuilders.terms("by_provinces_name").field("properties.provinces_name.keyword");
+        AggregationBuilder termsBuilder = AggregationBuilders.terms("by_province").field("properties.province.keyword");
 
         // 多个字段匹配某一个值
         QueryBuilder queryBuilder = null;
 
         if (keyword != null && keyword.length() > 0) {
             //第一个参数是查询的值，后面的参数是字段名，可以跟多个字段，用逗号隔开
-            queryBuilder = QueryBuilders.multiMatchQuery(keyword, "properties.first_name", "properties.second_name", "properties.baidu_first_name", "properties.baidu_second_name");
+            queryBuilder = QueryBuilders.multiMatchQuery(keyword, "properties.first_class", "properties.second_class", "properties.third_class", "properties.name");
         }
 
         // 组装查询请求
@@ -369,8 +374,10 @@ public class ESCrudServiceImpl implements ESCrudService {
                     if (bucket.getKeyAsString().equals(regionInput.getName())) {
 
                         LOG.info("regionOutput name = [{}],count = [{}]", bucket.getKeyAsString(), bucket.getDocCount());
+
                         RegionOutput regionOutput = RegionOutput.builder().name(bucket.getKeyAsString()).count(bucket.getDocCount()).centroid(regionInput.getCentroid()).build();
                         regionOutputList.add(regionOutput);
+
                     }
                 }
             }
@@ -383,8 +390,8 @@ public class ESCrudServiceImpl implements ESCrudService {
 
         LOG.info("ESCrudServiceImpl::findProvinceByKeyword keyword = [{}],keyword = [{}]", keyword, regionInputList);
 
-        AggregationBuilder termsBuilder = AggregationBuilders.terms("by_provinces_name").field("properties.provinces_name.keyword");
-        AggregationBuilder cityTermsBuilder = AggregationBuilders.terms("by_city_name").field("properties.city_name.keyword");
+        AggregationBuilder termsBuilder = AggregationBuilders.terms("by_province").field("properties.province.keyword");
+        AggregationBuilder cityTermsBuilder = AggregationBuilders.terms("by_city").field("properties.city.keyword");
         termsBuilder.subAggregation(cityTermsBuilder);
 
         // 多个字段匹配某一个值
@@ -392,7 +399,7 @@ public class ESCrudServiceImpl implements ESCrudService {
 
         if (keyword != null) {
             //第一个参数是查询的值，后面的参数是字段名，可以跟多个字段，用逗号隔开
-            queryBuilder = QueryBuilders.multiMatchQuery(keyword, "properties.first_name", "properties.second_name", "properties.baidu_first_name", "properties.baidu_second_name");
+            queryBuilder = QueryBuilders.multiMatchQuery(keyword, "properties.first_class", "properties.second_class", "properties.third_class", "properties.name");
         }
 
         // 组装查询请求
@@ -415,14 +422,14 @@ public class ESCrudServiceImpl implements ESCrudService {
             StringTerms stringTerms = (StringTerms) aggregation;
             //获取省
             for (StringTerms.Bucket bucket : stringTerms.getBuckets()) {
-                Aggregation aggs = bucket.getAggregations().getAsMap().get("by_city_name");
+                Aggregation aggs = bucket.getAggregations().getAsMap().get("by_city");
                 StringTerms terms1 = (StringTerms) aggs;
                 //获取市
                 for (StringTerms.Bucket bu : terms1.getBuckets()) {
                     //获取传入的市名的POI计数
                     for (RegionInput regionInput : regionInputList) {
                         //判断名称是否相等
-                        if (bucket.getKeyAsString().equals(regionInput.getName())) {
+                        if (bu.getKeyAsString().equals(regionInput.getName())) {
 
                             LOG.info("regionOutput name = [{}],count = [{}]", bu.getKeyAsString(), bu.getDocCount());
                             RegionOutput regionOutput = RegionOutput.builder().name(bu.getKeyAsString()).count(bu.getDocCount()).centroid(regionInput.getCentroid()).build();
@@ -448,8 +455,8 @@ public class ESCrudServiceImpl implements ESCrudService {
             BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
 
             //第一个参数是查询的值，后面的参数是字段名，可以跟多个字段，用逗号隔开
-            boolQuery.must(QueryBuilders.multiMatchQuery(keyword, "properties.first_name", "properties.second_name", "properties.baidu_first_name", "properties.baidu_second_name"))
-                    .must(QueryBuilders.matchQuery("properties.area_name.keyword", regionInput.getName()));
+            boolQuery.must(QueryBuilders.multiMatchQuery(keyword, "properties.first_class", "properties.second_class", "properties.third_class", "properties.name"))
+                    .must(QueryBuilders.matchQuery("properties.county.keyword", regionInput.getName()));
 
             // 组装查询请求
             SearchRequestBuilder requestBuilder = client.prepareSearch("map_data")
@@ -457,14 +464,14 @@ public class ESCrudServiceImpl implements ESCrudService {
                     .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                     .setQuery(boolQuery)
                     .setFrom(0)
-                    .setSize(2000);
+                    .setSize(20);
 
             // 发送查询请求
             SearchResponse response = requestBuilder.get();
             RegionOutput regionOutput = RegionOutput.builder().name(regionInput.getName()).build();
             List<Poi> poiList = Lists.newArrayList();
             for (SearchHit searchHitFields : response.getHits()) {
-                Poi poi = JSON.parseObject(JSON.toJSONString(searchHitFields.getSourceAsMap()), Poi.class);
+                Poi poi = JSON.parseObject(searchHitFields.getSourceAsString(), Poi.class);
                 poiList.add(poi);
             }
             regionOutput.setPoiList(poiList);
@@ -480,8 +487,8 @@ public class ESCrudServiceImpl implements ESCrudService {
 
     @Override
     public ResponseEntity findCityDataByPoiValue(String poiValue, List<String> cityListName) {
-        AggregationBuilder termsBuilder = AggregationBuilders.terms("by_provinces_name").field("properties.provinces_name.keyword");
-        AggregationBuilder cityTermsBuilder = AggregationBuilders.terms("by_city_name").field("properties.city_name.keyword");
+        AggregationBuilder termsBuilder = AggregationBuilders.terms("by_province").field("properties.province.keyword");
+        AggregationBuilder cityTermsBuilder = AggregationBuilders.terms("by_city").field("properties.city.keyword");
         termsBuilder.subAggregation(cityTermsBuilder);
 
         // 多个字段匹配某一个值
@@ -650,14 +657,68 @@ public class ESCrudServiceImpl implements ESCrudService {
         return new ResponseEntity(response.getResult(), HttpStatus.OK);
     }
 
+    @Override
+    public Result searchAreaGeoFromES(String name) {
+
+        AnalyzeRequest analyzeRequest = new AnalyzeRequest("region_data").text(name).analyzer("ik_smart");
+
+        List<Object> objectList = Lists.newArrayList();
+
+        List<AnalyzeResponse.AnalyzeToken> tokens = client.admin().indices().analyze(analyzeRequest).actionGet().getTokens();
+
+        for (AnalyzeResponse.AnalyzeToken token : tokens) {
+            objectList.add(token.getTerm());
+        }
+        // 组装查询条件
+        BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
+        //第一个参数是查询的值，后面的参数是字段名，可以跟多个字段，用逗号隔开
+
+        boolQuery.must(QueryBuilders.matchQuery("properties.name.keyword", name).analyzer("ik_smart").minimumShouldMatch("75%")).minimumShouldMatch(3);
+        QueryStringQueryBuilder queryBuilder = new QueryStringQueryBuilder("region_data");
+        queryBuilder.analyzer("ik_smart");
+        queryBuilder.field("properties.name.keyword").field(name);
+
+        // 组装查询请求
+        SearchRequestBuilder requestBuilder = client.prepareSearch("region_data")
+                .setTypes("Feature")
+                .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
+                .setQuery(boolQuery)
+                .setFrom(0)
+                .setSize(5);
+
+        List<JSONObject> list = Lists.newArrayList();
+
+        objectList.add(tokens);
+
+        // 发送查询请求
+        SearchResponse response = requestBuilder.get();
+        for (SearchHit searchHitFields : response.getHits()) {
+
+            JSONObject jsonObject = JSON.parseObject(searchHitFields.getSourceAsString());
+            String properties = jsonObject.getString("properties");
+
+            JSONObject jsonObject1 = JSON.parseObject(properties);
+            String name1 = jsonObject1.getString("name");
+//            list.add(jsonObject);
+//            list.add(JSON.parseObject(properties));
+//            objectList.add(name1);
+
+        }
+
+
+        objectList.add(list);
+        return ResultUtil.success(objectList);
+    }
+
     /**
      * 删除elasticsearch索引库
+     *
      * @return
      */
 
     @Override
     public ResponseEntity deleteElasticsearchIndex(String indexName) {
-        ResponseEntity responseEntity =null;
+        ResponseEntity responseEntity = null;
         //判断索引是否存在
         IndicesExistsRequest inExistsRequest = new IndicesExistsRequest(indexName);
         IndicesExistsResponse inExistsResponse = client.admin().indices().exists(inExistsRequest).actionGet();
@@ -666,14 +727,14 @@ public class ESCrudServiceImpl implements ESCrudService {
             LOG.info(indexName + " not exists");
         } else {
             DeleteIndexResponse dResponse = client.admin().indices().prepareDelete(indexName).execute().actionGet();
-           // isAcknowledged()方法判断删除是否成功
+            // isAcknowledged()方法判断删除是否成功
             if (dResponse.isAcknowledged()) {
-                responseEntity= new ResponseEntity("delete index "+indexName+"  successfully!",HttpStatus.OK);
-            }else{
-                responseEntity= new ResponseEntity("Fail to delete index "+indexName,HttpStatus.INTERNAL_SERVER_ERROR);
+                responseEntity = new ResponseEntity("delete index " + indexName + "  successfully!", HttpStatus.OK);
+            } else {
+                responseEntity = new ResponseEntity("Fail to delete index " + indexName, HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
-        return  responseEntity;
+        return responseEntity;
     }
 
     /***
@@ -682,14 +743,15 @@ public class ESCrudServiceImpl implements ESCrudService {
      */
 
     @Override
-    public ResponseEntity postGisDb2es(String dbURL,String dbUserName,String dbPassword,String driverClassName,String sql,String esindexName,String esTypeName){
-        ResponseEntity responseEntity =null;
-        importDB2Es.transportClient =client;
+    public ResponseEntity postGisDb2es(String dbURL, String dbUserName, String dbPassword, String
+            driverClassName, String sql, String esindexName, String esTypeName) {
+        ResponseEntity responseEntity = null;
+        importDB2Es.transportClient = client;
         long count;
         try {
-            count =importDB2Es.importData(dbURL,dbUserName, dbPassword,driverClassName,sql,esindexName,esTypeName);
-            if (count ==0 ){
-                responseEntity =new ResponseEntity("导入postGisDb到Elasticsearch成功", HttpStatus.OK);
+            count = importDB2Es.importData(dbURL, dbUserName, dbPassword, driverClassName, sql, esindexName, esTypeName);
+            if (count == 0) {
+                responseEntity = new ResponseEntity("导入postGisDb到Elasticsearch成功", HttpStatus.OK);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
