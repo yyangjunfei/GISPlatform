@@ -337,7 +337,7 @@ public class ESCrudServiceImpl implements ESCrudService {
     @Override
     public List<RegionOutput> findProvinceByKeyword(String keyword, List<RegionInput> regionInputList) {
 
-        LOG.info("ESCrudServiceImpl::findProvinceByKeyword keyword = [{}],keyword = [{}]", keyword, regionInputList);
+        LOG.info("ESCrudServiceImpl::findProvinceByKeyword keyword = [{}],regionInputList = [{}]", keyword, regionInputList);
 
         AggregationBuilder termsBuilder = AggregationBuilders.terms("by_province").field("properties.province.keyword");
 
@@ -346,7 +346,7 @@ public class ESCrudServiceImpl implements ESCrudService {
 
         if (keyword != null && keyword.length() > 0) {
             //第一个参数是查询的值，后面的参数是字段名，可以跟多个字段，用逗号隔开
-            queryBuilder = QueryBuilders.multiMatchQuery(keyword, "properties.first_class", "properties.second_class", "properties.third_class", "properties.address", "properties.name");
+            queryBuilder = QueryBuilders.multiMatchQuery(keyword, "properties.first_class", "properties.second_class", "properties.third_class", "properties.name");
         }
 
         // 组装查询请求
@@ -374,8 +374,10 @@ public class ESCrudServiceImpl implements ESCrudService {
                     if (bucket.getKeyAsString().equals(regionInput.getName())) {
 
                         LOG.info("regionOutput name = [{}],count = [{}]", bucket.getKeyAsString(), bucket.getDocCount());
+
                         RegionOutput regionOutput = RegionOutput.builder().name(bucket.getKeyAsString()).count(bucket.getDocCount()).centroid(regionInput.getCentroid()).build();
                         regionOutputList.add(regionOutput);
+
                     }
                 }
             }
@@ -397,7 +399,7 @@ public class ESCrudServiceImpl implements ESCrudService {
 
         if (keyword != null) {
             //第一个参数是查询的值，后面的参数是字段名，可以跟多个字段，用逗号隔开
-            queryBuilder = QueryBuilders.multiMatchQuery(keyword, "properties.first_class", "properties.second_class", "properties.third_class", "properties.address", "properties.name");
+            queryBuilder = QueryBuilders.multiMatchQuery(keyword, "properties.first_class", "properties.second_class", "properties.third_class", "properties.name");
         }
 
         // 组装查询请求
@@ -453,7 +455,7 @@ public class ESCrudServiceImpl implements ESCrudService {
             BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
 
             //第一个参数是查询的值，后面的参数是字段名，可以跟多个字段，用逗号隔开
-            boolQuery.must(QueryBuilders.multiMatchQuery(keyword, "properties.first_name", "properties.second_name", "properties.third_class", "properties.address", "properties.name"))
+            boolQuery.must(QueryBuilders.multiMatchQuery(keyword, "properties.first_class", "properties.second_class", "properties.third_class", "properties.name"))
                     .must(QueryBuilders.matchQuery("properties.county.keyword", regionInput.getName()));
 
             // 组装查询请求
@@ -462,7 +464,7 @@ public class ESCrudServiceImpl implements ESCrudService {
                     .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                     .setQuery(boolQuery)
                     .setFrom(0)
-                    .setSize(5);
+                    .setSize(20);
 
             // 发送查询请求
             SearchResponse response = requestBuilder.get();

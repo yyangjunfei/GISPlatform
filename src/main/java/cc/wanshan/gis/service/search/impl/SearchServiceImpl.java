@@ -214,11 +214,8 @@ public class SearchServiceImpl implements SearchService {
             //根据包围形封装成geometry格式的面数据
             polygon = GeoToolsUtils.polygon2Geometry(minX, minY, maxX, maxY);
 
-            //级别[8, 22]查询省市，其他级别查询国家，查不到返回未找到
-            if (level <= 8) {
-                //级别低于8，（国家级别）数据不显示
-                return ResultUtil.error(ResultCode.DATA_NOT_SUPPORT);
-            } else if (level > 8 && level <= 11) {
+            //级别[0, 11]查询省,级别[11, 22]查询市区
+            if (level <= 11) {
                 for (Province province : provinceList) {
                     String envelope = province.getEnvelope();
                     Geometry geometry = GeoToolsUtils.geoJson2Geometry(envelope);
@@ -280,11 +277,13 @@ public class SearchServiceImpl implements SearchService {
                                 pois.add(poi);
                             }
                         }
-                        regionOutput.setPoiList(null);
-                        regionOutput.setPoiList(pois);
-                        regionOutputs.add(regionOutput);
+                        if (pois != null && !pois.isEmpty()) {
+                            regionOutput.setPoiList(null);
+                            regionOutput.setPoiList(pois);
+                            regionOutputs.add(regionOutput);
+                        }
                     }
-                    return ResultUtil.success(regionOutputList);
+                    return ResultUtil.success(regionOutputs);
                 }
             }
             return ResultUtil.error(ResultCode.DATA_NOT_FOUND);
