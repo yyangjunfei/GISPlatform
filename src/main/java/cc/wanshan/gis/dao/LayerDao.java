@@ -2,11 +2,11 @@ package cc.wanshan.gis.dao;
 
 
 import cc.wanshan.gis.entity.drawlayer.Layer;
+import cc.wanshan.gis.entity.provider.LayerDaoProvider;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 import org.springframework.stereotype.Component;
 import java.util.List;
-
 
 /**
  * @Author Li Cheng
@@ -93,7 +93,14 @@ public interface LayerDao {
    */
   public int deleteLayerByLayerNameAndStoreId(String layerName, String storeId);
 
-
+  @DeleteProvider(type = LayerDaoProvider.class, method = "deleteAll")
+  /**
+   * description: 根据layerId批量删除
+   *
+   * @param layers 图层集合
+   * @return int
+   **/
+  public int deleteAll(@Param("list") List<Layer> layers);
 
   @Update({
       "update "
@@ -147,6 +154,7 @@ public interface LayerDao {
       + "from "
       + "tb_layer "
       + "where "
+      + "1=1 and "
       + "store_id =#{storeId}"
   })
   @Results({
@@ -180,36 +188,40 @@ public interface LayerDao {
    * @return java.util.List<cc.wanshan.gisdev.entity.drawlayer.Layer>
    */
   public List<Layer> findLayersByStoreId(String storeId);
+
   @Select({"select "
-      + "* "
+      + "layer_id,"
+      + "layer_name,"
+      + "layer_name_zh,"
+      + "security,"
+      + "type,"
+      + "epsg,"
+      + "describe,"
+      + "fill_color,"
+      + "stroke_color,"
+      + "stroke_width,"
+      + "opacity "
       + "from "
       + "tb_layer "
       + "where "
+      + "1=1 and "
       + "layer_id =#{layerId}"
   })
   @Results({
       @Result(id = true, column = "layer_id", property = "layerId"),
       @Result(column = "layer_name", property = "layerName"),
       @Result(column = "layer_name_zh", property = "layerNameZH"),
-      @Result(column = "store_id", property = "store.storeId"),
-      @Result(column = "user_id", property = "userId"),
-      @Result(column = "thematic_id", property = "thematic.thematicId"),
-      @Result(column = "thematic_name", property = "thematic.thematicName"),
-      @Result(column = "thematic_name_zh", property = "thematic.thematicNameZH"),
-      @Result(column = "first_classification_name", property = "firstClassificationName"),
-      @Result(column = "second_classification_id", property = "secondClassificationId"),
       @Result(column = "security", property = "security"),
-      @Result(column = "publish_time", property = "publishTime"),
-      @Result(column = "upload_time", property = "uploadTime"),
-      @Result(column = "update_time", property = "updateTime"),
       @Result(column = "type", property = "type"),
       @Result(column = "epsg", property = "epsg"),
-      @Result(column = "department", property = "department"),
       @Result(column = "describe", property = "describe"),
       @Result(column = "fill_color", property = "fillColor"),
       @Result(column = "stroke_color", property = "strokeColor"),
       @Result(column = "stroke_width", property = "strokeWidth"),
       @Result(column = "opacity", property = "opacity"),
+      @Result(column = "layer_id", property = "pointList", many = @Many(select = "cc.wanshan.gis.dao.PointDao.findPointByLayerId", fetchType = FetchType.LAZY)),
+      @Result(column = "layer_id", property = "lineStringList", many = @Many(select = "cc.wanshan.gis.dao.LineStringDao.findLineStringByLayerId", fetchType = FetchType.LAZY)),
+      @Result(column = "layer_id", property = "polygonList", many = @Many(select = "cc.wanshan.gis.dao.PolygonDao.findPolygonByLayerId", fetchType = FetchType.LAZY))
   })
   /**
    * description: 根据layerId查询Layer
@@ -219,12 +231,73 @@ public interface LayerDao {
    */
   public Layer findLayerByLayerId(String layerId);
 
+  @Select({
+      "select "
+          + "layer_id "
+          + "from "
+          + "tb_layer "
+          + "where "
+          + "1=1 and "
+          + "user_id=#{userId} and "
+          + "layer_name = #{layerName};"
+  })
+  /**
+   * description:
+   *
+   * @param userId
+   * @param layerName
+   * @return int
+   */
+  public Layer findLayerByUserIdAndLayerName(String userId, String layerName);
+
+  @Select({"select "
+      + "layer_id,"
+      + "layer_name,"
+      + "layer_name_zh,"
+      + "security,"
+      + "type,"
+      + "epsg,"
+      + "describe,"
+      + "fill_color,"
+      + "stroke_color,"
+      + "stroke_width,"
+      + "opacity "
+      + "from "
+      + "tb_layer "
+      + "where "
+      + "1=1 and "
+      + "user_id =#{userId}"
+  })
+  @Results({
+      @Result(id = true, column = "layer_id", property = "layerId"),
+      @Result(column = "layer_name", property = "layerName"),
+      @Result(column = "layer_name_zh", property = "layerNameZH"),
+      @Result(column = "security", property = "security"),
+      @Result(column = "type", property = "type"),
+      @Result(column = "epsg", property = "epsg"),
+      @Result(column = "describe", property = "describe"),
+      @Result(column = "fill_color", property = "fillColor"),
+      @Result(column = "stroke_color", property = "strokeColor"),
+      @Result(column = "stroke_width", property = "strokeWidth"),
+      @Result(column = "opacity", property = "opacity"),
+      @Result(column = "layer_id", property = "pointList", many = @Many(select = "cc.wanshan.gis.dao.PointDao.findPointByLayerId", fetchType = FetchType.LAZY)),
+      @Result(column = "layer_id", property = "lineStringList", many = @Many(select = "cc.wanshan.gis.dao.LineStringDao.findLineStringByLayerId", fetchType = FetchType.LAZY)),
+      @Result(column = "layer_id", property = "polygonList", many = @Many(select = "cc.wanshan.gis.dao.PolygonDao.findPolygonByLayerId", fetchType = FetchType.LAZY))
+  })
+  /**
+   * description: 根据用户Id查询所有图层
+   *
+   * @param userId 用户Id
+   * @return java.util.List<cc.wanshan.gis.entity.drawlayer.Layer>
+   **/
+  public List<Layer> findByUserId(String userId);
 
   @Select({"select "
       + "* "
       + "from "
       + "tb_layer "
       + "where "
+      + "1=1 and "
       + "second_classification_id =#{secondClassificationId}"
   })
   @Results({
@@ -252,7 +325,7 @@ public interface LayerDao {
       @Result(column = "stroke_color", property = "strokeColor"),
       @Result(column = "stroke_width", property = "strokeWidth"),
       @Result(column = "opacity", property = "opacity"),
-      @Result(column = "layer_name", property = "ruleNameList",many = @Many(select = "cc.wanshan.gis.dao.RuleNameDao.findRuleNamesByLayerName",fetchType = FetchType.LAZY)),
+      @Result(column = "layer_name", property = "ruleNameList", many = @Many(select = "cc.wanshan.gis.dao.RuleNameDao.findRuleNamesByLayerName", fetchType = FetchType.LAZY)),
   })
   /**
    * description:
@@ -261,32 +334,7 @@ public interface LayerDao {
    * @return cc.wanshan.gis.entity.drawlayer.Layer
    **/
   public Layer findLayerBySecondClassId(String secondClassId);
-  @Select({
-      "select "
-          + "count(*) "
-          + "from "
-          + "tb_layer as l "
-          + "where "
-          + "l.layer_name = #{layerName} and "
-          + "l.store_id = ("
-          + "select "
-          + "s.store_id "
-          + "from "
-          + "tb_user as u "
-          + "inner join "
-          + "tb_store as s "
-          + "on "
-          + "u.u_id = s.u_id "
-          + "where u.username=#{username})"
-  })
-  /**
-   * description:
-   *
-   * @param username
-   * @param layerName
-   * @return int
-   */
-  public int findLayerCountByUsernameAndLayerName(String username, String layerName);
+
   @Select({"select "
       + "layer_id,"
       + "layer_name,"
@@ -310,6 +358,7 @@ public interface LayerDao {
       + "from "
       + "tb_layer "
       + "where "
+      + "1=1 and "
       + "thematic_id =#{thematic.thematicId} and "
       + "user_id is null;"
   })

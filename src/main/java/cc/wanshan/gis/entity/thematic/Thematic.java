@@ -2,6 +2,8 @@ package cc.wanshan.gis.entity.thematic;
 
 import cc.wanshan.gis.entity.drawlayer.Layer;
 import cc.wanshan.gis.entity.usermanagement.User;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -16,6 +18,8 @@ import org.hibernate.validator.constraints.Length;
  * @date 2019/5/18 14:30
  */
 @Data
+@JsonIgnoreProperties(value = {"handler"})//排除mybatis懒加载json序列化中的异常
+@JsonInclude(JsonInclude.Include.NON_NULL)	//注解控制null不序列化
 public class Thematic<layer> implements Serializable {
 
   private static final long serialVersionUID = 1L;

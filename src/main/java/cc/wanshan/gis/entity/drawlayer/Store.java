@@ -2,6 +2,8 @@ package cc.wanshan.gis.entity.drawlayer;
 
 
 import cc.wanshan.gis.entity.usermanagement.User;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -12,6 +14,8 @@ import java.util.Date;
 import java.util.List;
 
 //@Data
+@JsonIgnoreProperties(value = {"handler"})//排除mybatis懒加载json序列化中的异常
+@JsonInclude(JsonInclude.Include.NON_NULL)	//注解控制null不序列化
 public class Store implements Serializable {
     private static final long serialVersionUID = 1L;
     @NotBlank(message = "存储点id不可为null")

@@ -62,6 +62,7 @@ public enum ResultCode {
     DATA_NOT_FOUND(50001, "数据未找到"),
     DATA_IS_WRONG(50002, "数据有误"),
     DATA_ALREADY_EXISTED(50003, "数据已存在"),
+    DATA_NOT_SUPPORT(50004, "数据不支持"),
 
     /**
      * 接口错误：60001-69999

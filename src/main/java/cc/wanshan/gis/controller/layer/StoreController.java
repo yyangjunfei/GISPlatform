@@ -1,6 +1,5 @@
 package cc.wanshan.gis.controller.layer;
 
-
 import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.entity.drawlayer.Store;
 import cc.wanshan.gis.service.store.StoreService;
@@ -8,7 +7,6 @@ import cc.wanshan.gis.utils.ResultUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.micrometer.core.instrument.util.StringUtils;
-import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -20,7 +18,6 @@ import javax.annotation.Resource;
 import java.util.List;
 
 @Controller
-@MapperScan("cc.wanshan.demo.entity")
 @EnableTransactionManagement(proxyTargetClass = true)
 @RequestMapping("/store")
 public class StoreController {

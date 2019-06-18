@@ -14,12 +14,31 @@ spring:
     password: wanshan
     driver-class-name: org.postgresql.Driver
   jackson:
-    ##default-property-inclusion: non_empty
+    default-property-inclusion: non_empty
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
     serialization:
       FAIL_ON_EMPTY_BEANS: false
       write-dates-as-timestamps: false #使用时间戳，使用数值timestamp表示日期
+  data:
+    # elasticsearch配置
+    elasticsearch:
+      cluster-name: my-application
+      hostName: 192.168.1.88
+      transport: 9300
+      repositories:
+        transport:
+          tcp:
+            connect_timeout: 120s
+        enabled: true
+  elasticsearch:
+    rest:
+      uris: ["http://192.168.1.88:9200"]
+management:
+  security:
+    health:
+      elasticsearch:
+        enabled: false
 
 # mybatis配置
 mybatis:
@@ -30,7 +49,7 @@ mybatis:
     auto-mapping-unknown-column-behavior: warning
   mapperLocations: classpath*:/mapper/*Mapper.xml
 
-# geoserver服务配置
+# geoServer服务配置
 geoserver:
   url: http://192.168.1.133:8080/geoserver
   username: wanshan
