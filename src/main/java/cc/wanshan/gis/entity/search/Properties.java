@@ -8,14 +8,13 @@ import lombok.Data;
 public class Properties {
 
     private Long id;
-    private String provincesName;
-    private String cityName;
-    private String areaName;
-    private String firstName;
-    private String secondName;
-    private String baiduFirstName;
-    private String baiduSecondName;
+    private String province;
+    private String city;
+    private String county;
+    private String firstClass;
+    private String secondClass;
+    private String thirdClass;
     private String name;
-    private String phone;
-    private String addr;
+    private String telephone;
+    private String address;
 }

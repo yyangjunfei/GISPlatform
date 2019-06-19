@@ -23,10 +23,9 @@ spring:
   data:
     # elasticsearch配置
     elasticsearch:
-      cluster-name: my-application
-      hostName: 192.168.1.88
+      cluster-name: gis-application
+      hostName: 172.24.4.9
       transport: 9300
-      cluster-nodes: 192.168.1.88:9300
       repositories:
         transport:
           tcp:
@@ -34,7 +33,7 @@ spring:
         enabled: true
   elasticsearch:
     rest:
-      uris: ["http://192.168.1.88:9200"]
+      uris: ["http://172.24.4.9:9200"]
 management:
   security:
     health:

@@ -2,12 +2,15 @@ package cc.wanshan.gis.controller.search;
 
 import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.service.search.SearchService;
+import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,23 +43,31 @@ public class SearchController {
         return searchService.searchAreaGeo(name);
     }
 
-    @ApiOperation(value = "查询POI", notes = "查询POI")
-    @GetMapping("/place")
-    public Result searchPlace(@RequestParam String jsonString) {
+    @ApiOperation(value = "ES根据名称查询地区位置", notes = "ES根据名称查询地区位置")
+    @GetMapping("/name2es")
+    public Result searchAreaGeoFromES(@RequestParam String name) {
 
-        LOG.info("SearchController::searchPlace jsonString = [{}]", jsonString);
+        LOG.info("SearchController::searchAreaGeoFromES name = [{}]", name);
 
-        return searchService.searchPlace(jsonString);
+        return searchService.searchAreaGeoFromES(name);
     }
 
-    @ApiOperation(value = "searchTest", notes = "searchTest")
+    @ApiOperation(value = "查询POI", notes = "查询POI")
+    @PostMapping("/place")
+    public Result searchPlace(@RequestBody JSONObject jsonObject) {
+
+        LOG.info("SearchController::searchPlace jsonObject = [{}]", jsonObject);
+
+        return searchService.searchPlace(jsonObject);
+    }
+
+    @ApiOperation(value = "test", notes = "test")
     @GetMapping("/test")
     public Result searchTest() {
 
         LOG.info("SearchController::searchTest");
 
-        return searchService.searchTest();
+        return searchService.test();
     }
-
 
 }

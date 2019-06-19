@@ -18,28 +18,28 @@ import java.util.List;
 
 @Component
 public class FilterInvocationSecurityMetadataSourceImpl implements FilterInvocationSecurityMetadataSource {
-    private static final Logger logger= LoggerFactory.getLogger(FilterInvocationSecurityMetadataSourceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(FilterInvocationSecurityMetadataSourceImpl.class);
     @Resource(name = "authorityServiceImpl")
     private AuthorityService authorityService;
-    @Resource(name ="roleServiceImpl")
+    @Resource(name = "roleServiceImpl")
     private RoleService roleService;
+
     @Override
     public Collection<ConfigAttribute> getAttributes(Object o) throws IllegalArgumentException {
         String requestUrl = ((FilterInvocation) o).getRequestUrl();
-        logger.info("getAttributes::o = [{}]",o);
-        logger.info("用户的请求地址为："+requestUrl);
-        if("/login".equals(requestUrl)){
+        logger.info("用户的请求地址为：" + requestUrl);
+        if ("/login".equals(requestUrl)) {
             return null;
         }
         Authority authority = authorityService.findAuthorityByUrl(requestUrl);
-        if (authority ==null){
+        if (authority == null) {
             return null;
-        }else {
-            List<Role> roles= roleService.findRoleByAuthorId(authority.getAuthorId());
+        } else {
+            List<Role> roles = roleService.findRoleByAuthorId(authority.getAuthorId());
             int size = roles.size();
             String[] values = new String[size];
             for (int i = 0; i < size; i++) {
-                values[i]= roles.get(i).getRoleName();
+                values[i] = roles.get(i).getRoleName();
             }
             return SecurityConfig.createList(values);
         }
