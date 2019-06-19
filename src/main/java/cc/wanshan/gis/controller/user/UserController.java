@@ -1,4 +1,5 @@
 package cc.wanshan.gis.controller.user;
+
 import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.entity.drawlayer.Store;
 import cc.wanshan.gis.entity.thematic.Thematic;
@@ -11,6 +12,8 @@ import cc.wanshan.gis.service.thematicuser.ThematicUserService;
 import cc.wanshan.gis.service.user.UserService;
 import cc.wanshan.gis.utils.ResultUtil;
 import com.alibaba.fastjson.JSONObject;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import java.util.Collection;
 import java.util.HashMap;
 import javax.servlet.http.Cookie;
@@ -22,8 +25,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -31,10 +34,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 import java.net.URISyntaxException;
 import java.util.Date;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+
+@Api(value = "UserController",tags = "用户管理模块")
+@RestController
 @EnableTransactionManagement(proxyTargetClass = true)
 @RequestMapping("/user")
+/**
+ * @Author Li Cheng
+ * @Date 14:27 2019/6/18
+ **/
 public class UserController {
 
   private static final Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -282,8 +292,8 @@ public class UserController {
       return ResultUtil.error(1, "json为null");
     }
   }
-
-  @RequestMapping(value = "/finduser")
+  @ApiOperation(value = "查询当前用户信息")
+  @GetMapping(value = "/finduser")
   @ResponseBody
   public Result findUser(HttpServletRequest request) {
     logger.info("user::request = [{}]", request);

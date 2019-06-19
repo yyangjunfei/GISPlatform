@@ -40,6 +40,10 @@ import javax.annotation.Resource;
 @RestController
 @EnableTransactionManagement(proxyTargetClass = true)
 @RequestMapping("/layer")
+/**
+ * @Author Li Cheng
+ * @Date 14:28 2019/6/18
+ **/
 public class LayerController {
 
   private static final Logger logger = LoggerFactory.getLogger(LayerController.class);
@@ -214,7 +218,7 @@ public class LayerController {
       Thematic thematic = thematicServiceImpl
           .findByThematicId(thematicId);
       if (thematic != null) {
-        JSONObject jsonObject1 = (JSONObject) JSONObject.toJSON(thematicId);
+        JSONObject jsonObject1 = (JSONObject) JSONObject.toJSON(thematic);
         return ResultUtil.success(jsonObject1);
       }
     }
@@ -232,7 +236,7 @@ public class LayerController {
       List<Style> style = styleServiceImpl
           .findStyleByStyleName(styleName);
       if (style.size() > 0) {
-        JSONArray jsonArray = (JSONArray) JSONArray.toJSON(styleName);
+        JSONArray jsonArray = (JSONArray) JSONArray.toJSON(style);
         return ResultUtil.success(jsonArray);
       }
     }
