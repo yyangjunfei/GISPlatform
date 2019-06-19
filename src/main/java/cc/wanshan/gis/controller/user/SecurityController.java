@@ -16,26 +16,29 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping
 public class SecurityController {
-    private static final Logger logger= LoggerFactory.getLogger(SecurityController.class);
-    @RequestMapping(value = "loginSuccess")
-    @ResponseBody
-    public Result loginSuccess(){
-        return ResultUtil.success();
+
+  private static final Logger logger = LoggerFactory.getLogger(SecurityController.class);
+
+  @RequestMapping(value = "loginSuccess")
+  @ResponseBody
+  public Result loginSuccess() {
+    return ResultUtil.success();
+  }
+
+  @RequestMapping(value = "loginError")
+  @ResponseBody
+  public Result loginError(AuthenticationException e) {
+    logger.error("loginError::e = [{}]", e);
+    if (e instanceof UsernameNotFoundException || e instanceof BadCredentialsException) {
+      logger.warn("用户名或密码输入错误，登录失败!");
+      return ResultUtil.error(1, "用户名或密码输入错误，登录失败!");
+    } else if (e instanceof DisabledException) {
+      logger.warn("账户被禁用，登录失败，请联系管理员!");
+      return ResultUtil.error(1, "账户被禁用，登录失败，请联系管理员!");
+    } else {
+      logger.warn("登录失败!");
+      return ResultUtil.error(1, "登录失败!");
     }
-    @RequestMapping(value = "loginError")
-    @ResponseBody
-    public Result loginError(AuthenticationException e){
-        logger.error("loginError::e = [{}]",e);
-        if (e instanceof UsernameNotFoundException || e instanceof BadCredentialsException) {
-            logger.warn("用户名或密码输入错误，登录失败!");
-            return ResultUtil.error(1,"用户名或密码输入错误，登录失败!");
-        } else if (e instanceof DisabledException) {
-            logger.warn("账户被禁用，登录失败，请联系管理员!");
-            return ResultUtil.error(1,"账户被禁用，登录失败，请联系管理员!");
-        } else {
-            logger.warn("登录失败!");
-            return ResultUtil.error(1,"登录失败!");
-        }
-    }
+  }
 
 }
