@@ -215,7 +215,7 @@ public class SearchServiceImpl implements SearchService {
             polygon = GeoToolsUtils.polygon2Geometry(minX, minY, maxX, maxY);
 
             //级别[0, 11]查询省,级别[11, 22]查询市区
-            if (level <= 11) {
+     /*       if (level <= 11) {
                 for (Province province : provinceList) {
                     String envelope = province.getEnvelope();
                     Geometry geometry = GeoToolsUtils.geoJson2Geometry(envelope);
@@ -233,7 +233,9 @@ public class SearchServiceImpl implements SearchService {
                     return ResultUtil.success(regionOutputList);
                 }
 
-            } else if (level > 11 && level <= 14) {
+            } */
+
+            if (level <= 13) {
                 for (City city : cityList) {
                     String envelope = city.getEnvelope();
                     Geometry geometry = GeoToolsUtils.geoJson2Geometry(envelope);
@@ -248,7 +250,7 @@ public class SearchServiceImpl implements SearchService {
                     List<RegionOutput> regionOutputList = esCrudService.findCityByKeyword(keyword, regionInputList);
                     return ResultUtil.success(regionOutputList);
                 }
-            } else if (level > 14 && level <= 22) {
+            } else {
                 for (Town town : townList) {
                     String envelope = town.getEnvelope();
                     Geometry geometry = GeoToolsUtils.geoJson2Geometry(envelope);
