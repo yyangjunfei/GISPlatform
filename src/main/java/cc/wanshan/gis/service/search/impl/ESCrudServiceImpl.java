@@ -291,7 +291,6 @@ public class ESCrudServiceImpl implements ESCrudService {
 
         // 多个字段匹配某一个值
         QueryBuilder queryBuilder = null;
-
         if (poiValue != null) {
             //第一个参数是查询的值，后面的参数是字段名，可以跟多个字段，用逗号隔开
             queryBuilder = QueryBuilders.multiMatchQuery(poiValue, "properties.first_name", "properties.second_name", "properties.baidu_first_name", "properties.baidu_second_name");
@@ -333,7 +332,6 @@ public class ESCrudServiceImpl implements ESCrudService {
     /***
      * POI按照省分组聚和查询（省级）
      */
-
     @Override
     public List<RegionOutput> findProvinceByKeyword(String keyword, List<RegionInput> regionInputList) {
 
@@ -397,18 +395,28 @@ public class ESCrudServiceImpl implements ESCrudService {
         // 多个字段匹配某一个值
         QueryBuilder queryBuilder = null;
 
+        // 组装查询条件
+        BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
+
         if (keyword != null) {
+            boolQuery
+                    .should(QueryBuilders.matchPhraseQuery("properties.first_class", keyword))
+                    .should(QueryBuilders.matchPhraseQuery("properties.second_class", keyword))
+                    .should(QueryBuilders.matchPhraseQuery("properties.third_class", keyword))
+                    .should(QueryBuilders.matchPhraseQuery("properties.name", keyword)).minimumShouldMatch(1);
+
             //第一个参数是查询的值，后面的参数是字段名，可以跟多个字段，用逗号隔开
             queryBuilder = QueryBuilders.multiMatchQuery(keyword, "properties.first_class", "properties.second_class", "properties.third_class", "properties.name");
+
         }
 
         // 组装查询请求
         SearchRequestBuilder requestBuilder = client.prepareSearch("map_data")
                 .setTypes("Feature")
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
-                .setQuery(queryBuilder)
+                .setQuery(boolQuery)
                 .setFrom(0)
-                .setSize(100)
+                .setSize(334)
                 .addAggregation(termsBuilder);
 
         // 发送查询请求
@@ -455,7 +463,11 @@ public class ESCrudServiceImpl implements ESCrudService {
             BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
 
             //第一个参数是查询的值，后面的参数是字段名，可以跟多个字段，用逗号隔开
-            boolQuery.must(QueryBuilders.multiMatchQuery(keyword, "properties.first_class", "properties.second_class", "properties.third_class", "properties.name"))
+            boolQuery
+                    .should(QueryBuilders.matchPhraseQuery("properties.first_class", keyword))
+                    .should(QueryBuilders.matchPhraseQuery("properties.second_class", keyword))
+                    .should(QueryBuilders.matchPhraseQuery("properties.third_class", keyword))
+                    .should(QueryBuilders.matchPhraseQuery("properties.name", keyword).boost(2f)).minimumShouldMatch(1)
                     .must(QueryBuilders.matchQuery("properties.county.keyword", regionInput.getName()));
 
             // 组装查询请求
@@ -464,7 +476,7 @@ public class ESCrudServiceImpl implements ESCrudService {
                     .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                     .setQuery(boolQuery)
                     .setFrom(0)
-                    .setSize(20);
+                    .setSize(2000);
 
             // 发送查询请求
             SearchResponse response = requestBuilder.get();
@@ -476,8 +488,8 @@ public class ESCrudServiceImpl implements ESCrudService {
             }
             regionOutput.setPoiList(poiList);
             regionOutputList.add(regionOutput);
-
         }
+
         return regionOutputList;
     }
 
@@ -496,7 +508,7 @@ public class ESCrudServiceImpl implements ESCrudService {
 
         if (poiValue != null) {
             //第一个参数是查询的值，后面的参数是字段名，可以跟多个字段，用逗号隔开
-            queryBuilder = QueryBuilders.multiMatchQuery(poiValue, "properties.first_name", "properties.second_name", "properties.baidu_first_name", "properties.baidu_second_name");
+            queryBuilder = QueryBuilders.multiMatchQuery(poiValue, "properties.first_name", "properties.second_name", "properties.baidu_first_name", "properties.baidu_second_name").analyzer("ik_smart");
         }
 
         // 组装查询请求
