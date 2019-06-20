@@ -73,6 +73,21 @@ public class Constant {
      * 搜索级别
      */
     public static final String SEARCH_LEVEL = "level";
-
+    /**
+     * 搜索类型-行政区
+     */
+    public static final String SEARCH_REGION = "1";
+    /**
+     * 搜索类型-市区-聚合
+     */
+    public static final String SEARCH_REGION_TERMS = "2";
+    /**
+     * 搜索类型-模糊-POI
+     */
+    public static final String SEARCH_VAGUE_POI = "3";
+    /**
+     * 搜索类型-精确-POI
+     */
+    public static final String SEARCH_EXACT_POI = "4";
 
 }
