@@ -43,15 +43,6 @@ public class SearchController {
         return searchService.searchAreaGeo(name);
     }
 
-    @ApiOperation(value = "ES根据名称查询地区位置", notes = "ES根据名称查询地区位置")
-    @GetMapping("/name2es")
-    public Result searchAreaGeoFromES(@RequestParam String name) {
-
-        LOG.info("SearchController::searchAreaGeoFromES name = [{}]", name);
-
-        return searchService.searchAreaGeoFromES(name);
-    }
-
     @ApiOperation(value = "查询POI", notes = "查询POI")
     @PostMapping("/place")
     public Result searchPlace(@RequestBody JSONObject jsonObject) {
