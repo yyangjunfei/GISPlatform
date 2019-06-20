@@ -13,7 +13,6 @@ import cc.wanshan.gis.service.user.UserService;
 import cc.wanshan.gis.utils.ResultUtil;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +21,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -291,7 +289,6 @@ public class UserController {
             return ResultUtil.error(1, "json为null");
         }
     }
-<<<<<<<HEAD
 
     @RequestMapping(value = "/finduser")
     @ResponseBody
@@ -316,30 +313,5 @@ public class UserController {
         map.put("username", username);
         map.put("userId", user.getUserId());
         return ResultUtil.success(map);
-=======
     }
-
-    @ApiOperation(value = "查询当前用户信息")
-    @GetMapping(value = "/finduser")
-    @ResponseBody
-    public Result findUser(HttpServletRequest request) {
-        logger.info("user::request = [{}]", request);
-        Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            String value = cookie.getValue();
-            logger.info("cookie" + value);
-        }
-        SecurityContextImpl securityContextImpl = (SecurityContextImpl) request
-                .getSession().getAttribute("SPRING_SECURITY_CONTEXT");
-        logger.info("securityContextImpl" + securityContextImpl.toString());
-        String username = securityContextImpl.getAuthentication().getName();
-        User user = userServiceImpl.findUserByUsername(username);
-        HashMap<String, String> map = new HashMap<>();
-        Authentication authentication = securityContextImpl.getAuthentication();
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        for (GrantedAuthority authority : authorities) {
-            String authority1 = authority.getAuthority();
-            map.put("role", authority1);
->>>>>>>develop
-        }
-    }
+}
