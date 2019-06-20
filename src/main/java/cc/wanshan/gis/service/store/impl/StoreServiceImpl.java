@@ -2,10 +2,9 @@ package cc.wanshan.gis.service.store.impl;
 
 
 import cc.wanshan.gis.dao.StoreDao;
-import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.entity.drawlayer.Store;
 import cc.wanshan.gis.service.store.StoreService;
-import cc.wanshan.gis.utils.ResultUtil;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -15,6 +14,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 @Service(value = "storeServiceImpl")
+
 public class StoreServiceImpl implements StoreService {
     private static final Logger logger= LoggerFactory.getLogger(StoreServiceImpl.class);
     @Resource
