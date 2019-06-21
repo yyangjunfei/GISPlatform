@@ -15,7 +15,7 @@ import cc.wanshan.gis.mapper.search.CityMapper;
 import cc.wanshan.gis.mapper.search.CountryMapper;
 import cc.wanshan.gis.mapper.search.ProvinceMapper;
 import cc.wanshan.gis.mapper.search.TownMapper;
-import cc.wanshan.gis.service.search.ESCrudService;
+import cc.wanshan.gis.service.search.ElasticsearchService;
 import cc.wanshan.gis.service.search.SearchService;
 import cc.wanshan.gis.utils.GeoToolsUtils;
 import cc.wanshan.gis.utils.GeometryCreator;
@@ -48,7 +48,7 @@ public class SearchServiceImpl implements SearchService {
     private SearchDao searchDao;
 
     @Autowired
-    private ESCrudService esCrudService;
+    private ElasticsearchService elasticsearchService;
 
     /**
      * 初始化方法
@@ -186,19 +186,35 @@ public class SearchServiceImpl implements SearchService {
     }
 
     @Override
-    public Result searchAreaGeoFromES(String name) {
-
-        return esCrudService.searchAreaGeoFromES(name);
-    }
-
-    @Override
     public Result searchPlace(JSONObject jsonObject) {
 
+        LOG.info("SearchServiceImpl::searchPlace jsonObject=[{}]", jsonObject.toString());
+
+        //区分查询类型
+        String type = jsonObject.getString(Constant.TYPE);
+
+        String keyword = jsonObject.getString(Constant.KEYWORD);
+        if (keyword == null || keyword.length() <= 0) {
+            return ResultUtil.error(ResultCode.PARAM_IS_NULL);
+        }
+
+        //只传参数关键字搜索匹配所有ES数据
+        if (type.equals("2")) {
+            return ResultUtil.success(elasticsearchService.findByKeyword(keyword));
+        }
+
+        List<RegionOutput> regionOutputList = Lists.newArrayList();
         double level = jsonObject.getDouble(Constant.SEARCH_LEVEL);
         String rectangle = jsonObject.getString(Constant.SEARCH_RECTANGLE);
-        String keyword = jsonObject.getString(Constant.KEYWORD);
 
-        LOG.info("SearchServiceImpl::searchPlace level=[{}],rectangle=[{}],keyword=[{}]", level, rectangle, keyword);
+        List<RegionInput> regionInputList = Lists.newArrayList();
+
+        //根据关键字查询行政区数据
+        List<RegionOutput> regionByKeyword = elasticsearchService.findRegionByKeyword(keyword);
+
+        if (regionByKeyword != null) {
+            regionOutputList.addAll(regionByKeyword);
+        }
 
         //拆分包围形字符串
         String[] arr = rectangle.split(Constant.split);
@@ -208,33 +224,12 @@ public class SearchServiceImpl implements SearchService {
         double maxY = Double.parseDouble(arr[3]);
 
 
-        List<RegionInput> regionInputList = Lists.newArrayList();
         Geometry polygon = null;
         try {
             //根据包围形封装成geometry格式的面数据
             polygon = GeoToolsUtils.polygon2Geometry(minX, minY, maxX, maxY);
 
-            //级别[0, 11]查询省,级别[11, 22]查询市区
-     /*       if (level <= 11) {
-                for (Province province : provinceList) {
-                    String envelope = province.getEnvelope();
-                    Geometry geometry = GeoToolsUtils.geoJson2Geometry(envelope);
-                    if (geometry.intersects(polygon)) {
-                        //es入参
-                        RegionInput regionInput = RegionInput.builder().name(province.getName()).centroid(province.getCentroid()).build();
-                        regionInputList.add(regionInput);
-                    }
-                }
-                if (regionInputList != null) {
-
-                    //从es查询省份的聚合数据
-                    List<RegionOutput> regionOutputList = esCrudService.findProvinceByKeyword(keyword, regionInputList);
-
-                    return ResultUtil.success(regionOutputList);
-                }
-
-            } */
-
+            //查询ES POI数据
             if (level <= 13) {
                 for (City city : cityList) {
                     String envelope = city.getEnvelope();
@@ -247,7 +242,9 @@ public class SearchServiceImpl implements SearchService {
                 }
                 if (regionInputList != null) {
                     //从es查询市份的聚合数据
-                    List<RegionOutput> regionOutputList = esCrudService.findCityByKeyword(keyword, regionInputList);
+                    List<RegionOutput> cityByKeyword = elasticsearchService.findCityByKeyword(keyword, regionInputList);
+                    regionOutputList.addAll(cityByKeyword);
+
                     return ResultUtil.success(regionOutputList);
                 }
             } else {
@@ -264,10 +261,10 @@ public class SearchServiceImpl implements SearchService {
                 if (regionInputList != null) {
 
                     //从es查询区县份的聚合数据
-                    List<RegionOutput> regionOutputList = esCrudService.findTownByKeyword(keyword, regionInputList);
+                    List<RegionOutput> regionOutputList2 = elasticsearchService.findTownByKeyword(keyword, regionInputList);
                     List<RegionOutput> regionOutputs = Lists.newArrayList();
 
-                    for (RegionOutput regionOutput : regionOutputList) {
+                    for (RegionOutput regionOutput : regionOutputList2) {
 
                         List<Poi> poiList = regionOutput.getPoiList();
 
@@ -285,7 +282,9 @@ public class SearchServiceImpl implements SearchService {
                             regionOutputs.add(regionOutput);
                         }
                     }
-                    return ResultUtil.success(regionOutputs);
+
+                    regionOutputList.addAll(regionOutputs);
+                    return ResultUtil.success(regionOutputList);
                 }
             }
             return ResultUtil.error(ResultCode.DATA_NOT_FOUND);
@@ -302,36 +301,38 @@ public class SearchServiceImpl implements SearchService {
         /**
          * 国家数据更新
          */
-        List<Country> countryList = searchDao.queryAllCountry();
+    /*    List<Country> countryList = searchDao.queryAllCountry();
         for (Country country : countryList) {
             country.setRectangle(country.getMinX() + "," + country.getMinY() + "," + country.getMaxX() + "," + country.getMaxY());
             countryMapper.updateByPrimaryKeySelective(country);
-        }
+        }*/
         /**
          * 省级数据更新
          */
-        List<Province> provinceList = searchDao.queryAllProvince();
+       /* List<Province> provinceList = searchDao.queryAllProvince();
         for (Province province : provinceList) {
             province.setRectangle(province.getMinX() + "," + province.getMinY() + "," + province.getMaxX() + "," + province.getMaxY());
             provinceMapper.updateByPrimaryKeySelective(province);
-        }
+        }*/
         /**
          * 城市数据更新
          */
-        List<City> cityList = searchDao.queryAllCity();
+     /*   List<City> cityList = searchDao.queryAllCity();
         for (City city : cityList) {
             city.setRectangle(city.getMinX() + "," + city.getMinY() + "," + city.getMaxX() + "," + city.getMaxY());
             cityMapper.updateByPrimaryKeySelective(city);
-        }
+        }*/
         /**
          * 县区数据更新
          */
-        List<Town> townList = searchDao.queryAllTown();
+       /* List<Town> townList = searchDao.queryAllTown();
         for (Town town : townList) {
             town.setRectangle(town.getMinX() + "," + town.getMinY() + "," + town.getMaxX() + "," + town.getMaxY());
             townMapper.updateByPrimaryKeySelective(town);
-        }
-        return ResultUtil.success();
+        }*/
+
+        List<String> list = elasticsearchService.getSuggestSearch("长安");
+        return ResultUtil.success(list);
     }
 
 }
