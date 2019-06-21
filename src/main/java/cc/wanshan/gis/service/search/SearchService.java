@@ -31,6 +31,11 @@ public interface SearchService {
      */
     Result searchPlace(JSONObject jsonObject);
 
+    /**
+     * 调测
+     *
+     * @return
+     */
     Result test();
 
 }

@@ -301,36 +301,38 @@ public class SearchServiceImpl implements SearchService {
         /**
          * 国家数据更新
          */
-        List<Country> countryList = searchDao.queryAllCountry();
+    /*    List<Country> countryList = searchDao.queryAllCountry();
         for (Country country : countryList) {
             country.setRectangle(country.getMinX() + "," + country.getMinY() + "," + country.getMaxX() + "," + country.getMaxY());
             countryMapper.updateByPrimaryKeySelective(country);
-        }
+        }*/
         /**
          * 省级数据更新
          */
-        List<Province> provinceList = searchDao.queryAllProvince();
+       /* List<Province> provinceList = searchDao.queryAllProvince();
         for (Province province : provinceList) {
             province.setRectangle(province.getMinX() + "," + province.getMinY() + "," + province.getMaxX() + "," + province.getMaxY());
             provinceMapper.updateByPrimaryKeySelective(province);
-        }
+        }*/
         /**
          * 城市数据更新
          */
-        List<City> cityList = searchDao.queryAllCity();
+     /*   List<City> cityList = searchDao.queryAllCity();
         for (City city : cityList) {
             city.setRectangle(city.getMinX() + "," + city.getMinY() + "," + city.getMaxX() + "," + city.getMaxY());
             cityMapper.updateByPrimaryKeySelective(city);
-        }
+        }*/
         /**
          * 县区数据更新
          */
-        List<Town> townList = searchDao.queryAllTown();
+       /* List<Town> townList = searchDao.queryAllTown();
         for (Town town : townList) {
             town.setRectangle(town.getMinX() + "," + town.getMinY() + "," + town.getMaxX() + "," + town.getMaxY());
             townMapper.updateByPrimaryKeySelective(town);
-        }
-        return ResultUtil.success();
+        }*/
+
+        List<String> list = elasticsearchService.getSuggestSearch("长安");
+        return ResultUtil.success(list);
     }
 
 }
