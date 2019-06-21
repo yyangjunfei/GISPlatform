@@ -4,6 +4,9 @@ import cc.wanshan.gis.entity.drawlayer.Layer;
 import cc.wanshan.gis.service.layer.LayerService;
 import cc.wanshan.gis.service.export.ExportService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -21,6 +24,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -41,10 +45,11 @@ public class FileController {
   private LayerService layerServiceImpl;
   @Resource(name = "exportServiceImpl")
   private ExportService exportServiceImpl;
-
-  @RequestMapping("/download/{layerId}/{suffix}")
+  @ApiOperation(value = "导出图层",notes = "根据图层Id和文件类型导出图层数据")
+  @ApiImplicitParams({@ApiImplicitParam(name = "layerId",value = "图层Id",required = true),@ApiImplicitParam(name = "suffix",value = "导出文件格式，当前支持json，shp，kml格式",required = true)})
+  @GetMapping("/exportlayer/{layerId}/{suffix}")
   @ResponseBody
-  public void file(@PathVariable String layerId, @PathVariable String suffix,HttpServletResponse response) throws Exception {
+  public void exportLayer(@PathVariable String layerId, @PathVariable String suffix,HttpServletResponse response) throws Exception {
     logger.info("file::layerId = [{}], response = [{}]", layerId, response);
     if (!StringUtils.isNotBlank(layerId)){
       return;
@@ -59,14 +64,14 @@ public class FileController {
     if ("json".equals(suffix.toLowerCase())){
       writeJson(layerByLayerId,response);
     }
-    if ("xml".equals(suffix.toLowerCase())){
-
+    if ("kml".equals(suffix.toLowerCase())){
+      writeKml(layerByLayerId,response);
     }
-    if ("gps".equals(suffix.toLowerCase())) {
+    if ("gpx".equals(suffix.toLowerCase())) {
 
     }
   }
-  private  void writeShp(Layer layer,HttpServletResponse response) throws Exception {
+  private void writeShp(Layer layer,HttpServletResponse response) throws Exception {
     Boolean aBoolean = exportServiceImpl.writeSHP(layer);
     if (aBoolean) {
       String path = "./download/" + layer.getLayerNameZH() + layer.getLayerName();
@@ -91,6 +96,16 @@ public class FileController {
       String path = "./download/" + layer.getLayerNameZH() + layer.getLayerName();
       List files = new ArrayList();
       File file1 = new File(path + ".json");
+      files.add(file1);
+      downLoadFiles(path,files, response);
+    }
+  }
+  private  void writeKml(Layer layer,HttpServletResponse response) throws Exception {
+    Boolean aBoolean = exportServiceImpl.writeKML(layer);
+    if (aBoolean) {
+      String path = "./download/" + layer.getLayerNameZH() + layer.getLayerName();
+      List files = new ArrayList();
+      File file1 = new File(path + ".kml");
       files.add(file1);
       downLoadFiles(path,files, response);
     }

@@ -27,7 +27,7 @@ public interface ExportService {
    * @param layer 需要导出的图层
    * @return java.lang.Boolean
    **/
-  Boolean writeXML(Layer layer);
+  Boolean writeKML(Layer layer);
   /**
    * description: 将layer的GPS格式导出
    *
