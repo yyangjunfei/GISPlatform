@@ -76,4 +76,12 @@ public interface ElasticsearchService {
      * @return
      */
     List<RegionOutput> findByKeyword(String keyword);
+
+    /**
+     * 根据关键字联想自动补全
+     *
+     * @param keyword
+     * @return
+     */
+    public List<String> getSuggestSearch(String keyword);
 }

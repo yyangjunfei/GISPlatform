@@ -27,6 +27,11 @@ import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
+import org.elasticsearch.search.suggest.Suggest;
+import org.elasticsearch.search.suggest.SuggestBuilder;
+import org.elasticsearch.search.suggest.SuggestBuilders;
+import org.elasticsearch.search.suggest.completion.CompletionSuggestion;
+import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +39,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ElasticsearchServiceImpl implements ElasticsearchService {
@@ -67,7 +75,7 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
     @Override
     public List<RegionOutput> findCityByKeyword(String keyword, List<RegionInput> regionInputList) {
 
-        LOG.info("ElasticsearchServiceImpl::findProvinceByKeyword keyword = [{}],keyword = [{}]", keyword, regionInputList);
+        LOG.info("ElasticsearchServiceImpl::findCityByKeyword keyword = [{}],regionInputList = [{}]", keyword, regionInputList);
 
         AggregationBuilder termsBuilder = AggregationBuilders.terms("by_province").field("properties.province.keyword");
         AggregationBuilder cityTermsBuilder = AggregationBuilders.terms("by_city").field("properties.city.keyword");
@@ -119,8 +127,11 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
                         //判断名称是否相等
                         if (bu.getKeyAsString().equals(regionInput.getName())) {
 
+                            // 关键字
+                            Poi poi = findFirstPoi(keyword, regionInput.getName());
+
                             LOG.info("regionOutput name = [{}],count = [{}]", bu.getKeyAsString(), bu.getDocCount());
-                            RegionOutput regionOutput = RegionOutput.builder().name(bu.getKeyAsString()).count(bu.getDocCount()).type(Constant.SEARCH_REGION_TERMS).centroid(regionInput.getCentroid()).build();
+                            RegionOutput regionOutput = RegionOutput.builder().name(bu.getKeyAsString()).count(bu.getDocCount()).type(Constant.SEARCH_REGION_TERMS).centroid(poi.getGeometry()).build();
                             regionOutputList.add(regionOutput);
                         }
                     }
@@ -130,8 +141,42 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
         return regionOutputList;
     }
 
+    public Poi findFirstPoi(String keyword, String regionName) {
+
+
+        // 组装查询条件
+        BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
+
+        //第一个参数是查询的值，后面的参数是字段名，可以跟多个字段，用逗号隔开
+        boolQuery
+                .should(QueryBuilders.matchPhraseQuery("properties.first_class", keyword))
+                .should(QueryBuilders.matchPhraseQuery("properties.second_class", keyword))
+                .should(QueryBuilders.matchPhraseQuery("properties.third_class", keyword))
+                .should(QueryBuilders.matchPhraseQuery("properties.name", keyword).boost(2f)).minimumShouldMatch(1)
+                .must(QueryBuilders.matchQuery("properties.city.keyword", regionName));
+
+        // 组装查询请求
+        SearchRequestBuilder requestBuilder = client.prepareSearch("map_data")
+                .setTypes("Feature")
+                .setSearchType(SearchType.QUERY_THEN_FETCH)
+                .setQuery(boolQuery)
+                .setFrom(0)
+                .setSize(2);
+
+        // 发送查询请求
+        SearchResponse response = requestBuilder.get();
+        Poi poi = null;
+        for (SearchHit searchHitFields : response.getHits()) {
+            poi = JSON.parseObject(searchHitFields.getSourceAsString(), Poi.class);
+            break;
+        }
+        return poi;
+    }
+
     @Override
     public List<RegionOutput> findTownByKeyword(String keyword, List<RegionInput> regionInputList) {
+
+        LOG.info("ElasticsearchServiceImpl::findTownByKeyword keyword = [{}],regionInputList = [{}]", keyword, regionInputList);
 
         // 组装查询到的数据集
         List<RegionOutput> regionOutputList = Lists.newArrayList();
@@ -156,7 +201,7 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
                     .setSearchType(SearchType.QUERY_THEN_FETCH)
                     .setQuery(boolQuery)
                     .setFrom(0)
-                    .setSize(2000);
+                    .setSize(1000);
 
             // 发送查询请求
             SearchResponse response = requestBuilder.get();
@@ -174,6 +219,8 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
 
     @Override
     public List<RegionOutput> findRegionByKeyword(String keyword) {
+
+        LOG.info("ElasticsearchServiceImpl::findRegionByKeyword keyword = [{}]", keyword);
 
         // 组装查询条件
         BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
@@ -194,7 +241,7 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(boolQuery)
                 .setFrom(0)
-                .setSize(200);
+                .setSize(20);
 
         // 发送查询请求
         SearchResponse response = requestBuilder.get();
@@ -239,7 +286,7 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(boolQuery)
                 .setFrom(0)
-                .setSize(2000);
+                .setSize(1000);
 
 
         // 发送查询请求
@@ -257,7 +304,6 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
                 .poiList(poiList)
                 .build();
         regionOutputList.add(regionOutput);
-
         return regionOutputList;
     }
 
@@ -310,4 +356,48 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
         return responseEntity;
     }
 
+    @Override
+    public List<String> getSuggestSearch(String keyword) {
+        //field的名字,前缀(输入的text),以及大小size
+        CompletionSuggestionBuilder suggestionBuilderDistrict = SuggestBuilders.completionSuggestion("keyword")
+                .prefix(keyword).size(3);
+        SuggestBuilder suggestBuilder = new SuggestBuilder();
+        suggestBuilder.addSuggestion("properties.name", suggestionBuilderDistrict);//添加suggest
+
+        //设置查询builder的index,type,以及建议
+        SearchRequestBuilder requestBuilder = client.prepareSearch("map_data").setTypes("Feature").suggest(suggestBuilder);
+        LOG.info(requestBuilder.toString());
+
+        SearchResponse response = requestBuilder.get();
+        Suggest suggest = response.getSuggest();//suggest实体
+
+        Set<String> suggestSet = new HashSet<>();//set
+        int maxSuggest = 0;
+        if (suggest != null) {
+            Suggest.Suggestion result = suggest.getSuggestion("properties.name");//获取suggest,name任意string
+            for (Object term : result.getEntries()) {
+
+                if (term instanceof CompletionSuggestion.Entry) {
+                    CompletionSuggestion.Entry item = (CompletionSuggestion.Entry) term;
+                    if (!item.getOptions().isEmpty()) {
+                        //若item的option不为空,循环遍历
+                        for (CompletionSuggestion.Entry.Option option : item.getOptions()) {
+                            String tip = option.getText().toString();
+                            if (!suggestSet.contains(tip)) {
+                                suggestSet.add(tip);
+                                ++maxSuggest;
+                            }
+                        }
+                    }
+                }
+                if (maxSuggest >= 5) {
+                    break;
+                }
+            }
+        }
+
+        List<String> suggests = Arrays.asList(suggestSet.toArray(new String[]{}));
+
+        return suggests;
+    }
 }
