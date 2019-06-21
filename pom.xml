@@ -82,7 +82,7 @@
         <mybatis-plus.version>3.1.1</mybatis-plus.version>
         <geoip2.version>2.12.0</geoip2.version>
         <log4j.version>2.11.2</log4j.version>
-
+        <dom4j.version>2.1.1</dom4j.version>
     </properties>
 
     <dependencies>
@@ -475,6 +475,11 @@
             <groupId>org.jdom</groupId>
             <artifactId>jdom2</artifactId>
             <version>${jdom2.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>${dom4j.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.thetransactioncompany/cors-filter -->
         <dependency>
