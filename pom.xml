@@ -48,13 +48,13 @@
         <geotools.version>18.5</geotools.version>
         <postgresql.version>42.2.5</postgresql.version>
         <swagger.version>2.9.2</swagger.version>
-        <swagger-bootstrap-ui.version>1.9.3</swagger-bootstrap-ui.version>
+        <swagger-bootstrap-ui.version>1.9.4</swagger-bootstrap-ui.version>
         <jaxb-api.version>2.3.0</jaxb-api.version>
         <gdal.version>3.0.0</gdal.version>
         <junit.version>4.12</junit.version>
         <geoserver-manager.version>1.7.0</geoserver-manager.version>
         <lombok.version>1.16.22</lombok.version>
-        <commons-lang3.version>3.8.1</commons-lang3.version>
+        <commons-lang3.version>3.9</commons-lang3.version>
         <guava.version>23.0</guava.version>
         <fastjson.version>1.2.58</fastjson.version>
         <jts.version>1.13</jts.version>
@@ -63,7 +63,7 @@
         <poi.version>4.1.0</poi.version>
         <ant.version>1.10.5</ant.version>
         <easyexcel.version>1.1.1</easyexcel.version>
-        <pinyin4j.version>2.5.0</pinyin4j.version>
+        <pinyin4j.version>2.5.1</pinyin4j.version>
         <xmlbeans.version>3.1.0</xmlbeans.version>
         <javacsv.version>2.0</javacsv.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>
