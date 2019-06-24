@@ -50,10 +50,6 @@ public class SearchServiceImpl implements SearchService {
     @Autowired
     private ElasticsearchService elasticsearchService;
 
-    /**
-     * 初始化方法
-     */
-
     @Resource
     private CountryMapper countryMapper;
 
@@ -67,7 +63,7 @@ public class SearchServiceImpl implements SearchService {
     private TownMapper townMapper;
 
     /**
-     * 初始化
+     * 初始化行政区域数据
      */
 
     @PostConstruct
@@ -79,7 +75,7 @@ public class SearchServiceImpl implements SearchService {
     }
 
     @Override
-    public Result searchAreaName(double longitude, double latitude, double level) {
+    public Result searchByLocation(double longitude, double latitude, double level) {
 
         Point point = GeometryCreator.createPoint(longitude, latitude);
         List<Country> countries = Lists.newArrayList();
@@ -145,7 +141,7 @@ public class SearchServiceImpl implements SearchService {
     }
 
     @Override
-    public Result searchAreaGeo(String name) {
+    public Result searchByName(String name) {
 
         // 判空
         if (name == null || name.length() <= 0) {
@@ -186,11 +182,9 @@ public class SearchServiceImpl implements SearchService {
     }
 
     @Override
-    public Result searchPlace(JSONObject jsonObject) {
+    public Result searchByPlace(JSONObject jsonObject) {
 
-        LOG.info("SearchServiceImpl::searchPlace jsonObject=[{}]", jsonObject.toString());
-
-        //区分查询类型
+        //区分查询类型 1. 区域查询 2. 通用查询
         String type = jsonObject.getString(Constant.TYPE);
 
         String keyword = jsonObject.getString(Constant.KEYWORD);
@@ -198,8 +192,8 @@ public class SearchServiceImpl implements SearchService {
             return ResultUtil.error(ResultCode.PARAM_IS_NULL);
         }
 
-        //只传参数关键字搜索匹配所有ES数据
-        if (type.equals("2")) {
+        //只传参数关键字,类型搜索匹配所有ES数据
+        if (Constant.SEARCH_COMMON.equals(type)) {
             return ResultUtil.success(elasticsearchService.findByKeyword(keyword));
         }
 
