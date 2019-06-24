@@ -194,12 +194,12 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
 
             //第一个参数是查询的值，后面的参数是字段名，可以跟多个字段，用逗号隔开
             boolQuery
-                    .should(QueryBuilders.matchPhraseQuery("properties.first_class", keyword))
-                    .should(QueryBuilders.matchPhraseQuery("properties.second_class", keyword))
-                    .should(QueryBuilders.matchPhraseQuery("properties.third_class", keyword))
                     .should(QueryBuilders.termQuery("properties.name", keyword).boost(10f))
                     .should(QueryBuilders.prefixQuery("properties.name", keyword).boost(4f))
                     .should(QueryBuilders.matchPhraseQuery("properties.name", keyword).boost(3f))
+                    .should(QueryBuilders.matchPhraseQuery("properties.first_class", keyword))
+                    .should(QueryBuilders.matchPhraseQuery("properties.second_class", keyword))
+                    .should(QueryBuilders.matchPhraseQuery("properties.third_class", keyword))
                     .minimumShouldMatch(1)
                     .must(QueryBuilders.matchQuery("properties.county.keyword", regionInput.getName()));
 
@@ -211,7 +211,6 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
             }
 
             for (String term : termList) {
-                System.out.println("findTownByKeyword" + term);
                 boolQuery
                         .should(QueryBuilders.matchPhraseQuery("properties.name", term)).boost(10f)
                         .should(QueryBuilders.matchPhraseQuery("properties.first_class", term))
@@ -275,8 +274,7 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
         for (SearchHit searchHitFields : response.getHits()) {
 
             Region region = JSON.parseObject(searchHitFields.getSourceAsString(), Region.class);
-
-            region.setGeometry(null);
+//            region.setGeometry(null);
             RegionOutput regionOutput = RegionOutput.builder()
                     .name(region.getProperties().getName())
                     .type(Constant.SEARCH_REGION)
