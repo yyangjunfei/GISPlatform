@@ -25,38 +25,38 @@ public class SearchController {
     @Autowired
     private SearchService searchService;
 
-    @ApiOperation(value = "根据位置查询地区名称", notes = "根据位置查询地区名称")
+    @ApiOperation(value = "位置搜索", notes = "位置搜索")
     @GetMapping("/location")
-    public Result searchAreaName(@RequestParam double longitude, @RequestParam double latitude, @RequestParam double level) {
+    public Result searchByLocation(@RequestParam double longitude, @RequestParam double latitude, @RequestParam double level) {
 
-        LOG.info("SearchController::searchAreaName longitude = [{}],latitude = [{}],level = [{}]", longitude, latitude, level);
+        LOG.info("SearchController::searchByLocation longitude = [{}],latitude = [{}],level = [{}]", longitude, latitude, level);
 
-        return searchService.searchAreaName(longitude, latitude, level);
+        return searchService.searchByLocation(longitude, latitude, level);
     }
 
-    @ApiOperation(value = "根据名称查询地区位置", notes = "根据名称查询地区位置")
+    @ApiOperation(value = "名称搜索", notes = "名称搜索")
     @GetMapping("/name")
-    public Result searchAreaGeo(@RequestParam String name) {
+    public Result searchByName(@RequestParam String name) {
 
-        LOG.info("SearchController::searchAreaGeo name = [{}]", name);
+        LOG.info("SearchController::searchByName name = [{}]", name);
 
-        return searchService.searchAreaGeo(name);
+        return searchService.searchByName(name);
     }
 
-    @ApiOperation(value = "查询POI", notes = "查询POI")
+    @ApiOperation(value = "搜索POI", notes = "搜索POI")
     @PostMapping("/place")
-    public Result searchPlace(@RequestBody JSONObject jsonObject) {
+    public Result searchByPlace(@RequestBody JSONObject jsonObject) {
 
-        LOG.info("SearchController::searchPlace jsonObject = [{}]", jsonObject);
+        LOG.info("SearchController::searchByPlace jsonObject = [{}]", jsonObject);
 
-        return searchService.searchPlace(jsonObject);
+        return searchService.searchByPlace(jsonObject);
     }
 
     @ApiOperation(value = "test", notes = "test")
     @GetMapping("/test")
-    public Result searchTest() {
+    public Result test() {
 
-        LOG.info("SearchController::searchTest");
+        LOG.info("SearchController::test");
 
         return searchService.test();
     }
