@@ -50,6 +50,9 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
 
     private static Logger LOG = LoggerFactory.getLogger(ElasticsearchServiceImpl.class);
 
+    //查询poi数量
+    private static int POI_SIZE = 100;
+
     @Autowired
     private TransportClient client;
 
@@ -100,7 +103,7 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(boolQuery)
                 .setFrom(0)
-                .setSize(200)
+                .setSize(POI_SIZE)
                 .addAggregation(termsBuilder);
 
         // 发送查询请求
@@ -205,16 +208,19 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
 
             //增加分词筛选
             List<String> termList = listTerms(keyword, Constant.INDEX_ES_POI, Constant.ik_smart);
-
+            int termSize = termList.size();
             if (termList.size() > 1) {
                 for (String term : termList) {
                     boolQuery
                             .should(QueryBuilders.matchPhraseQuery("properties.name", term)).boost(10f)
+                            .should(QueryBuilders.matchPhraseQuery("properties.third_class", term))
                             .should(QueryBuilders.matchPhraseQuery("properties.first_class", term))
                             .should(QueryBuilders.matchPhraseQuery("properties.second_class", term))
-                            .should(QueryBuilders.matchPhraseQuery("properties.third_class", term))
                             .minimumShouldMatch(2);
                 }
+                boolQuery
+                        .should(QueryBuilders.matchPhraseQuery("properties.name", termList.get(termSize - 2))).boost(4f)
+                        .must(QueryBuilders.matchPhraseQuery("properties.name", termList.get(termSize - 1)));
             }
 
             // 组装查询请求
@@ -223,7 +229,7 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
                     .setSearchType(SearchType.QUERY_THEN_FETCH)
                     .setQuery(boolQuery)
                     .setFrom(0)
-                    .setSize(365);
+                    .setSize(POI_SIZE);
 
             // 发送查询请求
             SearchResponse response = requestBuilder.get();
@@ -328,16 +334,17 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
                 .minimumShouldMatch(1);
         //增加分词筛选
         List<String> termList = listTerms(keyword, Constant.INDEX_ES_REGION, Constant.ik_smart);
-        for (String term : termList) {
-            boolQuery
-                    .should(QueryBuilders.matchPhraseQuery("properties.name", term)).boost(10f)
-                    .should(QueryBuilders.matchPhraseQuery("properties.first_class", term))
-                    .should(QueryBuilders.matchPhraseQuery("properties.second_class", term))
-                    .should(QueryBuilders.matchPhraseQuery("properties.third_class", term))
-                    .minimumShouldMatch(2);
-        }
+
         int termSize = termList.size();
         if (termList.size() > 1) {
+            for (String term : termList) {
+                boolQuery
+                        .should(QueryBuilders.matchPhraseQuery("properties.name", term)).boost(10f)
+                        .should(QueryBuilders.matchPhraseQuery("properties.first_class", term))
+                        .should(QueryBuilders.matchPhraseQuery("properties.second_class", term))
+                        .should(QueryBuilders.matchPhraseQuery("properties.third_class", term))
+                        .minimumShouldMatch(2);
+            }
             boolQuery
                     .should(QueryBuilders.matchPhraseQuery("properties.name", termList.get(termSize - 2))).boost(4f)
                     .must(QueryBuilders.matchPhraseQuery("properties.name", termList.get(termSize - 1)));
@@ -349,7 +356,7 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(boolQuery)
                 .setFrom(0)
-                .setSize(365);
+                .setSize(POI_SIZE);
 
         // 发送查询请求
         SearchResponse response = requestBuilder.get();
