@@ -38,4 +38,11 @@ private static final Logger logger= LoggerFactory.getLogger(ShapeTest.class);
     Boolean xxx = exportServiceImpl.writeJSON(layerByLayerId);
     logger.info("writeJson::"+xxx);
   }
+  @Test
+  public void writeXml() {
+    logger.info("writeXml::");
+    Layer layerByLayerId = layerServiceImpl.findLayerByLayerId("647c8606881f11e988d220040ff72212");
+    Boolean xxx = exportServiceImpl.writeKML(layerByLayerId);
+    logger.info("writeXml::"+xxx);
+  }
 }
