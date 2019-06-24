@@ -100,7 +100,7 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(boolQuery)
                 .setFrom(0)
-                .setSize(334)
+                .setSize(200)
                 .addAggregation(termsBuilder);
 
         // 发送查询请求
@@ -144,7 +144,7 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
      * @param regionName 区域名称
      * @return
      */
-    public Poi findFirstPoi(String keyword, String regionName) {
+    private Poi findFirstPoi(String keyword, String regionName) {
 
         // 组装查询条件
         BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
@@ -205,18 +205,16 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
 
             //增加分词筛选
             List<String> termList = listTerms(keyword, Constant.INDEX_ES_POI, Constant.ik_smart);
-            int minimumShouldMatch = 1;
-            if (termList.size() > 1) {
-                minimumShouldMatch = 2;
-            }
 
-            for (String term : termList) {
-                boolQuery
-                        .should(QueryBuilders.matchPhraseQuery("properties.name", term)).boost(10f)
-                        .should(QueryBuilders.matchPhraseQuery("properties.first_class", term))
-                        .should(QueryBuilders.matchPhraseQuery("properties.second_class", term))
-                        .should(QueryBuilders.matchPhraseQuery("properties.third_class", term))
-                        .minimumShouldMatch(minimumShouldMatch);
+            if (termList.size() > 1) {
+                for (String term : termList) {
+                    boolQuery
+                            .should(QueryBuilders.matchPhraseQuery("properties.name", term)).boost(10f)
+                            .should(QueryBuilders.matchPhraseQuery("properties.first_class", term))
+                            .should(QueryBuilders.matchPhraseQuery("properties.second_class", term))
+                            .should(QueryBuilders.matchPhraseQuery("properties.third_class", term))
+                            .minimumShouldMatch(2);
+                }
             }
 
             // 组装查询请求
@@ -225,7 +223,7 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
                     .setSearchType(SearchType.QUERY_THEN_FETCH)
                     .setQuery(boolQuery)
                     .setFrom(0)
-                    .setSize(1000);
+                    .setSize(365);
 
             // 发送查询请求
             SearchResponse response = requestBuilder.get();
@@ -266,7 +264,7 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(boolQuery)
                 .setFrom(0)
-                .setSize(10);
+                .setSize(5);
 
         // 发送查询请求
         SearchResponse response = requestBuilder.get();
@@ -296,7 +294,7 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
      * @param analyzer 分词类型
      * @return
      */
-    public List<String> listTerms(String keyword, String index, String analyzer) {
+    private List<String> listTerms(String keyword, String index, String analyzer) {
 
         //ik类型 ik_max_word ik_smart
         AnalyzeRequest analyzeRequest = new AnalyzeRequest(index)
@@ -351,7 +349,7 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(boolQuery)
                 .setFrom(0)
-                .setSize(500);
+                .setSize(365);
 
         // 发送查询请求
         SearchResponse response = requestBuilder.get();
