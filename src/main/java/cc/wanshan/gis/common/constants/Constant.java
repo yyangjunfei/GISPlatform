@@ -89,5 +89,33 @@ public class Constant {
      * 搜索类型-精确-POI
      */
     public static final String SEARCH_EXACT_POI = "4";
+    /**
+     * 搜索类型-通用查询
+     */
+    public static final String SEARCH_COMMON = "2";
+    /**
+     * ES搜索索引--行政区
+     */
+    public static final String INDEX_ES_REGION = "region_data";
+    /**
+     * ES搜索类型--行政区
+     */
+    public static final String TYPE_ES_REGION = "Feature";
+    /**
+     * ES搜索索引--行政区
+     */
+    public static final String INDEX_ES_POI = "map_data";
+    /**
+     * ES搜索类型--行政区
+     */
+    public static final String TYPE_ES_POI = "Feature";
+    /**
+     * ES搜索分词类型--ik_smart
+     */
+    public static final String ik_smart = "ik_smart";
+    /**
+     * ES搜索分词类型--ik_max_word
+     */
+    public static final String ik_max_word = "ik_max_word";
 
 }

@@ -29,23 +29,6 @@ public class GeoServerUtils {
     public static GeoServerRESTReader reader;
     public static GeoServerRESTPublisher publisher;
 
-//    @PostConstruct
-//    public static GeoServerRESTManager getGeoserverManager() {
-//        if (manager == null) {
-//            synchronized (GeoServerUtils.class) {
-//                if (manager == null) {
-//                    try {
-//                        url = new URL(geoserver.getUrl());
-//                        manager = new GeoServerRESTManager(url, geoserver.getUsername(), geoserver.getPasswd());
-//                    } catch (MalformedURLException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//        }
-//        return manager;
-//    }
-
     /**
      * 初始化，发布时进行身份认证
      */
