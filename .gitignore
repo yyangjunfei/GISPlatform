@@ -19,6 +19,7 @@ target/*
 *.iml
 *.ipr
 rebel.xml
+rebel*
 
 ### NetBeans ###
 /nbproject/private/
