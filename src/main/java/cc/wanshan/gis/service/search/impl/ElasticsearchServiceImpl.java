@@ -26,8 +26,8 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.suggest.Suggest;
 import org.elasticsearch.search.suggest.SuggestBuilder;
 import org.elasticsearch.search.suggest.SuggestBuilders;
@@ -49,9 +49,6 @@ import java.util.Set;
 public class ElasticsearchServiceImpl implements ElasticsearchService {
 
     private static Logger LOG = LoggerFactory.getLogger(ElasticsearchServiceImpl.class);
-
-    //查询poi数量
-    private static int POI_SIZE = 100;
 
     @Autowired
     private TransportClient client;
@@ -82,55 +79,51 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
         LOG.info("ElasticsearchServiceImpl::findCityByKeyword keyword = [{}],regionInputList = [{}]", keyword, regionInputList);
 
         AggregationBuilder termsBuilder = AggregationBuilders.terms("by_province").field("properties.province.keyword");
-        AggregationBuilder cityTermsBuilder = AggregationBuilders.terms("by_city").field("properties.city.keyword");
-        termsBuilder.subAggregation(cityTermsBuilder);
+        termsBuilder.subAggregation(AggregationBuilders.terms("by_city").field("properties.city.keyword"));
 
         // 组装查询条件
         BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
 
-        if (keyword != null) {
-            boolQuery
-                    .should(QueryBuilders.matchPhraseQuery("properties.first_class", keyword))
-                    .should(QueryBuilders.matchPhraseQuery("properties.second_class", keyword))
-                    .should(QueryBuilders.matchPhraseQuery("properties.third_class", keyword))
-                    .should(QueryBuilders.matchPhraseQuery("properties.name", keyword))
-                    .minimumShouldMatch(1);
-        }
+        boolQuery
+                .should(QueryBuilders.matchPhraseQuery("properties.first_class", keyword))
+                .should(QueryBuilders.matchPhraseQuery("properties.second_class", keyword))
+                .should(QueryBuilders.matchPhraseQuery("properties.third_class", keyword))
+                .should(QueryBuilders.matchPhraseQuery("properties.name", keyword))
+                .minimumShouldMatch(1);
 
-        // 组装查询请求
-        SearchRequestBuilder requestBuilder = client.prepareSearch(Constant.INDEX_ES_POI)
+        // 组装查询,发送查询请求
+        SearchResponse response = client.prepareSearch(Constant.INDEX_ES_POI)
                 .setTypes(Constant.TYPE_ES_POI)
-                .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
+                .setSearchType(SearchType.QUERY_THEN_FETCH)
                 .setQuery(boolQuery)
                 .setFrom(0)
-                .setSize(POI_SIZE)
-                .addAggregation(termsBuilder);
+                .setSize(Constant.CHINA_CITY_SIZE)
+                .addAggregation(termsBuilder)
+                .execute()
+                .actionGet();
 
-        // 发送查询请求
-        SearchResponse response = requestBuilder.get();
-        Aggregations aggregations = response.getAggregations();
 
         // 组装查询到的数据集
         List<RegionOutput> regionOutputList = Lists.newArrayList();
 
-        for (Aggregation aggregation : aggregations) {
+        for (Aggregation aggregation : response.getAggregations()) {
+
             StringTerms stringTerms = (StringTerms) aggregation;
             //获取省
-            for (StringTerms.Bucket bucket : stringTerms.getBuckets()) {
-                Aggregation aggs = bucket.getAggregations().getAsMap().get("by_city");
-                StringTerms terms1 = (StringTerms) aggs;
+            for (StringTerms.Bucket provinceBucket : stringTerms.getBuckets()) {
+                Terms cityTerms = provinceBucket.getAggregations().get("by_city");
                 //获取市
-                for (StringTerms.Bucket bu : terms1.getBuckets()) {
+                for (Terms.Bucket cityBucket : cityTerms.getBuckets()) {
                     //获取传入的市名的POI计数
                     for (RegionInput regionInput : regionInputList) {
                         //判断名称是否相等
-                        if (bu.getKeyAsString().equals(regionInput.getName())) {
+                        if (cityBucket.getKeyAsString().trim().equals(regionInput.getName().trim())) {
 
                             // 通过关键字和区域名称获取POI匹配最高的数据
                             Poi poi = findFirstPoi(keyword, regionInput.getName());
 
-                            LOG.info("regionOutput name = [{}],count = [{}]", bu.getKeyAsString(), bu.getDocCount());
-                            RegionOutput regionOutput = RegionOutput.builder().name(bu.getKeyAsString()).count(bu.getDocCount()).type(Constant.SEARCH_REGION_TERMS).centroid(poi.getGeometry()).build();
+                            LOG.info("regionOutput name = [{}],count = [{}]", cityBucket.getKeyAsString(), cityBucket.getDocCount());
+                            RegionOutput regionOutput = RegionOutput.builder().name(cityBucket.getKeyAsString()).count(cityBucket.getDocCount()).type(Constant.SEARCH_REGION_TERMS).centroid(poi.getGeometry()).build();
                             regionOutputList.add(regionOutput);
                         }
                     }
@@ -154,25 +147,26 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
 
         //第一个参数是查询的值，后面的参数是字段名，可以跟多个字段，用逗号隔开
         boolQuery
+                .should(QueryBuilders.termQuery("properties.name", keyword).boost(10f))
+                .should(QueryBuilders.prefixQuery("properties.name", keyword).boost(9f))
+                .should(QueryBuilders.matchPhraseQuery("properties.name", keyword).boost(5f))
                 .should(QueryBuilders.matchPhraseQuery("properties.first_class", keyword))
                 .should(QueryBuilders.matchPhraseQuery("properties.second_class", keyword))
                 .should(QueryBuilders.matchPhraseQuery("properties.third_class", keyword))
-                .should(QueryBuilders.matchPhraseQuery("properties.name", keyword).boost(3))
-                .should(QueryBuilders.prefixQuery("properties.name", keyword).boost(4))
-                .should(QueryBuilders.termQuery("properties.name", keyword).boost(5))
                 .minimumShouldMatch(1)
                 .must(QueryBuilders.matchQuery("properties.city.keyword", regionName));
 
-        // 组装查询请求
-        SearchRequestBuilder requestBuilder = client.prepareSearch(Constant.INDEX_ES_POI)
+        // 组装查询,发送查询请求
+        SearchResponse response = client.prepareSearch(Constant.INDEX_ES_POI)
                 .setTypes(Constant.TYPE_ES_POI)
                 .setSearchType(SearchType.QUERY_THEN_FETCH)
                 .setQuery(boolQuery)
+                .setExplain(true)
                 .setFrom(0)
-                .setSize(2);
+                .setSize(2)
+                .execute()
+                .actionGet();
 
-        // 发送查询请求
-        SearchResponse response = requestBuilder.get();
         Poi poi = null;
         for (SearchHit searchHitFields : response.getHits()) {
             poi = JSON.parseObject(searchHitFields.getSourceAsString(), Poi.class);
@@ -209,7 +203,7 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
             //增加分词筛选
             List<String> termList = listTerms(keyword, Constant.INDEX_ES_POI, Constant.ik_smart);
             int termSize = termList.size();
-            if (termList.size() > 1) {
+            if (termSize > 1) {
                 for (String term : termList) {
                     boolQuery
                             .should(QueryBuilders.matchPhraseQuery("properties.name", term)).boost(10f)
@@ -223,16 +217,17 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
                         .must(QueryBuilders.matchPhraseQuery("properties.name", termList.get(termSize - 1)));
             }
 
-            // 组装查询请求
-            SearchRequestBuilder requestBuilder = client.prepareSearch(Constant.INDEX_ES_POI)
+            // 组装查询,发送查询请求
+            SearchResponse response = client.prepareSearch(Constant.INDEX_ES_POI)
                     .setTypes(Constant.TYPE_ES_POI)
                     .setSearchType(SearchType.QUERY_THEN_FETCH)
                     .setQuery(boolQuery)
+                    .setExplain(true)
                     .setFrom(0)
-                    .setSize(POI_SIZE);
+                    .setSize(Constant.SEARCH_POI_SIZE)
+                    .execute()
+                    .actionGet();
 
-            // 发送查询请求
-            SearchResponse response = requestBuilder.get();
             RegionOutput regionOutput = RegionOutput.builder().name(regionInput.getName()).type(Constant.SEARCH_EXACT_POI).build();
             List<Poi> poiList = Lists.newArrayList();
             for (SearchHit searchHitFields : response.getHits()) {
@@ -264,16 +259,15 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
             boolQuery.should(QueryBuilders.matchPhraseQuery("properties.name", term));
         }
 
-        // 组装查询请求
-        SearchRequestBuilder requestBuilder = client.prepareSearch(Constant.INDEX_ES_REGION)
+        // 组装查询,发送查询请求
+        SearchResponse response = client.prepareSearch(Constant.INDEX_ES_REGION)
                 .setTypes(Constant.TYPE_ES_REGION)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(boolQuery)
                 .setFrom(0)
-                .setSize(5);
+                .setSize(5)
+                .get();
 
-        // 发送查询请求
-        SearchResponse response = requestBuilder.get();
         List<RegionOutput> regionOutputList = Lists.newArrayList();
         for (SearchHit searchHitFields : response.getHits()) {
 
@@ -291,7 +285,6 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
         return regionOutputList;
     }
 
-
     /**
      * 对关键字分词处理
      *
@@ -306,13 +299,13 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
         AnalyzeRequest analyzeRequest = new AnalyzeRequest(index)
                 .text(keyword)
                 .analyzer(analyzer);
-        List<AnalyzeResponse.AnalyzeToken> tokens = client.admin().indices()
+        List<AnalyzeResponse.AnalyzeToken> tokens = client.admin()
+                .indices()
                 .analyze(analyzeRequest)
                 .actionGet()
                 .getTokens();
 
         List<String> termList = Lists.newArrayList();
-
         for (AnalyzeResponse.AnalyzeToken token : tokens) {
             termList.add(token.getTerm());
         }
@@ -336,7 +329,7 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
         List<String> termList = listTerms(keyword, Constant.INDEX_ES_REGION, Constant.ik_smart);
 
         int termSize = termList.size();
-        if (termList.size() > 1) {
+        if (termSize > 1) {
             for (String term : termList) {
                 boolQuery
                         .should(QueryBuilders.matchPhraseQuery("properties.name", term)).boost(10f)
@@ -350,16 +343,16 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
                     .must(QueryBuilders.matchPhraseQuery("properties.name", termList.get(termSize - 1)));
         }
 
-        // 组装查询请求
-        SearchRequestBuilder requestBuilder = client.prepareSearch(Constant.INDEX_ES_POI)
+        // 组装查询,发送查询请求
+        SearchResponse response = client.prepareSearch(Constant.INDEX_ES_POI)
                 .setTypes(Constant.TYPE_ES_POI)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(boolQuery)
+                .setExplain(true)
                 .setFrom(0)
-                .setSize(POI_SIZE);
-
-        // 发送查询请求
-        SearchResponse response = requestBuilder.get();
+                .setSize(Constant.SEARCH_POI_SIZE)
+                .execute()
+                .actionGet();
 
         List<RegionOutput> regionOutputList = Lists.newArrayList();
         List<Poi> poiList = Lists.newArrayList();
@@ -380,8 +373,9 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
     public List<RegionOutput> findByKeyword(String keyword) {
 
         List<RegionOutput> regionOutputList = Lists.newArrayList();
-
+        //增加行政区数据
         regionOutputList.addAll(findRegionByKeyword(keyword));
+        //增加POI数据
         regionOutputList.addAll(findPoiByKeyword(keyword));
 
         return regionOutputList;

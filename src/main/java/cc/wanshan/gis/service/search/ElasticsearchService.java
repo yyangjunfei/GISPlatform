@@ -83,5 +83,5 @@ public interface ElasticsearchService {
      * @param keyword
      * @return
      */
-    public List<String> getSuggestSearch(String keyword);
+    List<String> getSuggestSearch(String keyword);
 }

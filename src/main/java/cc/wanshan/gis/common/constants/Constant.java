@@ -117,5 +117,14 @@ public class Constant {
      * ES搜索分词类型--ik_max_word
      */
     public static final String ik_max_word = "ik_max_word";
+    /**
+     * ES搜索查询数量
+     */
+    public static int SEARCH_POI_SIZE = 128;
+    /**
+     * ES搜索查询数量
+     */
+    public static int CHINA_CITY_SIZE = 334;
+
 
 }
