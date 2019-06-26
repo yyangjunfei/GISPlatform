@@ -1,7 +1,9 @@
 package cc.wanshan.gis.controller.search;
 
+import cc.wanshan.gis.common.enums.ResultCode;
 import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.service.search.SearchService;
+import cc.wanshan.gis.utils.ResultUtil;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -39,6 +41,11 @@ public class SearchController {
     public Result searchByName(@RequestParam String name) {
 
         LOG.info("SearchController::searchByName name = [{}]", name);
+
+        // 判空
+        if (name == null || name.length() <= 0) {
+            return ResultUtil.error(ResultCode.PARAM_IS_NULL);
+        }
 
         return searchService.searchByName(name);
     }

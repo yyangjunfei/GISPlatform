@@ -65,7 +65,6 @@ public class SearchServiceImpl implements SearchService {
     /**
      * 初始化行政区域数据
      */
-
     @PostConstruct
     public void init() {
         countryList = searchDao.findAllCountry();
@@ -86,34 +85,34 @@ public class SearchServiceImpl implements SearchService {
         try {
             if (level > 8 && level <= 11) {
                 for (Province province : provinceList) {
-                    String envelope = province.getEnvelope();
-                    Geometry geometry = GeoToolsUtils.geoJson2Geometry(envelope);
+                    Geometry geometry = GeoToolsUtils.geoJson2Geometry(province.getEnvelope());
                     if (geometry.contains(point)) {
                         provinces.add(province);
                     }
                 }
-                for (Province province : provinces) {
-                    Province oneProvince = searchDao.findOneProvince(province.getGid());
-                    String geom = oneProvince.getGeometry();
-                    Geometry geometry = GeoToolsUtils.geoJson2Geometry(geom);
-                    if (geometry.contains(point)) {
-                        return ResultUtil.success(province);
+                if (null != provinces && provinces.size() > 1) {
+                    for (Province province : provinces) {
+                        Province oneProvince = searchDao.findOneProvince(province.getGid());
+                        Geometry geometry = GeoToolsUtils.geoJson2Geometry(oneProvince.getGeometry());
+                        if (geometry.contains(point)) {
+                            return ResultUtil.success(province);
+                        }
                     }
                 }
             } else if (level > 11 && level <= 22) {
                 for (City city : cityList) {
-                    String envelope = city.getEnvelope();
-                    Geometry geometry = GeoToolsUtils.geoJson2Geometry(envelope);
+                    Geometry geometry = GeoToolsUtils.geoJson2Geometry(city.getEnvelope());
                     if (geometry.contains(point)) {
                         cities.add(city);
                     }
                 }
-                for (City city : cities) {
-                    City oneCity = searchDao.findOneCity(city.getGid());
-                    String geom = oneCity.getGeometry();
-                    Geometry geometry = GeoToolsUtils.geoJson2Geometry(geom);
-                    if (geometry.contains(point)) {
-                        return ResultUtil.success(city);
+                if (null != cities && cities.size() > 1) {
+                    for (City city : cities) {
+                        City oneCity = searchDao.findOneCity(city.getGid());
+                        Geometry geometry = GeoToolsUtils.geoJson2Geometry(oneCity.getGeometry());
+                        if (geometry.contains(point)) {
+                            return ResultUtil.success(city);
+                        }
                     }
                 }
             }
@@ -127,8 +126,7 @@ public class SearchServiceImpl implements SearchService {
             }
             for (Country country : countries) {
                 Country oneCountry = searchDao.findOneCountry(country.getGid());
-                String geom = oneCountry.getGeometry();
-                Geometry geometry = GeoToolsUtils.geoJson2Geometry(geom);
+                Geometry geometry = GeoToolsUtils.geoJson2Geometry(oneCountry.getGeometry());
                 if (geometry.contains(point)) {
                     return ResultUtil.success(country);
                 }
@@ -142,11 +140,6 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     public Result searchByName(String name) {
-
-        // 判空
-        if (name == null || name.length() <= 0) {
-            return ResultUtil.error(ResultCode.PARAM_IS_NULL);
-        }
 
         List<Country> allCountryGeo = searchDao.findAllCountryGeo(name);
         if (allCountryGeo != null && allCountryGeo.size() > 0) {
@@ -194,7 +187,13 @@ public class SearchServiceImpl implements SearchService {
 
         //只传参数关键字,类型搜索匹配所有ES数据
         if (Constant.SEARCH_COMMON.equals(type)) {
-            return ResultUtil.success(elasticsearchService.findByKeyword(keyword));
+            List<RegionOutput> regionOutputList = elasticsearchService.findByKeyword(keyword);
+
+            if (regionOutputList == null) {
+                return ResultUtil.error(ResultCode.FIND_NULL);
+            } else {
+                return ResultUtil.success(regionOutputList);
+            }
         }
 
         List<RegionOutput> regionOutputList = Lists.newArrayList();
@@ -217,7 +216,6 @@ public class SearchServiceImpl implements SearchService {
         double maxX = Double.parseDouble(arr[2]);
         double maxY = Double.parseDouble(arr[3]);
 
-
         Geometry polygon = null;
         try {
             //根据包围形封装成geometry格式的面数据
@@ -226,8 +224,7 @@ public class SearchServiceImpl implements SearchService {
             //查询ES POI数据
             if (level <= 13) {
                 for (City city : cityList) {
-                    String envelope = city.getEnvelope();
-                    Geometry geometry = GeoToolsUtils.geoJson2Geometry(envelope);
+                    Geometry geometry = GeoToolsUtils.geoJson2Geometry(city.getEnvelope());
                     if (polygon.intersects(geometry)) {
                         //es入参
                         RegionInput regionInput = RegionInput.builder().name(city.getName()).centroid(city.getCentroid()).build();
@@ -235,59 +232,54 @@ public class SearchServiceImpl implements SearchService {
                     }
                 }
                 if (regionInputList != null) {
-                    //从es查询市份的聚合数据
+                    //从es查询市区的聚合数据
                     List<RegionOutput> cityByKeyword = elasticsearchService.findCityByKeyword(keyword, regionInputList);
-                    regionOutputList.addAll(cityByKeyword);
-
-                    return ResultUtil.success(regionOutputList);
+                    if (regionInputList != null) {
+                        regionOutputList.addAll(cityByKeyword);
+                    }
                 }
             } else {
                 for (Town town : townList) {
-                    String envelope = town.getEnvelope();
-                    Geometry geometry = GeoToolsUtils.geoJson2Geometry(envelope);
+                    Geometry geometry = GeoToolsUtils.geoJson2Geometry(town.getEnvelope());
                     if (polygon.intersects(geometry)) {
                         //es入参
                         RegionInput regionInput = RegionInput.builder().name(town.getName()).centroid(town.getCentroid()).build();
                         regionInputList.add(regionInput);
                     }
                 }
-
                 if (regionInputList != null) {
-
                     //从es查询区县份的聚合数据
-                    List<RegionOutput> regionOutputList2 = elasticsearchService.findTownByKeyword(keyword, regionInputList);
-                    List<RegionOutput> regionOutputs = Lists.newArrayList();
-
-                    for (RegionOutput regionOutput : regionOutputList2) {
-
-                        List<Poi> poiList = regionOutput.getPoiList();
-
-                        //判断点是否在包围形中
-                        List<Poi> pois = Lists.newArrayList();
-                        for (Poi poi : poiList) {
-                            Geometry geometry = GeoToolsUtils.geoJson2Geometry(poi.getGeometry());
-                            if (polygon.contains(geometry)) {
-                                pois.add(poi);
+                    List<RegionOutput> regionOutputs = elasticsearchService.findTownByKeyword(keyword, regionInputList);
+                    if (regionOutputs != null) {
+                        for (RegionOutput regionOutput : regionOutputs) {
+                            List<Poi> poiList = regionOutput.getPoiList();
+                            //判断点是否在包围形中
+                            List<Poi> pois = Lists.newArrayList();
+                            for (Poi poi : poiList) {
+                                Geometry geometry = GeoToolsUtils.geoJson2Geometry(poi.getGeometry());
+                                if (polygon.contains(geometry)) {
+                                    pois.add(poi);
+                                }
+                            }
+                            if (pois != null && !pois.isEmpty()) {
+                                regionOutput.setPoiList(null);
+                                regionOutput.setPoiList(pois);
+                                regionOutputList.add(regionOutput);
                             }
                         }
-                        if (pois != null && !pois.isEmpty()) {
-                            regionOutput.setPoiList(null);
-                            regionOutput.setPoiList(pois);
-                            regionOutputs.add(regionOutput);
-                        }
                     }
-
-                    regionOutputList.addAll(regionOutputs);
-                    return ResultUtil.success(regionOutputList);
                 }
             }
-            return ResultUtil.error(ResultCode.DATA_NOT_FOUND);
+            if (regionOutputList == null) {
+                return ResultUtil.error(ResultCode.FIND_NULL);
+            } else {
+                return ResultUtil.success(regionOutputList);
+            }
         } catch (IOException e) {
             e.printStackTrace();
             return ResultUtil.error(ResultCode.GEOMETRY_TRANSFORM_FAIL);
         }
     }
-
 
     @Override
     public Result test() {
