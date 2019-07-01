@@ -1,10 +1,10 @@
 package cc.wanshan.gis.service.search;
 
-import cc.wanshan.gis.entity.search.RegionInput;
 import cc.wanshan.gis.entity.search.RegionOutput;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Set;
 
 public interface ElasticsearchService {
 
@@ -41,20 +41,29 @@ public interface ElasticsearchService {
     /**
      * POI按照省分组聚和查询（查询--市级）
      *
-     * @param keyword         关键字
-     * @param regionInputList 市区名称集合
+     * @param keyword    关键字
+     * @param regionList 市区名称集合
      * @return
      */
-    List<RegionOutput> findCityByKeyword(String keyword, List<RegionInput> regionInputList);
+    List<RegionOutput> findCityByKeyword(String keyword, List<String> regionList);
 
     /**
      * POI按照省分组聚和查询（查询--区县级）
      *
-     * @param keyword         关键字
-     * @param regionInputList 县区名称集合
+     * @param keyword    关键字
+     * @param regionList 县区名称集合
      * @return
      */
-    List<RegionOutput> findTownByKeyword(String keyword, List<RegionInput> regionInputList);
+    RegionOutput findTownByKeyword(String keyword, List<String> regionList);
+
+    /**
+     * POI查询（查询--区县级）
+     *
+     * @param keyword    关键字
+     * @param regionList 县区名称集合
+     * @return
+     */
+    RegionOutput findTownByKeywordAndAnalyzer(String keyword, List<String> regionList);
 
     /**
      * 根据关键字搜索行政区
@@ -67,7 +76,7 @@ public interface ElasticsearchService {
      * @param keyword 关键字
      * @return
      */
-    List<RegionOutput> findPoiByKeyword(String keyword);
+    RegionOutput findPoiByKeyword(String keyword);
 
     /**
      * 根据关键字搜索ES数据
@@ -80,8 +89,8 @@ public interface ElasticsearchService {
     /**
      * 根据关键字联想自动补全
      *
-     * @param keyword
+     * @param keyword 关键字
      * @return
      */
-    List<String> getSuggestSearch(String keyword);
+    Set<String> getSuggestSearch(String keyword);
 }
