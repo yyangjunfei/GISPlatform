@@ -152,7 +152,7 @@ public class ExportServiceImpl implements ExportService {
             if (polygon.getGeom() != null) {
               String string = (String) polygon.getGeom();
               polygon1 = polygonGeoJsonStringToText(string);
-            }else {
+            } else {
               String circle = polygon.getCircle();
               polygon1 = circleStringToText(circle);
             }
@@ -196,9 +196,9 @@ public class ExportServiceImpl implements ExportService {
       SimpleFeatureTypeBuilder simpleFeatureTypeBuilder = new SimpleFeatureTypeBuilder();
       simpleFeatureTypeBuilder.setName("testType");
       simpleFeatureTypeBuilder.crs(DefaultGeographicCRS.WGS84);
-      simpleFeatureTypeBuilder.add("geom",Geometry.class);
-      simpleFeatureTypeBuilder.add("name",String.class);
-      simpleFeatureTypeBuilder.add("describe",String.class);
+      simpleFeatureTypeBuilder.add("geom", Geometry.class);
+      simpleFeatureTypeBuilder.add("name", String.class);
+      simpleFeatureTypeBuilder.add("describe", String.class);
       SimpleFeatureType simpleFeatureType = simpleFeatureTypeBuilder.buildFeatureType();
       SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(simpleFeatureType);
       FeatureJSON fjson = new FeatureJSON(new GeometryJSON(15));
@@ -234,10 +234,10 @@ public class ExportServiceImpl implements ExportService {
         List<cc.wanshan.gis.entity.drawlayer.Polygon> polygonList = layer.getPolygonList();
         for (cc.wanshan.gis.entity.drawlayer.Polygon polygon : polygonList) {
           Polygon polygon1;
-          if (polygon.getGeom()!=null){
+          if (polygon.getGeom() != null) {
             String string = (String) polygon.getGeom();
-             polygon1= polygonGeoJsonStringToText(string);
-          }else {
+            polygon1 = polygonGeoJsonStringToText(string);
+          } else {
             String circle = polygon.getCircle();
             polygon1 = circleStringToText(circle);
           }
@@ -262,6 +262,7 @@ public class ExportServiceImpl implements ExportService {
     }
     return null;
   }
+
   @Override
   public Boolean writeKML(Layer layer) {
     String path = "./download/" + layer.getLayerNameZH() + layer.getLayerName() + ".kml";
@@ -277,11 +278,11 @@ public class ExportServiceImpl implements ExportService {
       Element kml = doc.addElement("kml");
       Element document = kml.addElement("Document");
       Element schema = document.addElement("Schema");
-      schema.addAttribute("name","test_1");
-      schema.addAttribute("id","test_1");
+      schema.addAttribute("name", "test_1");
+      schema.addAttribute("id", "test_1");
       Element simpleField = schema.addElement("SimpleField");
-      simpleField.addAttribute("type","string");
-      simpleField.addAttribute("name","name");
+      simpleField.addAttribute("type", "string");
+      simpleField.addAttribute("name", "name");
       /*Element simpleField1 = schema.addElement("SimpleField");
       simpleField1.addAttribute("type","string");
       simpleField1.addAttribute("name","describe");*/
@@ -294,19 +295,19 @@ public class ExportServiceImpl implements ExportService {
           Element name = folder.addElement("name");
           name.setText("Test");
           Element placemark = folder.addElement("Placemark");
-          placemark.addAttribute("id",point.getFeatureId());
+          placemark.addAttribute("id", point.getFeatureId());
           Element extendedData = placemark.addElement("ExtendedData");
           Element schemaData = extendedData.addElement("SchemaData");
-          schemaData.addAttribute("schemaUrl","test_1");
+          schemaData.addAttribute("schemaUrl", "test_1");
           Element simpleData = schemaData.addElement("SimpleData");
-          simpleData.addAttribute("name","name");
+          simpleData.addAttribute("name", "name");
           simpleData.setText(point.getFeatureName());
           /*Element simpleData1 = schemaData.addElement("SimpleData");
           simpleData1.addAttribute("name","describe");
           simpleData1.setText(point.getDescribe());*/
           Element point2 = placemark.addElement("Point");
           Element coordinates = point2.addElement("coordinates");
-          coordinates.setText(point1.getCoordinate().x+","+point1.getCoordinate().y);
+          coordinates.setText(point1.getCoordinate().x + "," + point1.getCoordinate().y);
         }
       }
       if ("linestring".equals(type.toLowerCase())) {
@@ -317,12 +318,12 @@ public class ExportServiceImpl implements ExportService {
           Element name = folder.addElement("name");
           name.setText("Test");
           Element placemark = folder.addElement("Placemark");
-          placemark.addAttribute("id",lineString.getFeatureId());
+          placemark.addAttribute("id", lineString.getFeatureId());
           Element extendedData = placemark.addElement("ExtendedData");
           Element schemaData = extendedData.addElement("SchemaData");
-          schemaData.addAttribute("schemaUrl","test_1");
+          schemaData.addAttribute("schemaUrl", "test_1");
           Element simpleData = schemaData.addElement("SimpleData");
-          simpleData.addAttribute("name","name");
+          simpleData.addAttribute("name", "name");
           simpleData.setText(lineString.getFeatureName());
           /*Element simpleData1 = schemaData.addElement("SimpleData");
           simpleData1.addAttribute("name","describe");
@@ -343,22 +344,22 @@ public class ExportServiceImpl implements ExportService {
         List<cc.wanshan.gis.entity.drawlayer.Polygon> polygonList = layer.getPolygonList();
         for (cc.wanshan.gis.entity.drawlayer.Polygon polygon : polygonList) {
           Polygon polygon1;
-          if (polygon.getGeom()!=null){
+          if (polygon.getGeom() != null) {
             String string = (String) polygon.getGeom();
-            polygon1= polygonGeoJsonStringToText(string);
-          }else {
+            polygon1 = polygonGeoJsonStringToText(string);
+          } else {
             String circle = polygon.getCircle();
             polygon1 = circleStringToText(circle);
           }
           Element name = folder.addElement("name");
           name.setText("Test");
           Element placemark = folder.addElement("Placemark");
-          placemark.addAttribute("id",polygon.getFeatureId());
+          placemark.addAttribute("id", polygon.getFeatureId());
           Element extendedData = placemark.addElement("ExtendedData");
           Element schemaData = extendedData.addElement("SchemaData");
-          schemaData.addAttribute("schemaUrl","test_1");
+          schemaData.addAttribute("schemaUrl", "test_1");
           Element simpleData = schemaData.addElement("SimpleData");
-          simpleData.addAttribute("name","name");
+          simpleData.addAttribute("name", "name");
           simpleData.setText(polygon.getFeatureName());
           /*Element simpleData1 = schemaData.addElement("SimpleData");
           simpleData1.addAttribute("name","describe");
@@ -381,7 +382,8 @@ public class ExportServiceImpl implements ExportService {
       }
       OutputFormat format = OutputFormat.createPrettyPrint();
       format.setEncoding("GBK");
-      XMLWriter xmlWriter = new XMLWriter(new OutputStreamWriter(new FileOutputStream(file.getAbsolutePath())), format);
+      XMLWriter xmlWriter = new XMLWriter(
+          new OutputStreamWriter(new FileOutputStream(file.getAbsolutePath())), format);
       //fjson.writeFeatureCollection(collection, writer);
       logger.info("fjson.writeFeatureCollection(collection, writer)" + doc.toString());
       xmlWriter.write(doc);
