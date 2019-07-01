@@ -1,5 +1,4 @@
 package cc.wanshan.gis.service.geoserver.impl;
-
 import cc.wanshan.gis.dao.createschema.CreateSchemaDao;
 import cc.wanshan.gis.dao.searchschema.SearchSchemaDao;
 import cc.wanshan.gis.entity.GeoServer;
@@ -20,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.Resource;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -53,7 +51,6 @@ public class GeoServerServiceImpl implements GeoServerService {
             Result schema = createSchemaDao.createSchema(workspace);
             if (schema.getCode() == 0) {
                 boolean workSpace = createWorkSpace(workspace, workspace);
-
                 if (workSpace) {
                     Result newStore = createDataStore("newStore", workspace);
                     if (newStore.getCode() == 0) {
@@ -185,7 +182,7 @@ public class GeoServerServiceImpl implements GeoServerService {
                     GSFeatureTypeEncoder pds = new GSFeatureTypeEncoder();
                     pds.setTitle(tableName);
                     pds.setName(tableName);
-                    pds.setSRS("EPSG:3857");
+                    pds.setSRS("EPSG:4326");
                     GSLayerEncoder layerEncoder = new GSLayerEncoder();
                     boolean publishDBLayer = GeoServerUtils.publisher.publishDBLayer(ws, storeName, pds, layerEncoder);
                     if (publishDBLayer) {
