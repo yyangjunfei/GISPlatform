@@ -20,7 +20,6 @@ public interface UserDao {
           "username," +
           "password," +
           "role_id," +
-          "thematic_id," +
           "security," +
           "insert_time," +
           "update_time," +
@@ -34,7 +33,6 @@ public interface UserDao {
           "#{username}," +
           "#{password}," +
           "#{role.roleId}," +
-          "#{thematic.thematicId}," +
           "#{security}," +
           "#{insertTime,jdbcType=TIMESTAMP}," +
           "#{updateTime,jdbcType=TIMESTAMP}," +
@@ -61,7 +59,6 @@ public interface UserDao {
           "u.username," +
           "u.password," +
           "u.role_id," +
-          "u.thematic_id," +
           "u.security," +
           "u.insert_time," +
           "u.update_time," +
@@ -80,7 +77,6 @@ public interface UserDao {
       @Result(column = "username", property = "username"),
       @Result(column = "password", property = "password"),
       @Result(column = "role_id", property = "role.roleId"),
-      @Result(column = "thematic_id", property = "thematic.thematicId"),
       @Result(column = "security", property = "security"),
       @Result(column = "insert_time", property = "insertTime"),
       @Result(column = "update_time", property = "updateTime"),
@@ -119,7 +115,6 @@ public interface UserDao {
           "u.username," +
           "u.password," +
           "u.role_id," +
-          "u.thematic_id," +
           "u.security," +
           "u.insert_time," +
           "u.update_time," +
@@ -138,7 +133,6 @@ public interface UserDao {
       @Result(column = "username", property = "username"),
       @Result(column = "password", property = "password"),
       @Result(column = "role_id", property = "role.roleId"),
-      @Result(column = "thematic_id", property = "thematic.thematicId"),
       @Result(column = "security", property = "security"),
       @Result(column = "insert_time", property = "insert_time"),
       @Result(column = "update_time", property = "update_time"),
@@ -161,7 +155,6 @@ public interface UserDao {
           "u.user_id," +
           "u.username," +
           "u.role_id," +
-          "u.thematic_id," +
           "u.security," +
           "u.insert_time," +
           "u.update_time," +
@@ -179,7 +172,6 @@ public interface UserDao {
       @Result(id = true, column = "user_id", property = "userId"),
       @Result(column = "username", property = "username"),
       @Result(column = "role_id", property = "role.roleId"),
-      @Result(column = "thematic_id", property = "thematic.thematicId"),
       @Result(column = "security", property = "security"),
       @Result(column = "insert_time", property = "insertTime"),
       @Result(column = "update_time", property = "updateTime"),
@@ -200,7 +192,6 @@ public interface UserDao {
           "u.user_id," +
           "u.username," +
           "u.role_id," +
-          "u.thematic_id," +
           "u.security," +
           "u.insert_time," +
           "u.update_time," +
@@ -232,14 +223,13 @@ public interface UserDao {
    * @param thematicId
    * @return java.util.List<cc.wanshan.gisdev.entity.usermanagement.User>
    */
-  public List<User> findUsersByThematicId(String thematicId);
+  /*public List<User> findUsersByThematicId(String thematicId);*/
 
   @Update({
       "update " +
           "tb_user " +
           "set " +
           "role_id=#{role.roleId}," +
-          "thematic_id=#{thematic.thematicId}," +
           "security=#{security}," +
           "update_time=#{updateTime,jdbcType=TIMESTAMP}," +
           "phone_num=#{phoneNum}," +
@@ -284,7 +274,6 @@ public interface UserDao {
           "set " +
           "user_id=#{userId}," +
           "role_id=#{role.roleId}," +
-          "thematic_id=#{thematic.thematicId}," +
           "security=#{security}," +
           "status=#{status}," +
           "update_time=#{updateTime,jdbcType=TIMESTAMP} " +
@@ -324,7 +313,6 @@ public interface UserDao {
           "user_id," +
           "username," +
           "role_id," +
-          "u.thematic_id," +
           "u.security," +
           "insert_time," +
           "update_time, " +
@@ -343,7 +331,6 @@ public interface UserDao {
       @Result(id = true, column = "user_id", property = "userId"),
       @Result(column = "username", property = "username"),
       @Result(column = "role_id", property = "role", many = @Many(select = "cc.wanshan.demo.repository.RoleDao.findByRoleId", fetchType = FetchType.LAZY)),
-      @Result(column = "thematic_id", property = "thematic.thematicId"),
       @Result(column = "security", property = "security"),
       @Result(column = "insert_time", property = "insertTime"),
       @Result(column = "update_time", property = "updateTime"),
@@ -365,7 +352,6 @@ public interface UserDao {
           "u.user_id," +
           "u.username," +
           "u.role_id," +
-          "u.thematic_id," +
           "u.security," +
           "u.insert_time," +
           "u.update_time," +
@@ -390,7 +376,6 @@ public interface UserDao {
   @Results({
       @Result(id = true, column = "user_id", property = "userId"),
       @Result(column = "username", property = "username"),
-      @Result(column = "thematic_id", property = "thematic.thematicId"),
       @Result(column = "security", property = "security"),
       @Result(column = "insert_time", property = "insertTime"),
       @Result(column = "update_time", property = "updateTime"),
