@@ -32,6 +32,14 @@ public interface SearchService {
     Result searchByPlace(JSONObject jsonObject);
 
     /**
+     * 根据关键字联想自动补全
+     *
+     * @param keyword 关键字
+     * @return
+     */
+    Result getSuggestSearch(String keyword);
+
+    /**
      * 调测
      *
      * @return
