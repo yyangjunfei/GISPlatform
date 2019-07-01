@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ThematicTest {
@@ -25,9 +24,9 @@ public class ThematicTest {
   @Test
   public void insertThematic(){
     Thematic thematic = new Thematic();
-    thematic.setThematicName("NanZheng1");
-    thematic.setThematicNameZH("南郑专题地图");
-    thematic.setDescribe("南郑专题地图");
+    thematic.setThematicName("shpdb");
+    thematic.setThematicNameZH("上传模块");
+    thematic.setDescribe("用户上传图层维护");
     thematic.setInsertTime(new Date());
     thematic.setUpdateTime(new Date());
     Boolean i = thematicService.insertThematic(thematic);
