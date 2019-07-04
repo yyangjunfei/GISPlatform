@@ -5,7 +5,6 @@ import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.entity.metadata.metadata;
 import cc.wanshan.gis.service.metadata.DataManagementService;
 import cc.wanshan.gis.service.metadata.FileService;
-import cc.wanshan.gis.utils.GeoServerUtils;
 import cc.wanshan.gis.utils.ResultUtil;
 import com.alibaba.fastjson.JSON;
 import org.slf4j.Logger;
@@ -21,7 +20,7 @@ import java.util.Map;
 @Service
 public class DataManagementServiceImpl implements DataManagementService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(GeoServerUtils.class);
+    private Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private FileService fileService;

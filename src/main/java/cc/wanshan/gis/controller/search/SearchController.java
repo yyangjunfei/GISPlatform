@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/rest/search")
 public class SearchController {
 
-    private static Logger LOG = LoggerFactory.getLogger(SearchController.class);
+    private Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private SearchService searchService;

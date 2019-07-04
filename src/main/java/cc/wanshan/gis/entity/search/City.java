@@ -1,4 +1,4 @@
-package cc.wanshan.gis.entity.area;
+package cc.wanshan.gis.entity.search;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
