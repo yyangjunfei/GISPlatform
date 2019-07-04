@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/rest/search/es")
 public class ESCrudController {
 
-    private static Logger LOG = LoggerFactory.getLogger(ESCrudController.class);
+    private Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private ElasticsearchService elasticsearchService;

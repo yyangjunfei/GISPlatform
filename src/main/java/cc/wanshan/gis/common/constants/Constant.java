@@ -108,7 +108,7 @@ public class Constant {
     /**
      * ES搜索索引--行政区
      */
-    public static final String INDEX_ES_POI = "map2_data";
+    public static final String INDEX_ES_POI = "map_data";
     /**
      * ES搜索类型--行政区
      */

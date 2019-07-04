@@ -1,6 +1,6 @@
 package cc.wanshan.gis.mapper.search;
 
-import cc.wanshan.gis.entity.area.Country;
+import cc.wanshan.gis.entity.search.Country;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

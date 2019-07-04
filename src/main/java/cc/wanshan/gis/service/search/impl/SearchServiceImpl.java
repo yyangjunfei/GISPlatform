@@ -4,13 +4,13 @@ import cc.wanshan.gis.common.constants.Constant;
 import cc.wanshan.gis.common.enums.ResultCode;
 import cc.wanshan.gis.dao.search.SearchDao;
 import cc.wanshan.gis.entity.Result;
-import cc.wanshan.gis.entity.area.City;
-import cc.wanshan.gis.entity.area.Country;
-import cc.wanshan.gis.entity.area.Province;
-import cc.wanshan.gis.entity.area.Town;
+import cc.wanshan.gis.entity.search.City;
+import cc.wanshan.gis.entity.search.Country;
 import cc.wanshan.gis.entity.search.Poi;
+import cc.wanshan.gis.entity.search.Province;
 import cc.wanshan.gis.entity.search.RegionOutput;
 import cc.wanshan.gis.entity.search.Suggest;
+import cc.wanshan.gis.entity.search.Town;
 import cc.wanshan.gis.mapper.search.CityMapper;
 import cc.wanshan.gis.mapper.search.CountryMapper;
 import cc.wanshan.gis.mapper.search.ProvinceMapper;
@@ -38,7 +38,7 @@ import java.util.Set;
 @Service
 public class SearchServiceImpl implements SearchService {
 
-    private static Logger LOG = LoggerFactory.getLogger(SearchServiceImpl.class);
+    private Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     private List<Country> countryList;
     private List<Province> provinceList;

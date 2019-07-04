@@ -1,9 +1,9 @@
 package cc.wanshan.gis.dao.search;
 
-import cc.wanshan.gis.entity.area.City;
-import cc.wanshan.gis.entity.area.Country;
-import cc.wanshan.gis.entity.area.Province;
-import cc.wanshan.gis.entity.area.Town;
+import cc.wanshan.gis.entity.search.City;
+import cc.wanshan.gis.entity.search.Country;
+import cc.wanshan.gis.entity.search.Province;
+import cc.wanshan.gis.entity.search.Town;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Component;

@@ -1,7 +1,6 @@
 package cc.wanshan.gis.service.metadata.impl;
 
 import cc.wanshan.gis.common.enums.ResultCode;
-import cc.wanshan.gis.controller.metadata.DataManagementController;
 import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.service.metadata.FileService;
 import cc.wanshan.gis.utils.ResultUtil;
@@ -26,7 +25,7 @@ import java.util.Map;
 @Service
 public class FileServiceImpl implements FileService {
 
-    private static Logger LOG = LoggerFactory.getLogger(DataManagementController.class);
+    private Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     @Value("${file.path}")
     private String filepath;
