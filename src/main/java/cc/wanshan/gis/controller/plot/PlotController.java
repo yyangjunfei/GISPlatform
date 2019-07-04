@@ -26,7 +26,7 @@ import javax.annotation.Resource;
 //@EnableAutoConfiguration
 public class PlotController {
 
-    private static Logger LOG = LoggerFactory.getLogger(PlotController.class);
+    private Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     @Resource
     private PlotService plotService;

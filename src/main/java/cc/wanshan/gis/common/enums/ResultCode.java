@@ -11,13 +11,19 @@ public enum ResultCode {
      * 参数错误：10001-19999
      */
     PARAM_NOT_JSON(10001, "参数不是JSON"),
+
     PARAM_IS_NULL(10002, "参数为空"),
+
     PARAMS_TYPE_ERROR(10003, "参数类型错误"),
+
     PARAM_NOT_COMPLETE(10004, "参数缺失"),
+
     PARAM_TYPE_IS_NULL(10005, "参数类型为空"),
 
     JWT_TOKEN_NULL(10100, "token不存在"),
+
     JWT_TOKEN_EXPIRE(10101, "token过期"),
+
     JWT_TOKEN_FAIL(10102, "token验证不通过"),
 
     /**
@@ -68,7 +74,6 @@ public enum ResultCode {
     LAS_PUBLISH_FAIL(31104, "las数据转化失败"),
 
     OSGB_PUBLISH_FAIL(31105, "osgb数据转化失败"),
-
 
     GEOMETRY_TRANSFORM_FAIL(31201, "Geometry 转化失败"),
 

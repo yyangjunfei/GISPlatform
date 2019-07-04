@@ -21,7 +21,7 @@ import javax.annotation.Resource;
 @Service
 public class PlotServiceImpl implements PlotService {
 
-    private static Logger LOG = LoggerFactory.getLogger(PlotServiceImpl.class);
+    private Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     @Resource
     private PlotPointMapper plotPointMapper;

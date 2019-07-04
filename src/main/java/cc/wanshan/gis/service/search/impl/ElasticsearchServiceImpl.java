@@ -45,7 +45,7 @@ import java.util.Set;
 @Service
 public class ElasticsearchServiceImpl implements ElasticsearchService {
 
-    private static Logger LOG = LoggerFactory.getLogger(ElasticsearchServiceImpl.class);
+    private Logger LOG = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private TransportClient client;
@@ -73,20 +73,20 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
     @Override
     public List<RegionOutput> findCityByKeyword(String keyword, List<String> regionList) {
 
-        LOG.info("ElasticsearchServiceImpl::findCityByKeyword keyword = [{}],regionInputList = [{}]", keyword, regionList);
+        LOG.info("ElasticsearchServiceImpl::findCityByKeyword keyword = [{}],regionList = [{}]", keyword, regionList);
 
-        AggregationBuilder termsBuilder = AggregationBuilders.terms("by_province").field("properties.province.keyword");
-        termsBuilder.subAggregation(AggregationBuilders.terms("by_city").field("properties.city.keyword"));
+        AggregationBuilder termsBuilder = AggregationBuilders.terms("by_province").field("province.keyword");
+        termsBuilder.subAggregation(AggregationBuilders.terms("by_city").field("city.keyword"));
 
         // 组装查询条件
         BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
         boolQuery
-                .should(QueryBuilders.termQuery("properties.name", keyword))
-                .should(QueryBuilders.prefixQuery("properties.name", keyword))
-                .should(QueryBuilders.matchPhraseQuery("properties.name", keyword))
-                .should(QueryBuilders.matchPhraseQuery("properties.first_class", keyword))
-                .should(QueryBuilders.matchPhraseQuery("properties.second_class", keyword))
-                .should(QueryBuilders.matchPhraseQuery("properties.third_class", keyword))
+                .should(QueryBuilders.termQuery("name.keyword", keyword))
+                .should(QueryBuilders.prefixQuery("name.keyword", keyword))
+                .should(QueryBuilders.matchPhraseQuery("name", keyword).slop(1))
+                .should(QueryBuilders.matchPhraseQuery("first_class", keyword).slop(1))
+                .should(QueryBuilders.matchPhraseQuery("second_class", keyword).slop(1))
+                .should(QueryBuilders.matchPhraseQuery("third_class", keyword).slop(1))
                 .minimumShouldMatch(1);
 
         // 组装查询,发送查询请求
@@ -130,24 +130,24 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
     @Override
     public RegionOutput findTownByKeyword(String keyword, List<String> regionList) {
 
-        LOG.info("ElasticsearchServiceImpl::findTownByKeyword keyword = [{}],regionInputList = [{}]", keyword, regionList);
+        LOG.info("ElasticsearchServiceImpl::findTownByKeyword keyword = [{}],regionList = [{}]", keyword, regionList);
 
         // 组装查询条件
         BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
         boolQuery
-                .should(QueryBuilders.termQuery("properties.name.keyword", keyword).boost(10f))
-                .should(QueryBuilders.prefixQuery("properties.name.keyword", keyword).boost(8f))
-                .should(QueryBuilders.matchPhraseQuery("properties.name", keyword))
-                .should(QueryBuilders.matchPhraseQuery("properties.first_class", keyword))
-                .should(QueryBuilders.matchPhraseQuery("properties.second_class", keyword))
-                .should(QueryBuilders.matchPhraseQuery("properties.third_class", keyword))
+                .should(QueryBuilders.termQuery("name.keyword", keyword).boost(10f))
+                .should(QueryBuilders.prefixQuery("name.keyword", keyword).boost(8f))
+                .should(QueryBuilders.matchPhraseQuery("name", keyword))
+                .should(QueryBuilders.matchPhraseQuery("first_class", keyword))
+                .should(QueryBuilders.matchPhraseQuery("second_class", keyword))
+                .should(QueryBuilders.matchPhraseQuery("third_class", keyword))
                 .minimumShouldMatch(1)
-                .must(QueryBuilders.termsQuery("properties.county.keyword", regionList.toArray(new String[regionList.size()])));
+                .must(QueryBuilders.termsQuery("county.keyword", regionList.toArray(new String[regionList.size()])));
 
         // 组装查询,发送查询请求
         SearchResponse response = client.prepareSearch(Constant.INDEX_ES_POI)
                 .setTypes(Constant.TYPE_ES_POI)
-                .setSearchType(SearchType.QUERY_THEN_FETCH)
+                .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(boolQuery)
                 .setExplain(true)
                 .setFrom(0)
@@ -155,10 +155,11 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
                 .execute()
                 .actionGet();
 
-
         List<Poi> poiList = Lists.newArrayList();
         for (SearchHit searchHitFields : response.getHits()) {
-            poiList.add(JSON.parseObject(searchHitFields.getSourceAsString(), Poi.class));
+            Poi poi = JSON.parseObject(searchHitFields.getSourceAsString(), Poi.class);
+            poi.setAutocomplete(null);
+            poiList.add(poi);
         }
 
         return RegionOutput.builder()
@@ -170,7 +171,7 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
     @Override
     public RegionOutput findTownByKeywordAndAnalyzer(String keyword, List<String> regionList) {
 
-        LOG.info("ElasticsearchServiceImpl::findTownByKeywordAndAnalyzer keyword = [{}],regionInputList = [{}]", keyword, regionList);
+        LOG.info("ElasticsearchServiceImpl::findTownByKeywordAndAnalyzer keyword = [{}],regionList = [{}]", keyword, regionList);
 
         // 组装查询条件
         BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
@@ -182,18 +183,18 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
             String lastButOneTerm = termList.get(termSize - 2);
 
             boolQuery
-                    .should(QueryBuilders.termQuery("properties.name.keyword", lastButOneTerm).boost(10f))
-                    .should(QueryBuilders.prefixQuery("properties.name.keyword", lastButOneTerm).boost(5f))
-                    .should(QueryBuilders.matchPhraseQuery("properties.name", lastButOneTerm))
-                    .should(QueryBuilders.matchPhraseQuery("properties.third_class", lastButOneTerm))
-                    .should(QueryBuilders.matchPhraseQuery("properties.first_class", lastButOneTerm))
-                    .should(QueryBuilders.matchPhraseQuery("properties.second_class", lastButOneTerm))
+                    .should(QueryBuilders.termQuery("name.keyword", lastButOneTerm).boost(10f))
+                    .should(QueryBuilders.prefixQuery("name.keyword", lastButOneTerm).boost(5f))
+                    .should(QueryBuilders.matchPhraseQuery("name", lastButOneTerm))
+                    .should(QueryBuilders.matchPhraseQuery("third_class", lastButOneTerm))
+                    .should(QueryBuilders.matchPhraseQuery("first_class", lastButOneTerm))
+                    .should(QueryBuilders.matchPhraseQuery("second_class", lastButOneTerm))
                     .minimumShouldMatch(1)
-                    .must(QueryBuilders.matchPhraseQuery("properties.name", termList.get(termSize - 1)));
+                    .must(QueryBuilders.matchPhraseQuery("name", termList.get(termSize - 1)));
         }
 
         if (regionList != null && regionList.size() > 0) {
-            boolQuery.must(QueryBuilders.termsQuery("properties.county.keyword", regionList.toArray(new String[regionList.size()])));
+            boolQuery.must(QueryBuilders.termsQuery("county.keyword", regionList.toArray(new String[regionList.size()])));
         }
 
         // 组装查询,发送查询请求
@@ -209,7 +210,9 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
 
         List<Poi> poiList = Lists.newArrayList();
         for (SearchHit searchHitFields : response.getHits()) {
-            poiList.add(JSON.parseObject(searchHitFields.getSourceAsString(), Poi.class));
+            Poi poi = JSON.parseObject(searchHitFields.getSourceAsString(), Poi.class);
+            poi.setAutocomplete(null);
+            poiList.add(poi);
         }
         Integer poiSize = poiList.size();
 
@@ -228,17 +231,19 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
         // 组装查询条件
         BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
         boolQuery
-                .should(QueryBuilders.termQuery("properties.name.keyword", keyword).boost(10f))
-                .should(QueryBuilders.prefixQuery("properties.name.keyword", keyword).boost(8f))
-                .should(QueryBuilders.matchPhraseQuery("properties.name", keyword))
+                .should(QueryBuilders.termQuery("name.keyword", keyword).boost(10f))
+                .should(QueryBuilders.prefixQuery("name.keyword", keyword).boost(8f))
+
+                .should(QueryBuilders.matchPhraseQuery("name", keyword))
                 .minimumShouldMatch(1);
 
         //增加分词筛选
         List<String> termList = listTerms(keyword, Constant.INDEX_ES_REGION, Constant.ik_smart);
         if (termList.size() > 1) {
             for (String term : termList) {
-                boolQuery.should(QueryBuilders.termQuery("properties.name.keyword", term));
-                boolQuery.should(QueryBuilders.prefixQuery("properties.name.keyword", term));
+                boolQuery.should(QueryBuilders.termQuery("name.keyword", term));
+                boolQuery.should(QueryBuilders.prefixQuery("name.keyword", term));
+                boolQuery.should(QueryBuilders.matchPhraseQuery("name", term));
             }
         }
         // 组装查询,发送查询请求
@@ -253,15 +258,16 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
 
         List<RegionOutput> regionOutputList = Lists.newArrayList();
         for (SearchHit searchHitFields : response.getHits()) {
-
             Region region = JSON.parseObject(searchHitFields.getSourceAsString(), Region.class);
+
+//            region.setGeometry(null);
+
             RegionOutput regionOutput = RegionOutput.builder()
-                    .name(region.getProperties().getName())
+                    .name(region.getName())
                     .type(Constant.SEARCH_REGION)
                     .geometry(region.getGeometry())
-                    .centroid(region.getProperties().getRectangle())
+                    .centroid(region.getRectangle())
                     .build();
-
             regionOutputList.add(regionOutput);
         }
         return regionOutputList;
@@ -273,12 +279,12 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
         // 组装查询条件
         BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
         boolQuery
-                .should(QueryBuilders.termQuery("properties.name.keyword", keyword).boost(10f))
-                .should(QueryBuilders.prefixQuery("properties.name.keyword", keyword).boost(8f))
-                .should(QueryBuilders.matchPhraseQuery("properties.name", keyword))
-                .should(QueryBuilders.matchPhraseQuery("properties.first_class", keyword))
-                .should(QueryBuilders.matchPhraseQuery("properties.second_class", keyword))
-                .should(QueryBuilders.matchPhraseQuery("properties.third_class", keyword))
+                .should(QueryBuilders.termQuery("name.keyword", keyword).boost(10f))
+                .should(QueryBuilders.prefixQuery("name.keyword", keyword).boost(8f))
+                .should(QueryBuilders.matchPhraseQuery("name", keyword))
+                .should(QueryBuilders.matchPhraseQuery("first_class", keyword))
+                .should(QueryBuilders.matchPhraseQuery("second_class", keyword))
+                .should(QueryBuilders.matchPhraseQuery("third_class", keyword))
                 .minimumShouldMatch(1);
 
         // 组装查询,发送查询请求
@@ -310,7 +316,7 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
         List<RegionOutput> regionOutputList = Lists.newArrayList();
         //增加行政区数据
         List<RegionOutput> regionByKeyword = findRegionByKeyword(keyword);
-        if (regionByKeyword != null && regionByKeyword.size() >= 1) {
+        if (regionByKeyword != null) {
             regionOutputList.addAll(regionByKeyword);
         }
         //增加POI数据
@@ -318,7 +324,7 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
         if (poiByKeyword != null) {
             regionOutputList.add(poiByKeyword);
         }
-        if (poiByKeyword.getPoiList().size() < 10) {
+        if (poiByKeyword.getPoiList().size() < 5) {
             regionOutputList.add(findTownByKeywordAndAnalyzer(keyword, null));
         }
         return regionOutputList;
@@ -365,20 +371,48 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
     @Override
     public Set<String> getSuggestSearch(String keyword) {
 
-        CompletionSuggestionBuilder completionSuggestionBuilder = SuggestBuilders.completionSuggestion("properties.name.suggest")
-                .prefix(keyword).size(10);
+        Set<String> suggestSet = Sets.newLinkedHashSet();
+
+        Set<String> RegionSuggestSet = SuggestByParameter(keyword, Constant.INDEX_ES_REGION, Constant.TYPE_ES_REGION, "autocomplete.suggest", 10);
+        if (RegionSuggestSet != null) {
+            suggestSet.addAll(RegionSuggestSet);
+        }
+
+        if (RegionSuggestSet.size() < 5) {
+            Set<String> PoiSuggestSet = SuggestByParameter(keyword, Constant.INDEX_ES_POI, Constant.TYPE_ES_POI, "autocomplete.suggest", 15);
+            if (PoiSuggestSet != null) {
+                suggestSet.addAll(PoiSuggestSet);
+            }
+        }
+        return suggestSet;
+    }
+
+    /**
+     * 根据参数获取es联想自动补全的数据
+     *
+     * @param keyword   关键字
+     * @param index     索引
+     * @param type      类型
+     * @param fieldName 字段/文档
+     * @param size      查询数量
+     * @return
+     */
+    private Set<String> SuggestByParameter(String keyword, String index, String type, String fieldName, int size) {
+
+        CompletionSuggestionBuilder completionSuggestionBuilder = SuggestBuilders.completionSuggestion(fieldName)
+                .prefix(keyword).size(size);
         SuggestBuilder suggestBuilder = new SuggestBuilder();
         suggestBuilder.addSuggestion("name_suggest", completionSuggestionBuilder);
 
-        SearchResponse suggestResponse = client.prepareSearch(Constant.INDEX_ES_REGION)
-                .setTypes(Constant.TYPE_ES_POI)
+        SearchResponse suggestResponse = client.prepareSearch(index)
+                .setTypes(type)
+                .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .suggest(suggestBuilder)
                 .execute()
                 .actionGet();
 
         Suggest suggest = suggestResponse.getSuggest();
-
-        Set<String> suggestSet = Sets.newHashSet();
+        Set<String> suggestSet = Sets.newLinkedHashSet();
 
         if (suggest != null) {
             Suggest.Suggestion suggestion = suggest.getSuggestion("name_suggest");
@@ -408,14 +442,14 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
         // 组装查询条件
         BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
         boolQuery
-                .should(QueryBuilders.termQuery("properties.name.keyword", keyword).boost(10f))
-                .should(QueryBuilders.prefixQuery("properties.name.keyword", keyword))
-                .should(QueryBuilders.matchPhraseQuery("properties.name", keyword))
-                .should(QueryBuilders.matchPhraseQuery("properties.first_class", keyword))
-                .should(QueryBuilders.matchPhraseQuery("properties.second_class", keyword))
-                .should(QueryBuilders.matchPhraseQuery("properties.third_class", keyword))
+                .should(QueryBuilders.termQuery("name.keyword", keyword).boost(10f))
+                .should(QueryBuilders.prefixQuery("name.keyword", keyword))
+                .should(QueryBuilders.matchPhraseQuery("name", keyword))
+                .should(QueryBuilders.matchPhraseQuery("first_class", keyword))
+                .should(QueryBuilders.matchPhraseQuery("second_class", keyword))
+                .should(QueryBuilders.matchPhraseQuery("third_class", keyword))
                 .minimumShouldMatch(1)
-                .must(QueryBuilders.matchQuery("properties.city.keyword", regionName));
+                .must(QueryBuilders.matchQuery("city.keyword", regionName));
 
         // 组装查询,发送查询请求
         SearchResponse response = client.prepareSearch(Constant.INDEX_ES_POI)
