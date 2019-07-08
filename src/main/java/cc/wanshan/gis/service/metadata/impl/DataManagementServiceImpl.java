@@ -6,11 +6,7 @@ import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.entity.metadata.metadata;
 import cc.wanshan.gis.service.metadata.DataManagementService;
 import cc.wanshan.gis.service.metadata.FileService;
-<<<<<<< HEAD
-import cc.wanshan.gis.utils.GeoServerUtils;
 import cc.wanshan.gis.utils.LanguageUtils;
-=======
->>>>>>> develop
 import cc.wanshan.gis.utils.ResultUtil;
 import cc.wanshan.gis.utils.ShpReader;
 import com.alibaba.fastjson.JSON;
