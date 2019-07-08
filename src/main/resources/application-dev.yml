@@ -9,17 +9,16 @@ spring:
       request-timeout: 600000
   datasource:
     platform: postgres
-    url: jdbc:postgresql://192.168.1.133:5432/dev?useAffectedRows=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=serverTimezone=Asia/Shanghai
+    url: jdbc:postgresql://192.168.1.133:5432/test?useAffectedRows=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=serverTimezone=Asia/Shanghai
     username: postgres
     password: wanshan
     driver-class-name: org.postgresql.Driver
   data:
     # elasticsearch配置
     elasticsearch:
-      cluster-name: my-application
-      hostName: 192.168.1.88
+      cluster-name: gis-application
+      hostName: 172.24.4.9
       transport: 9300
-      cluster-nodes: 192.168.1.88:9300
       repositories:
         transport:
           tcp:
@@ -27,8 +26,7 @@ spring:
         enabled: true
   elasticsearch:
     rest:
-      uris: ["http://192.168.1.88:9200"]
-  management:
+      uris: ["http://172.24.4.9:9200"]
   security:
     health:
       elasticsearch:
@@ -65,11 +63,11 @@ geoserver:
   postgisPort: 5432
   postgisUser: postgres
   postgisPassword: wanshan
-  postgisDatabase: dev
+  postgisDatabase: test
 
 # postgis数据库配置
 postgis:
-  url: jdbc:postgresql://192.168.1.133:5432/dev
+  url: jdbc:postgresql://192.168.1.133:5432/test
   user: postgres
   password: wanshan
 

@@ -1,8 +1,13 @@
 package cc.wanshan.gis.utils;
 
 import cc.wanshan.gis.common.constants.Constant;
+import com.maxmind.geoip2.DatabaseReader;
+import com.maxmind.geoip2.model.CityResponse;
+import com.maxmind.geoip2.record.City;
+import org.springframework.core.io.ClassPathResource;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -40,4 +45,22 @@ public class CommonUtils {
         }
         return ipAddress;
     }
+
+    public static void GeoLite2IP(String ip) throws Exception {
+
+        //GeoIP2-City 数据库文件
+        File database = new ClassPathResource("static/GeoLite2/GeoLite2-City.mmdb").getFile();
+        // 创建 DatabaseReader对象
+        DatabaseReader reader = null;
+        try {
+            reader = new DatabaseReader.Builder(database).build();
+
+            InetAddress ipAddress = InetAddress.getByName(ip);
+            CityResponse response = reader.city(ipAddress);
+            City city = response.getCity();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

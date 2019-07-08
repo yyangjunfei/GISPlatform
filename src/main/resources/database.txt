@@ -340,3 +340,22 @@ CREATE TABLE public.tb_linestring
                ON UPDATE CASCADE
                ON DELETE CASCADE
    )
+
+   --tb_thematic_layer
+   CREATE TABLE public.tb_thematic_layer
+   (
+       thematic_layer_id character varying(32) NOT NULL DEFAULT replace(uuid_generate_v1()::text,'-',''),
+       thematic_id character varying(32) COLLATE pg_catalog."default" NOT NULL,
+       layer_id character varying(32) COLLATE pg_catalog."default" NOT NULL,
+       insert_time timestamp(0) with time zone NOT NULL,
+       update_time timestamp(0) with time zone NOT NULL,
+       CONSTRAINT fkaukq8hfdqf5vjcrwgps5tojpq FOREIGN KEY (layer_id)
+               REFERENCES public.tb_layer (layer_id) MATCH SIMPLE
+               ON UPDATE NO ACTION
+               ON DELETE NO ACTION,
+           CONSTRAINT fkgfb2hd9j9ryp5jpxw5q2xiubj FOREIGN KEY (thematic_id)
+               REFERENCES public.tb_thematic (thematic_id) MATCH SIMPLE
+               ON UPDATE NO ACTION
+               ON DELETE NO ACTION,
+       CONSTRAINT tb_thematic_layer_pkey PRIMARY KEY (thematic_layer_id)
+   )

@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.5.RELEASE</version>
+        <version>2.1.6.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>cc.wanshan</groupId>
@@ -48,13 +48,13 @@
         <geotools.version>18.5</geotools.version>
         <postgresql.version>42.2.5</postgresql.version>
         <swagger.version>2.9.2</swagger.version>
-        <swagger-bootstrap-ui.version>1.9.3</swagger-bootstrap-ui.version>
+        <swagger-bootstrap-ui.version>1.9.4</swagger-bootstrap-ui.version>
         <jaxb-api.version>2.3.0</jaxb-api.version>
         <gdal.version>3.0.0</gdal.version>
         <junit.version>4.12</junit.version>
         <geoserver-manager.version>1.7.0</geoserver-manager.version>
         <lombok.version>1.16.22</lombok.version>
-        <commons-lang3.version>3.8.1</commons-lang3.version>
+        <commons-lang3.version>3.9</commons-lang3.version>
         <guava.version>23.0</guava.version>
         <fastjson.version>1.2.58</fastjson.version>
         <jts.version>1.13</jts.version>
@@ -63,7 +63,7 @@
         <poi.version>4.1.0</poi.version>
         <ant.version>1.10.5</ant.version>
         <easyexcel.version>1.1.1</easyexcel.version>
-        <pinyin4j.version>2.5.0</pinyin4j.version>
+        <pinyin4j.version>2.5.1</pinyin4j.version>
         <xmlbeans.version>3.1.0</xmlbeans.version>
         <javacsv.version>2.0</javacsv.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>
@@ -71,7 +71,7 @@
         <commons-validator.version>1.6</commons-validator.version>
         <commons-codec.version>1.12</commons-codec.version>
         <commons-httpclient.version>3.1</commons-httpclient.version>
-        <joda-time.version>2.10.1</joda-time.version>
+        <joda-time.version>2.10.2</joda-time.version>
         <jdom2.version>2.0.6</jdom2.version>
         <cors-filter.version>2.6</cors-filter.version>
         <thumbnailator.version>0.4.8</thumbnailator.version>
@@ -82,6 +82,9 @@
         <mybatis-plus.version>3.1.1</mybatis-plus.version>
         <geoip2.version>2.12.0</geoip2.version>
         <log4j.version>2.11.2</log4j.version>
+        <dom4j.version>2.1.1</dom4j.version>
+        <java-jwt.version>3.8.1</java-jwt.version>
+        <jjwt.version>0.9.1</jjwt.version>
 
     </properties>
 
@@ -90,10 +93,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -146,6 +145,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
 
         <dependency>
@@ -486,6 +489,11 @@
             <artifactId>jdom2</artifactId>
             <version>${jdom2.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>${dom4j.version}</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/com.thetransactioncompany/cors-filter -->
         <dependency>
             <groupId>com.thetransactioncompany</groupId>
@@ -514,6 +522,19 @@
             <groupId>com.vaadin.external.google</groupId>
             <artifactId>android-json</artifactId>
             <version>0.0.20131108.vaadin1</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>${java-jwt.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>${jjwt.version}</version>
         </dependency>
 
     </dependencies>

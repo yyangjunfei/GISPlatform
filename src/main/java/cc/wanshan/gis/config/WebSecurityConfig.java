@@ -18,24 +18,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-
 import javax.annotation.Resource;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.io.PrintWriter;
-import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
-import org.springframework.security.web.session.SessionInformationExpiredEvent;
-import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 
 @Configuration
 @EnableWebSecurity
@@ -101,51 +89,41 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         })
         .and()
         .formLogin()
-        .successHandler(new AuthenticationSuccessHandler() {
-          @Override
-          public void onAuthenticationSuccess(HttpServletRequest httpServletRequest,
-              HttpServletResponse httpServletResponse, Authentication authentication)
-              throws IOException, ServletException {
-            logger.info(
-                "onAuthenticationSuccess::httpServletRequest = [{}], httpServletResponse = [{}], authentication = [{}]",
-                httpServletRequest, httpServletResponse, authentication);
-            httpServletResponse.setContentType("application/json;charset=utf-8");
-            String id = httpServletRequest.getSession().getId();
-            logger.info("sessionId" + id);
-            PrintWriter out = httpServletResponse.getWriter();
-            logger.info("登录成功");
-            out.write("{\"code\":0,\"msg\":\"登录成功\"}");
-            out.flush();
-            out.close();
-          }
+        .successHandler((httpServletRequest, httpServletResponse, authentication) -> {
+          logger.info(
+              "onAuthenticationSuccess::httpServletRequest = [{}], httpServletResponse = [{}], authentication = [{}]",
+              httpServletRequest, httpServletResponse, authentication);
+          httpServletResponse.setContentType("application/json;charset=utf-8");
+          String id = httpServletRequest.getSession().getId();
+          logger.info("sessionId" + id);
+          PrintWriter out = httpServletResponse.getWriter();
+          logger.info("登录成功");
+          out.write("{\"code\":0,\"msg\":\"登录成功\"}");
+          out.flush();
+          out.close();
         })
-        .failureHandler(new AuthenticationFailureHandler() {
-          @Override
-          public void onAuthenticationFailure(HttpServletRequest httpServletRequest,
-              HttpServletResponse httpServletResponse, AuthenticationException e)
-              throws IOException, ServletException, IOException {
-            logger.info(
-                "onAuthenticationFailure::httpServletRequest = [{}], httpServletResponse = [{}], e = [{}]",
-                httpServletRequest, httpServletResponse, e);
-            httpServletResponse.setContentType("application/json;charset=utf-8");
-            PrintWriter out = httpServletResponse.getWriter();
-            StringBuffer sb = new StringBuffer();
-            sb.append("{\"code\":1,\"msg\":");
-            if (e instanceof UsernameNotFoundException || e instanceof BadCredentialsException) {
-              sb.append("\"用户名或密码输入错误，登录失败!");
-              logger.warn("用户名或密码输入错误，登录失败");
-            } else if (e instanceof DisabledException) {
-              sb.append("账户被禁用，登录失败，请联系管理员!");
-              logger.warn("账户被禁用，登录失败，请联系管理员");
-            } else {
-              sb.append("登录失败!");
-              logger.warn("登录失败");
-            }
-            sb.append("\"}");
-            out.write(sb.toString());
-            out.flush();
-            out.close();
+        .failureHandler((httpServletRequest, httpServletResponse, e) -> {
+          logger.info(
+              "onAuthenticationFailure::httpServletRequest = [{}], httpServletResponse = [{}], e = [{}]",
+              httpServletRequest, httpServletResponse, e);
+          httpServletResponse.setContentType("application/json;charset=utf-8");
+          PrintWriter out = httpServletResponse.getWriter();
+          StringBuffer sb = new StringBuffer();
+          sb.append("{\"code\":1,\"msg\":");
+          if (e instanceof UsernameNotFoundException || e instanceof BadCredentialsException) {
+            sb.append("\"用户名或密码输入错误，登录失败!");
+            logger.warn("用户名或密码输入错误，登录失败");
+          } else if (e instanceof DisabledException) {
+            sb.append("账户被禁用，登录失败，请联系管理员!");
+            logger.warn("账户被禁用，登录失败，请联系管理员");
+          } else {
+            sb.append("登录失败!");
+            logger.warn("登录失败");
           }
+          sb.append("\"}");
+          out.write(sb.toString());
+          out.flush();
+          out.close();
         })
         .loginProcessingUrl("/user/login")
         .permitAll()
@@ -154,21 +132,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .and()
         .logout()
         .logoutUrl("/logout")
-        .logoutSuccessHandler(new LogoutSuccessHandler() {
-          @Override
-          public void onLogoutSuccess(HttpServletRequest httpServletRequest,
-              HttpServletResponse httpServletResponse, Authentication authentication)
-              throws IOException, ServletException {
-            logger.info(
-                "onAuthenticationSuccess::httpServletRequest = [{}], httpServletResponse = [{}], authentication = [{}]",
-                httpServletRequest, httpServletResponse, authentication);
-            httpServletResponse.setContentType("application/json;charset=utf-8");
-            PrintWriter out = httpServletResponse.getWriter();
-            logger.info("退出成功");
-            out.write("{\"code\":0,\"msg\":\"退出成功\"}");
-            out.flush();
-            out.close();
-          }
+        .logoutSuccessHandler((httpServletRequest, httpServletResponse, authentication) -> {
+          logger.info(
+              "onAuthenticationSuccess::httpServletRequest = [{}], httpServletResponse = [{}], authentication = [{}]",
+              httpServletRequest, httpServletResponse, authentication);
+          httpServletResponse.setContentType("application/json;charset=utf-8");
+          PrintWriter out = httpServletResponse.getWriter();
+          logger.info("退出成功");
+          out.write("{\"code\":0,\"msg\":\"退出成功\"}");
+          out.flush();
+          out.close();
         })
         .deleteCookies("JSESSIONID").invalidateHttpSession(true).permitAll()
         .and()
@@ -176,25 +149,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .maximumSessions(10)
         .maxSessionsPreventsLogin(false)
         .expiredSessionStrategy(
-            new SessionInformationExpiredStrategy() {
-              @Override
-              public void onExpiredSessionDetected(
-                  SessionInformationExpiredEvent sessionInformationExpiredEvent)
-                  throws IOException, ServletException {
-                logger.info("onExpiredSessionDetected::sessionInformationExpiredEvent = [{}]",
-                    sessionInformationExpiredEvent);
-                // 这里也可以根据需要返回html页面或者json数据
-                Map<String, Object> map = new HashMap<>(16);
-                map.put("code", 0);
-                map.put("msg",
-                    "已经另一台机器登录，您被迫下线。" + sessionInformationExpiredEvent.getSessionInformation()
-                        .getLastRequest());
-                sessionInformationExpiredEvent.getResponse()
-                    .setContentType("application/json;charset=UTF-8");
-                sessionInformationExpiredEvent.getResponse().getWriter()
-                    .write(objectMapper.writeValueAsString(map));
-              }
+            sessionInformationExpiredEvent -> {
+              logger.info("onExpiredSessionDetected::sessionInformationExpiredEvent = [{}]",
+                  sessionInformationExpiredEvent);
+              // 这里也可以根据需要返回html页面或者json数据
+              Map<String, Object> map = new HashMap<>(16);
+              map.put("code", 0);
+              map.put("msg",
+                  "已经另一台机器登录，您被迫下线。" + sessionInformationExpiredEvent.getSessionInformation()
+                      .getLastRequest());
+              sessionInformationExpiredEvent.getResponse()
+                  .setContentType("application/json;charset=UTF-8");
+              sessionInformationExpiredEvent.getResponse().getWriter()
+                  .write(objectMapper.writeValueAsString(map));
             });
   }
-
 }

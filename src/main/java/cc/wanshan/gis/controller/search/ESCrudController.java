@@ -1,7 +1,7 @@
 package cc.wanshan.gis.controller.search;
-import cc.wanshan.gis.service.search.ESCrudService;
+
+import cc.wanshan.gis.service.search.ElasticsearchService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
@@ -10,10 +10,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+<<<<<<< HEAD
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.*;
+=======
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+>>>>>>> develop
 
 
 /***
@@ -23,14 +31,15 @@ import java.util.*;
  *@create: 2019-05-31 13:35
  */
 
-@Api(value = "SercherController", tags = "搜索接口")
+@Api(value = "ESCrudController", tags = "ES搜索接口")
 @RestController
-@RequestMapping("/rest/sercher")
+@RequestMapping("/rest/search/es")
 public class ESCrudController {
 
-    private static Logger LOG = LoggerFactory.getLogger(ESCrudController.class);
+    private Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
+<<<<<<< HEAD
     private ESCrudService esCrudService;
 
     /****
@@ -104,92 +113,32 @@ public String queryCityCoordinatesByInputValue(@RequestParam(value = "inputCityN
     return  esCrudService.queryCityCoordinatesByInputValue(inputCityName);
 }
 
+=======
+    private ElasticsearchService elasticsearchService;
+>>>>>>> develop
 
-/***
- * POI按照省市县村分组聚和查询（全国）
- */
-@ApiOperation(value = "POI按照省市县村分组聚和查询(全国)", notes = "POI按照省市县村分组聚和查询(全国)")
-@PostMapping("/findDataByPoi")
-public ResponseEntity queryPoiValue(@RequestParam(value = "poiValue", required = false) String poiValue) {
+    @ApiOperation(value = "ID搜索查询", notes = "ID搜索查询")
+    @GetMapping("/findDataByID")
+    public ResponseEntity searchById(@RequestParam("id") String id) {
 
-    return  esCrudService.queryPoiValue(poiValue);
-}
+        return elasticsearchService.searchById(id);
+    }
 
-/***
- * POI按照省分组聚和查询（省级）
- */
+    @ApiOperation(value = "根据ID删除数据", notes = "根据ID删除数据")
+    @DeleteMapping("deleteDataByID")
+    public ResponseEntity delete(@RequestParam(value = "id") String id) {
 
-@ApiOperation(value = "POI按照省分组聚和查询(省级)", notes = "POI按照省分组聚和查询(省级)")
-@PostMapping("/findProvinceDataByPoiValue")
-@ApiImplicitParam(name = "provinceListName", value = "provinceListName",  allowMultiple = true, dataType = "String", paramType = "query")
-public ResponseEntity findProvinceDataByPoiValue(@RequestParam(value = "poiValue", required = false) String poiValue,@RequestParam List<String> provinceListName){
-
-    return esCrudService.findProvinceDataByPoiValue(poiValue,provinceListName);
-}
-
-/***
- * POI按照市分组聚和查询（市级）
- */
-@ApiOperation(value = "POI按照市分组聚和查询(市级)", notes = "POI按照市分组聚和查询(市级)")
-@PostMapping("/findCityDataByPoiValue")
-@ApiImplicitParam(name = "cityListName", value = "cityListName",  allowMultiple = true, dataType = "String", paramType = "query")
-public ResponseEntity findCityDataByPoiValue(@RequestParam(value = "poiValue", required = false) String poiValue,@RequestParam List<String> cityListName){
-
-    return esCrudService.findCityDataByPoiValue(poiValue,cityListName);
-
-}
-
-/***
- * POI按照县/区分组聚和查询（县/区级）
- */
-@ApiOperation(value = "POI按照县/区分组聚和查询（县/区级）", notes = "POI按照县/区分组聚和查询（县/区级）")
-@PostMapping("/findCountyDataByPoiValue")
-@ApiImplicitParam(name = "countyListName", value = "countyListName",  allowMultiple = true, dataType = "String", paramType = "query")
-public ResponseEntity findCountyDataByPoiValue(@RequestParam(value = "poiValue", required = false) String poiValue,@RequestParam List<String> countyListName){
-
-    return esCrudService.findCountyDataByPoiValue(poiValue,countyListName);
-}
-
-    /***
-     * POI按照县级以下查询数据(县级以下)
-     * @param poiValue
-     * @param townListName
-     * @return
-     */
-
-@ApiOperation(value = "POI按照县级以下查询数据(县级以下)", notes = "POI按照县级以下查询数据(县级以下)")
-@PostMapping("/findTownDataByPoiValue")
-@ApiImplicitParam(name = "townListName", value = "townListName",  allowMultiple = true, dataType = "String", paramType = "query")
-public ResponseEntity findTownDataByPoiValue(@RequestParam(value = "poiValue", required = false) String poiValue,@RequestParam List<String> townListName){
-
-    return esCrudService.findTownDataByPoiValue(poiValue,townListName);
-}
-
-
-/**
- * 按id删除数据
- * @param id
- * @return
- */
-@ApiOperation(value = "根据ID删除数据", notes = "根据ID删除数据")
-@DeleteMapping("deleteDataByID")
-public ResponseEntity delete(@RequestParam(value ="id") String id) {
-
-    return  esCrudService.delete(id);
- }
-
-    /**
-     * 删除elasticsearch索引库
-     * @return
-     */
+        return elasticsearchService.delete(id);
+    }
 
     @ApiOperation(value = "删除elasticsearch索引库", notes = "删除elasticsearch索引库")
     @DeleteMapping("deleteElasticsearchIndex")
-    public ResponseEntity deleteElasticsearchIndex(@RequestParam(value ="indexName") String indexName) {
+    public ResponseEntity deleteElasticsearchIndex(@RequestParam(value = "indexName") String indexName) {
 
-        return  esCrudService.deleteElasticsearchIndex(indexName);
+        return elasticsearchService.deleteElasticsearchIndex(indexName);
     }
 
+<<<<<<< HEAD
     /**
      * 更新elasticsearch数据索引库
      * @return
@@ -208,10 +157,12 @@ public ResponseEntity delete(@RequestParam(value ="id") String id) {
      * 导入postgis 数据库到Elasticsearch
      * @return ResponseEntity
      */
+=======
+    @ApiOperation(value = "导入postGis数据到ES", notes = "导入postGis数据到ES")
+    @GetMapping("postGisDb2es")
+    public ResponseEntity postGisDb2es(@RequestParam(value = "dbURL") String dbURL, @RequestParam(value = "dbUserName") String dbUserName, @RequestParam(value = "dbPassword") String dbPassword, @RequestParam(value = "driverClassName") String driverClassName, @RequestParam(value = "sql") String sql, @RequestParam(value = "esindexName") String esindexName, @RequestParam(value = "esTypeName") String esTypeName) {
+>>>>>>> develop
 
- @ApiOperation(value = "导入postGis数据到ES", notes = "导入postGis数据到ES")
- @GetMapping("postGisDb2es")
- public ResponseEntity postGisDb2es(@RequestParam(value ="dbURL") String dbURL,@RequestParam(value ="dbUserName") String dbUserName,@RequestParam(value ="dbPassword") String dbPassword, @RequestParam(value ="driverClassName") String driverClassName, @RequestParam(value ="sql") String sql,@RequestParam(value ="esindexName") String esindexName,@RequestParam(value ="esTypeName") String esTypeName){
-     return  esCrudService.postGisDb2es(dbURL,dbUserName,dbPassword,driverClassName,sql,esindexName,esTypeName);
+        return elasticsearchService.postGisDb2es(dbURL, dbUserName, dbPassword, driverClassName, sql, esindexName, esTypeName);
     }
 }

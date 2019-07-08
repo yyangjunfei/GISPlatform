@@ -1,9 +1,12 @@
 package cc.wanshan.gis;
 
+import cc.wanshan.gis.entity.Result;
+import cc.wanshan.gis.service.geoserver.GeoServerService;
 import cc.wanshan.gis.utils.GeoServerUtils;
 import it.geosolutions.geoserver.rest.decoder.RESTLayer;
 import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList;
 import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList.RESTShortWorkspace;
+import javax.annotation.Resource;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -17,7 +20,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @WebAppConfiguration
 public class GeoServerTest {
     private static final Logger logger = LoggerFactory.getLogger(GeoServerTest.class);
-
+    @Resource(name ="geoServerServiceImpl")
+    private GeoServerService geoServerServiceImpl;
     @Test
     public void getLayers() {
         logger.info("getLayers::");
@@ -40,5 +44,12 @@ public class GeoServerTest {
         boolean layer = GeoServerUtils.manager.getReader()
                 .existsLayer("ceshi", "bd36ade41559034275078", true);
         logger.info("searchLayer::" + layer);
+    }
+
+    @Test
+    public void publishLayer() {
+        logger.info("publishLayer::");
+        Result result = geoServerServiceImpl.publishLayer("shpdb", "shpdb", "hanzhong");
+        logger.info("searchLayer::" + result.toString());
     }
 }

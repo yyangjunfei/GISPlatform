@@ -11,7 +11,6 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -100,7 +99,7 @@ public class GeoToolsUtils {
 
         CoordinateReferenceSystem targetStr = CRS.decode(targetCRS);
         CoordinateReferenceSystem sourceStr = CRS.decode(sourceCRS);
-        MathTransform transform = CRS.findMathTransform(sourceStr, targetStr, true);
+        MathTransform transform = CRS.findMathTransform(sourceStr, targetStr);
         return JTS.transform(geometry, transform);
     }
 

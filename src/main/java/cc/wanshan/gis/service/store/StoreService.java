@@ -1,7 +1,6 @@
 package cc.wanshan.gis.service.store;
 
 
-import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.entity.drawlayer.Store;
 
 import java.util.List;

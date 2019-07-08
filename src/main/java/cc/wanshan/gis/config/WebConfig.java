@@ -14,7 +14,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    private static Logger LOG = LoggerFactory.getLogger(WebConfig.class);
+    private Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     @Bean
     public CurrentUserMethodArgumentResolver currentUserMethodArgumentResolver() {
