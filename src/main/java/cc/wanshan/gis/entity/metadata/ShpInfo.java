@@ -1,15 +1,13 @@
 package cc.wanshan.gis.entity.metadata;
 
+import lombok.Builder;
 import lombok.Data;
 
+@Builder
 @Data
 public class ShpInfo {
-
-    private int gid;
-    private String osm_id;
-    private String fclass;
-    private int code;
-    private String name;
+    private Geometry geometry;
+    private String id;
     private String type;
-    private Object geom;
+    private Properties properties;
 }

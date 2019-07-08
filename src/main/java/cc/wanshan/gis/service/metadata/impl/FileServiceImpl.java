@@ -4,19 +4,17 @@ import cc.wanshan.gis.common.enums.ResultCode;
 import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.service.metadata.FileService;
 import cc.wanshan.gis.utils.ResultUtil;
+import cc.wanshan.gis.utils.ShpReader;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +26,7 @@ public class FileServiceImpl implements FileService {
     private Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     @Value("${file.path}")
-    private String filepath;
+    private String uploadFilePath;
 
     /**
      * 上传单文件
@@ -38,7 +36,7 @@ public class FileServiceImpl implements FileService {
      */
     @Override
     public Result upload(MultipartFile file) {
-        return uploadFile(file, filepath);
+        return uploadFile(file, uploadFilePath);
     }
 
     /**
@@ -50,7 +48,7 @@ public class FileServiceImpl implements FileService {
      */
     @Override
     public Result upload(MultipartFile file, String folderPath) {
-        return uploadFile(file, filepath + File.separator + folderPath);
+        return uploadFile(file, uploadFilePath + File.separator + folderPath);
     }
 
     /**
@@ -120,18 +118,18 @@ public class FileServiceImpl implements FileService {
      * 上传文件
      *
      * @param file     文件
-     * @param filePath 路劲路劲
+     * @param filePath 上传的目标路径
      * @return
      */
     private Result uploadFile(MultipartFile file, String filePath) {
         if (file.isEmpty()) {
             return ResultUtil.error(ResultCode.UPLOAD_FILE_NULL);
         }
+
         HashMap<String, Object> map = Maps.newHashMap();
-        InputStream is = null;
-        OutputStream os = null;
         try {
             String filename = file.getOriginalFilename();
+
             map.put("filename", filename);
 
             File targetFile = new File(filePath + File.separator + filename);
@@ -139,32 +137,15 @@ public class FileServiceImpl implements FileService {
             if (!targetFile.getParentFile().exists()) {
                 targetFile.getParentFile().mkdirs();
             }
-            //输入流读取文件
-            is = file.getInputStream();
-            //输出流读取文件
-            os = new FileOutputStream(targetFile);
+            // 将上传文件保存到目标文件目录
+            file.transferTo(targetFile);
 
-            byte buffer[] = new byte[4096];
-            int len = 0;
-            while ((len = is.read(buffer)) > 0) {
-                os.write(buffer, 0, len);
-            }
             map.put("filePath", targetFile.getAbsolutePath());
             return ResultUtil.success(map);
+
         } catch (IOException e) {
             e.printStackTrace();
             return ResultUtil.error(ResultCode.UPLOAD_FAIL);
-        } finally {
-            try {
-                is.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                os.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 
