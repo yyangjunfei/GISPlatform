@@ -73,8 +73,7 @@ public class SearchController {
         return searchService.getSuggestSearch(keyword);
     }
 
-<<<<<<< HEAD
-=======
+
     @ApiOperation(value = "test", notes = "test")
     @GetMapping("/test")
     public Result test() {
@@ -83,5 +82,5 @@ public class SearchController {
 
         return searchService.test();
     }
->>>>>>> develop
+
 }
