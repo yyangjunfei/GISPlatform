@@ -2,6 +2,7 @@ package cc.wanshan.gis.service.search;
 import cc.wanshan.gis.entity.search.RegionInput;
 import cc.wanshan.gis.entity.search.RegionOutput;
 import org.springframework.http.ResponseEntity;
+
 import java.util.List;
 
 public interface ESCrudService {
@@ -105,6 +106,15 @@ public interface ESCrudService {
      */
 
     ResponseEntity deleteElasticsearchIndex(String indexName);
+
+
+
+    /**
+     * 更新elasticsearch数据索引库
+     * @return
+     */
+
+    ResponseEntity updateElasticsearchIndexData(String indexName,String type,String id, String updateField,String updateFieldValue);
 
 
     /***

@@ -148,6 +148,12 @@
             <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.belerweb</groupId>
+            <artifactId>pinyin4j</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+
         <!--Geotools相关依赖-->
         <dependency>
             <groupId>org.geotools</groupId>
@@ -503,6 +509,11 @@
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
             <version>${log4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vaadin.external.google</groupId>
+            <artifactId>android-json</artifactId>
+            <version>0.0.20131108.vaadin1</version>
         </dependency>
 
     </dependencies>

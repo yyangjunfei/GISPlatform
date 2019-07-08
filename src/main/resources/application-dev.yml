@@ -13,13 +13,6 @@ spring:
     username: postgres
     password: wanshan
     driver-class-name: org.postgresql.Driver
-  jackson:
-    default-property-inclusion: non_empty
-    date-format: yyyy-MM-dd HH:mm:ss
-    time-zone: GMT+8
-    serialization:
-      FAIL_ON_EMPTY_BEANS: false
-      write-dates-as-timestamps: false #使用时间戳，使用数值timestamp表示日期
   data:
     # elasticsearch配置
     elasticsearch:
@@ -35,11 +28,24 @@ spring:
   elasticsearch:
     rest:
       uris: ["http://192.168.1.88:9200"]
-management:
+  management:
   security:
     health:
       elasticsearch:
         enabled: false
+  jackson:
+    default-property-inclusion: non_empty
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
+      write-dates-as-timestamps: false #使用时间戳，使用数值timestamp表示日期
+#配置spring 上传文件大小
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 1000MB
+      max-request-size: 1000MB
 
 # mybatis配置
 mybatis:
@@ -73,5 +79,5 @@ swagger:
 
 # file 文件路径
 file:
-  path: D:\Metadata
+  path: D:\gitspace\gisdev\src\main\resources\Upload
 

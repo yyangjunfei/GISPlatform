@@ -3,11 +3,16 @@ import cc.wanshan.gis.service.search.ESCrudService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import org.elasticsearch.action.update.UpdateRequest;
+import org.elasticsearch.action.update.UpdateResponse;
+import org.elasticsearch.common.xcontent.XContentFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 import java.util.*;
 
 
@@ -79,7 +84,7 @@ public ResponseEntity query(@RequestParam(value = "id", required = false) String
      * @return
      */
 
-@ApiOperation(value = "搜索查询省数据", notes = "搜索查询省数据")
+@ApiOperation(value = "搜索查询数据", notes = "搜索查询数据")
 @PostMapping("/queryDataByInputValue")
 public ResponseEntity queryDataByInputValue(@RequestParam(value = "inputValue", required = false) String inputValue){
 
@@ -184,6 +189,20 @@ public ResponseEntity delete(@RequestParam(value ="id") String id) {
 
         return  esCrudService.deleteElasticsearchIndex(indexName);
     }
+
+    /**
+     * 更新elasticsearch数据索引库
+     * @return
+     */
+
+    @ApiOperation(value = "更新elasticsearch数据索引库", notes = "更新elasticsearch数据索引库")
+    @PutMapping("updateElasticsearchIndexData")
+    public ResponseEntity updateElasticsearchIndexData(@RequestParam(value ="indexName") String indexName,@RequestParam(value ="type") String type,
+                                                   @RequestParam(value="id") String id, @RequestParam(value="updateField") String updateField,
+                                                   @RequestParam(value="updateFieldValue") String updateFieldValue){
+        return  esCrudService.updateElasticsearchIndexData(indexName,type,id,updateField,updateFieldValue);
+    }
+
 
     /***
      * 导入postgis 数据库到Elasticsearch

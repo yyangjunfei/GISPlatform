@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 @Service("geoServerServiceImpl")
 public class GeoServerServiceImpl implements GeoServerService {
@@ -107,13 +108,20 @@ public class GeoServerServiceImpl implements GeoServerService {
      * @throws URISyntaxException
      */
     @Override
-    public boolean createWorkSpace(String workSpaceName, String uri)
-            throws URISyntaxException {
-        if (uri == null || uri.isEmpty()) {
-            return GeoServerUtils.publisher.createWorkspace(workSpaceName);
-        } else {
-            return GeoServerUtils.publisher.createWorkspace(workSpaceName, new URI(uri));
+    public boolean createWorkSpace(String workSpaceName, String uri) throws URISyntaxException {
+
+        //判断工作空间是否存在
+        List<String> workspaces = GeoServerUtils.manager.getReader().getWorkspaceNames();
+        if(!workspaces.contains(workSpaceName)){
+            if (uri == null || uri.isEmpty()) {
+                return GeoServerUtils.publisher.createWorkspace(workSpaceName);
+            }else{
+                return GeoServerUtils.publisher.createWorkspace(workSpaceName, new URI(uri));
+            }
+        }else {
+            LOG.warn("workspace已经存在了,ws :" + workSpaceName);
         }
+        return false;
     }
 
     /**
@@ -142,7 +150,7 @@ public class GeoServerServiceImpl implements GeoServerService {
                 // 那个数据库;
                 store.setDatabase(geoServer.getPostgisDatabase());
                 //当前先默认使用public这个schema
-                store.setSchema(workspace);
+                    store.setSchema(workspace);
                 // 超时设置
                 store.setConnectionTimeout(20);
                 // 最大连接数
@@ -178,6 +186,13 @@ public class GeoServerServiceImpl implements GeoServerService {
     public Result publishLayer(String ws, String storeName, String tableName) {
         LOG.info("已进入：publishLayer::manager = [{}], ws = [{}], storeName = [{}], tableName = [{}]", ws, storeName, tableName);
         if (ws != null && !"".equals(ws) && storeName != null && !"".equals(storeName) && tableName != null && !"".equals(tableName)) {
+
+            try {
+                createWorkSpace(ws,"");
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+
             Result dataStore = createDataStore(storeName, ws);
             if (dataStore.getCode() == 0 || dataStore.getCode() == 1) {
                 RESTLayer layer = GeoServerUtils.reader.getLayer(ws, tableName);
@@ -185,11 +200,12 @@ public class GeoServerServiceImpl implements GeoServerService {
                     GSFeatureTypeEncoder pds = new GSFeatureTypeEncoder();
                     pds.setTitle(tableName);
                     pds.setName(tableName);
-                    pds.setSRS("EPSG:3857");
+                    pds.setSRS("EPSG:4326");
                     GSLayerEncoder layerEncoder = new GSLayerEncoder();
                     boolean publishDBLayer = GeoServerUtils.publisher.publishDBLayer(ws, storeName, pds, layerEncoder);
+
                     if (publishDBLayer) {
-                        return ResultUtil.success();
+                        return ResultUtil.success("图层发布成功");
                     } else {
                         LOG.warn("publishLayer::manager = [{}], ws = [{}], storeName = [{}], tableName = [{}]", GeoServerUtils.manager, ws, storeName, tableName);
                         return ResultUtil.error(3, "发布失败");

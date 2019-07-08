@@ -10,6 +10,7 @@ import cc.wanshan.gis.service.search.ESCrudService;
 import cc.wanshan.gis.utils.importDB2Es;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
+import io.swagger.annotations.ApiOperation;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
@@ -18,10 +19,15 @@ import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.action.update.UpdateRequest;
+import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.script.Script;
+import org.elasticsearch.script.ScriptService;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
@@ -35,11 +41,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 @Service
 public class ESCrudServiceImpl implements ESCrudService {
@@ -142,7 +153,7 @@ public class ESCrudServiceImpl implements ESCrudService {
     }
 
     /****
-     * 搜索查询省数据
+     * 搜索查询数据
      * @param inputValue
      * @return
      */
@@ -151,11 +162,11 @@ public class ESCrudServiceImpl implements ESCrudService {
     public ResponseEntity queryDataByInputValue(String inputValue) {
         BoolQueryBuilder boolQuery = null;
         if (inputValue != null) {
-            boolQuery = QueryBuilders.boolQuery().must(QueryBuilders.termQuery("properties.xzqmc.keyword", inputValue));
+            boolQuery = QueryBuilders.boolQuery().must(QueryBuilders.termQuery("xzqdmc.keyword", inputValue));
         }
         // 组装查询请求
-        SearchRequestBuilder requestBuilder = client.prepareSearch("provincial_data")
-                .setTypes("Feature")
+        SearchRequestBuilder requestBuilder = client.prepareSearch("shjxzq")
+                .setTypes("test_shjxzq")
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(boolQuery)
                 .setFrom(0)
@@ -173,6 +184,7 @@ public class ESCrudServiceImpl implements ESCrudService {
             // 组装查询到的数据集
             result = new ArrayList<>();
             for (SearchHit searchHitFields : response.getHits()) {
+                //System.out.println(searchHitFields.getSourceAsString());
                 result.add(searchHitFields.getSourceAsMap());
             }
 
@@ -627,10 +639,7 @@ public class ESCrudServiceImpl implements ESCrudService {
 
             // 发送查询请求
             SearchResponse response = requestBuilder.get();
-
             for (SearchHit searchHitFields : response.getHits()) {
-                LOG.info("=====" + searchHitFields.getSourceAsMap());
-
                 result.add(searchHitFields.getSourceAsMap());
             }
         }
@@ -639,7 +648,6 @@ public class ESCrudServiceImpl implements ESCrudService {
 
     /**
      * 按id删除数据
-     *
      * @param id
      * @return
      */
@@ -662,7 +670,7 @@ public class ESCrudServiceImpl implements ESCrudService {
         IndicesExistsRequest inExistsRequest = new IndicesExistsRequest(indexName);
         IndicesExistsResponse inExistsResponse = client.admin().indices().exists(inExistsRequest).actionGet();
 
-        if (!inExistsResponse.isExists()) {
+        if (!inExistsResponse.isExists()){
             LOG.info(indexName + " not exists");
         } else {
             DeleteIndexResponse dResponse = client.admin().indices().prepareDelete(indexName).execute().actionGet();
@@ -674,10 +682,42 @@ public class ESCrudServiceImpl implements ESCrudService {
             }
         }
         return  responseEntity;
+
+    }
+
+    /**
+     * 更新elasticsearch数据索引库
+     * @return
+     */
+
+    @Override
+    public ResponseEntity updateElasticsearchIndexData(String indexName,String type,String id, String updateField,String updateFieldValue){
+        UpdateRequest request = new UpdateRequest();
+        UpdateResponse response= null;
+        try {
+            request.index(indexName) //索引名
+                    .type(type) //类型
+                    .id(id)//id
+                    .doc(
+                            XContentFactory.jsonBuilder()
+                                    .startObject()
+                                    .field(updateField+".keyworld",updateFieldValue)//要修改的字段 及字段值
+                                    .endObject()
+                    );
+            response = client.update(request).get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e){
+            e.printStackTrace();
+        }
+        System.out.println(response.status());
+        return null;
     }
 
     /***
-     * 导入postgis 数据库到Elasticsearch
+     * 导入postgis数据库到Elasticsearch
      * @return ResponseEntity
      */
 
