@@ -1,23 +1,19 @@
 package cc.wanshan.gis.service.metadata.impl;
-
 import cc.wanshan.gis.common.enums.ResultCode;
 import cc.wanshan.gis.dao.metadata.DataManagementDao;
 import cc.wanshan.gis.entity.Result;
+import cc.wanshan.gis.entity.metadata.ShpInfo;
 import cc.wanshan.gis.entity.metadata.metadata;
 import cc.wanshan.gis.service.metadata.DataManagementService;
 import cc.wanshan.gis.service.metadata.FileService;
 import cc.wanshan.gis.utils.LanguageUtils;
 import cc.wanshan.gis.utils.ResultUtil;
-import cc.wanshan.gis.utils.ShpReader;
 import com.alibaba.fastjson.JSON;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class DataManagementServiceImpl implements DataManagementService {
@@ -31,7 +27,7 @@ public class DataManagementServiceImpl implements DataManagementService {
     private DataManagementDao dataManagementDao;
 
     @Override
-    public Result metadataImport(String jsonString , MultipartFile[] file) {
+    public Result metadataImportPublication(String jsonString , MultipartFile[] file) {
 
         LOG.info("metadataImport...");
         //本地文件上传服务器中
@@ -49,24 +45,32 @@ public class DataManagementServiceImpl implements DataManagementService {
 
         metadata metadata = JSON.parseObject(jsonString, metadata.class);
 
-        //将中文图层名转换为拼音字符作为数据库中的表名
-        metadata.setLayerName(LanguageUtils.getPinYin(metadata.getLayerName()));
-
         //读取shp文件并且发布到数据库
         try {
-            ShpReader.readSHP(filePath,metadata);
 
-            //发布完成之后删除上传文件
-            for(Map<String, String> map :data){
-                fileService.delFile(map.get("filePath"));
+            List<ShpInfo> shpInfoList= fileService.readSHP(filePath);
+
+            for (Map<String, String> maps :data){
+
+                System.out.println("filePath::"+maps.get("filePath"));
+                //删除上传的文件
+                fileService.delFile(maps.get("filePath"));
             }
+
+            //将中文图层名转换为拼音字符作为数据库中的表名
+            metadata.setLayerName(LanguageUtils.getPinYin(metadata.getLayerName()));
+
+            //设置geometryType
+            metadata.setGeoType(shpInfoList.get(0).getGeometry().getType());
+
+            //shp数据存储到数据库
+            fileService.publishShpData2DB(shpInfoList,metadata);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
         return ResultUtil.success(metadata);
     }
-
 
     @Override
     public metadata shpData2Geoserver(int id) {
@@ -105,9 +109,7 @@ public class DataManagementServiceImpl implements DataManagementService {
 
     @Override
     public List<metadata> findLayerPropertiesData(metadata metadata ) {
-
         return dataManagementDao.findLayerPropertiesData(metadata);
-
     }
 
     @Override

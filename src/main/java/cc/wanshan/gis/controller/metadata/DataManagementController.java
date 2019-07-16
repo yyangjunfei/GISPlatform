@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 
 @Api(value = "DataManagementController", tags = "shp数据发布接口")
@@ -37,7 +36,7 @@ public class DataManagementController {
     @ApiImplicitParams(@ApiImplicitParam(name = "jsonString", value = "页面输入的属性数据", required = false))
     public Result metadataImport(String jsonString,@RequestParam MultipartFile[] file) {
 
-       return dataManagementService.metadataImport(jsonString, file);
+       return dataManagementService.metadataImportPublication(jsonString, file);
     }
 
     @ApiOperation(value = "查询显示存储数据", notes = "查询显示存储数据")

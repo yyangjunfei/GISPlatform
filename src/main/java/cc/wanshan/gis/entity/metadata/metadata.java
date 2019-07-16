@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.List;
 
 @Data
 @Builder
@@ -46,5 +47,13 @@ public class metadata implements Serializable {
 
     @ApiModelProperty(value = "是否发布")
     private int release_flag;
+
+    // 方便数据库操作
+
+    @ApiModelProperty(value = "geo类型")
+    private String geoType;
+
+    @ApiModelProperty(value = "shp图层信息")
+    private List<ShpInfo> shpInfoList;
 
 }

@@ -1,5 +1,4 @@
 package cc.wanshan.gis.config;
-
 import cc.wanshan.gis.common.security.AccessDecisionManagerImpl;
 import cc.wanshan.gis.common.security.MyAccessDeniedHandler;
 import cc.wanshan.gis.service.user.impl.UserServiceImpl;
@@ -28,7 +27,6 @@ import java.io.PrintWriter;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
   private static final Logger logger = LoggerFactory.getLogger(WebSecurityConfig.class);
   private ObjectMapper objectMapper = new ObjectMapper();
   @Resource
@@ -44,6 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   //403页面
   @Resource
   MyAccessDeniedHandler myAccessDeniedHandler;
+
 
   /**
    * 定义认证用户信息获取来源，密码校验规则等
@@ -61,6 +60,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers("/doc.html")
         .antMatchers("/swagger_ui.html");
   }
+
 
   /**
    * 定义安全策略
