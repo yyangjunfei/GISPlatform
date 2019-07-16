@@ -70,7 +70,7 @@ postgis:
   url: jdbc:postgresql://192.168.1.133:5432/test
   user: postgres
   password: wanshan
-
+  driver-class-name: org.postgresql.Driver
 # swagger 显示判断
 swagger:
   enable: true

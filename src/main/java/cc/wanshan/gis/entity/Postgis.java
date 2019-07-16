@@ -11,6 +11,7 @@ public class Postgis implements Serializable {
     private String url;
     private String user;
     private String password;
+    private String driverClassName;
 
     public Postgis() {
     }
@@ -37,5 +38,13 @@ public class Postgis implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getDriverClassName() {
+        return driverClassName;
+    }
+
+    public void setDriverClassName(String driverClassName) {
+        this.driverClassName = driverClassName;
     }
 }
