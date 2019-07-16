@@ -115,9 +115,9 @@ public class DataManagementServiceImpl implements DataManagementService {
 
         int i =dataManagementDao.changePublicationStatus(id);
         if(i>0){
-            return  ResultUtil.success("更新数据成功");
+            return  ResultUtil.success("更改发布状态成功");
         }else {
-            return ResultUtil.error("更新数据失败！");
+            return ResultUtil.error("更新发布状态失败！");
         }
     }
 
