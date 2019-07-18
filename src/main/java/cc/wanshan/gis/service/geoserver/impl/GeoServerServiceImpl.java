@@ -1,13 +1,13 @@
 package cc.wanshan.gis.service.geoserver.impl;
 import cc.wanshan.gis.dao.createschema.CreateSchemaDao;
 import cc.wanshan.gis.dao.searchschema.SearchSchemaDao;
-import cc.wanshan.gis.entity.GeoServer;
+import cc.wanshan.gis.entity.geoserver.GeoServer;
 import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.entity.drawlayer.Store;
-import cc.wanshan.gis.entity.usermanagement.User;
+import cc.wanshan.gis.entity.security.User;
 import cc.wanshan.gis.service.geoserver.GeoServerService;
-import cc.wanshan.gis.service.store.StoreService;
-import cc.wanshan.gis.service.user.UserService;
+import cc.wanshan.gis.service.geoserver.StoreService;
+import cc.wanshan.gis.service.security.UserService;
 import cc.wanshan.gis.utils.GeoServerUtils;
 import cc.wanshan.gis.utils.ResultUtil;
 import it.geosolutions.geoserver.rest.decoder.RESTDataStore;

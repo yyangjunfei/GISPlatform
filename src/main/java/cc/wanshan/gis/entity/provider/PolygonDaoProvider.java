@@ -2,8 +2,6 @@ package cc.wanshan.gis.entity.provider;
 
 import cc.wanshan.gis.entity.drawlayer.Layer;
 import cc.wanshan.gis.entity.drawlayer.Polygon;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +30,7 @@ public class PolygonDaoProvider {
     logger.info("insertAll::map = [{}]", map);
     List<Polygon> list = (List<Polygon>) map.get("list");
     StringBuilder stringBuilder = new StringBuilder();
-    stringBuilder.append("INSERT INTO tb_polygon ");
+    stringBuilder.append("INSERT INTO polygon ");
     stringBuilder.append("(feature_name,"
         + "layer_id,"
         + "feature_class,"
@@ -69,7 +67,7 @@ public class PolygonDaoProvider {
     logger.info("updateAll::map = [{}]", map);
     List<Polygon> list = (List<Polygon>) map.get("list");
     StringBuilder stringBuilder = new StringBuilder();
-    stringBuilder.append("INSERT INTO tb_polygon ");
+    stringBuilder.append("INSERT INTO polygon ");
     stringBuilder.append("(feature_id,"
         + "feature_name,"
         + "layer_id,"
@@ -122,7 +120,7 @@ public class PolygonDaoProvider {
       {
         SELECT(
             "p.feature_id,p.feature_name,p.feature_class,ST_AsGeoJSON(p.geom),p.circle,p.insert_time,p.update_time,p.epsg,p.describe,p.fill_color,p.stroke_color,p.stroke_width,p.opacity ");
-        FROM("public.tb_polygon p");
+        FROM("public.polygon p");
         WHERE("1=1");
         if (StringUtils.isNotBlank(layerId)) {
           WHERE("p.layer_id=#{layerId}");
@@ -152,7 +150,7 @@ public class PolygonDaoProvider {
       {
         SELECT(
             "p.feature_id,p.feature_name,p.feature_class,ST_AsGeoJSON(p.geom),p.circle,p.epsg,p.describe,p.fill_color,p.stroke_color,p.stroke_width,p.opacity ");
-        FROM("public.tb_polygon p");
+        FROM("public.polygon p");
         WHERE("1=1");
         if (StringUtils.isNotBlank(layerId)) {
           WHERE("p.layer_id=#{layerId}");
@@ -176,7 +174,7 @@ public class PolygonDaoProvider {
         layerId, featureId, featureName, featureClass);
     return new SQL() {
       {
-        DELETE_FROM("tb_polygon p");
+        DELETE_FROM("polygon p");
         if (StringUtils.isNotBlank(layerId)) {
           WHERE("p.layer_id=#{layerId}");
         }
@@ -203,7 +201,7 @@ public class PolygonDaoProvider {
     logger.info("deleteAll::map = [{}]", map);
     List<Polygon> list = (List<Polygon>) map.get("list");
     StringBuilder stringBuilder = new StringBuilder();
-    stringBuilder.append("DELETE FROM tb_polygon WHERE feature_id in (");
+    stringBuilder.append("DELETE FROM polygon WHERE feature_id in (");
     for (int i = 0; i < list.size(); i++) {
       stringBuilder.append("'").append(list.get(i).getFeatureId()).append("'");
       if (i < list.size() - 1) {
@@ -225,7 +223,7 @@ public class PolygonDaoProvider {
     logger.info("deleteAllByLayerId::map = [{}]", map);
     List<Layer> list = (List<Layer>) map.get("list");
     StringBuilder stringBuilder = new StringBuilder();
-    stringBuilder.append("DELETE FROM tb_Polygon WHERE layer_id in (");
+    stringBuilder.append("DELETE FROM Polygon WHERE layer_id in (");
     for (int i = 0; i < list.size(); i++) {
       stringBuilder.append("'").append(list.get(i).getLayerId()).append("'");
       if (i < list.size() - 1) {

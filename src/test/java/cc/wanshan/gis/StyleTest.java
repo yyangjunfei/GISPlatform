@@ -1,12 +1,12 @@
 package cc.wanshan.gis;
 
-import cc.wanshan.gis.dao.StyleDao;
+import cc.wanshan.gis.dao.style.StyleDao;
 import cc.wanshan.gis.entity.drawlayer.Layer;
 import cc.wanshan.gis.entity.style.RuleName;
 import cc.wanshan.gis.entity.style.RuleValue;
 import cc.wanshan.gis.entity.style.Style;
-import cc.wanshan.gis.service.rulename.RuleNameService;
-import cc.wanshan.gis.service.rulevalue.RuleValueService;
+import cc.wanshan.gis.service.style.RuleNameService;
+import cc.wanshan.gis.service.style.RuleValueService;
 import cc.wanshan.gis.service.style.StyleService;
 import com.alibaba.fastjson.JSONArray;
 import java.util.Date;

@@ -25,7 +25,7 @@ public class LayerDaoProvider {
     logger.info("deleteAllByLayerId::map = [{}]",map);
     List<Layer> list = (List<Layer>) map.get("list");
     StringBuilder stringBuilder = new StringBuilder();
-    stringBuilder.append("DELETE FROM tb_layer WHERE layer_id in (");
+    stringBuilder.append("DELETE FROM layer WHERE layer_id in (");
     for (int i = 0; i < list.size(); i++) {
       stringBuilder.append("'").append(list.get(i).getLayerId()).append("'");
       if (i < list.size() - 1) {

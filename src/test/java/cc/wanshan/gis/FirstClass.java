@@ -2,7 +2,7 @@ package cc.wanshan.gis;
 
 import cc.wanshan.gis.entity.thematic.FirstClassification;
 import cc.wanshan.gis.entity.thematic.Thematic;
-import cc.wanshan.gis.service.firstclassification.FirstClassificationService;
+import cc.wanshan.gis.service.thematic.FirstClassificationService;
 import java.util.Date;
 import javax.annotation.Resource;
 import org.junit.Test;

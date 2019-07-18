@@ -2,11 +2,9 @@ package cc.wanshan.gis;
 
 import cc.wanshan.gis.entity.style.RuleName;
 import cc.wanshan.gis.entity.style.RuleValue;
-import cc.wanshan.gis.service.rulename.RuleNameService;
-import cc.wanshan.gis.service.rulevalue.RuleValueService;
+import cc.wanshan.gis.service.style.RuleValueService;
 import java.util.Date;
 import javax.annotation.Resource;
-import org.apache.ibatis.annotations.Result;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;

@@ -1,13 +1,13 @@
 package cc.wanshan.gis;
 
-import cc.wanshan.gis.dao.LayerDao;
+import cc.wanshan.gis.dao.layer.LayerDao;
 import cc.wanshan.gis.dao.searchlayertable.SearchLayerTableDao;
 import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.entity.drawlayer.Layer;
 import cc.wanshan.gis.entity.drawlayer.Store;
 import cc.wanshan.gis.entity.thematic.FirstClassification;
 import cc.wanshan.gis.entity.thematic.Thematic;
-import cc.wanshan.gis.service.layer.LayerService;
+import cc.wanshan.gis.service.thematic.LayerService;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import java.util.Date;

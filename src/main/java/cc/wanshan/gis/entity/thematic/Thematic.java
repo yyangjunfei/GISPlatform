@@ -1,7 +1,6 @@
 package cc.wanshan.gis.entity.thematic;
 
-import cc.wanshan.gis.entity.drawlayer.Layer;
-import cc.wanshan.gis.entity.usermanagement.User;
+import cc.wanshan.gis.entity.security.User;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
