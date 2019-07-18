@@ -1,6 +1,6 @@
 package cc.wanshan.gis.service.search;
 
-import cc.wanshan.gis.entity.Result;
+import cc.wanshan.gis.common.vo.Result;
 import com.alibaba.fastjson.JSONObject;
 
 public interface SearchService {

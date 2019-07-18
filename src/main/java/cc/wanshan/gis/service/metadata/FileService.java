@@ -1,6 +1,6 @@
 package cc.wanshan.gis.service.metadata;
 
-import cc.wanshan.gis.entity.Result;
+import cc.wanshan.gis.common.vo.Result;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

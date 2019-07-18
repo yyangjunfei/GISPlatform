@@ -1,6 +1,6 @@
 package cc.wanshan.gis.service.plot;
 
-import cc.wanshan.gis.entity.Result;
+import cc.wanshan.gis.common.vo.Result;
 
 public interface PlotService {
 

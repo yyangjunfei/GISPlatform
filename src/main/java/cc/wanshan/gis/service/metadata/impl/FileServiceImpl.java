@@ -1,20 +1,19 @@
 package cc.wanshan.gis.service.metadata.impl;
 
 import cc.wanshan.gis.common.enums.ResultCode;
-import cc.wanshan.gis.entity.Result;
+import cc.wanshan.gis.common.vo.Result;
 import cc.wanshan.gis.service.metadata.FileService;
 import cc.wanshan.gis.utils.ResultUtil;
-import cc.wanshan.gis.utils.ShpReader;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

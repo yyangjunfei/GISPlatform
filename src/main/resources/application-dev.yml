@@ -9,10 +9,17 @@ spring:
       request-timeout: 600000
   datasource:
     platform: postgres
-    url: jdbc:postgresql://192.168.1.133:5432/test?useAffectedRows=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=serverTimezone=Asia/Shanghai
+    url: jdbc:postgresql://192.168.1.133:5432/test?useAffectedRows=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
     username: postgres
     password: wanshan
     driver-class-name: org.postgresql.Driver
+  # redis配置
+  redis:
+    host: 172.24.4.11
+    password: 123456
+    database: 1
+    port: 6379
+    timeout: 3S
   data:
     # elasticsearch配置
     elasticsearch:
@@ -38,7 +45,7 @@ spring:
     serialization:
       FAIL_ON_EMPTY_BEANS: false
       write-dates-as-timestamps: false #使用时间戳，使用数值timestamp表示日期
-#配置spring 上传文件大小
+  #配置spring 上传文件大小
   servlet:
     multipart:
       enabled: true
@@ -65,17 +72,40 @@ geoserver:
   postgisPassword: wanshan
   postgisDatabase: test
 
-# postgis数据库配置
+# postGIS数据库配置
 postgis:
   url: jdbc:postgresql://192.168.1.133:5432/test
   user: postgres
   password: wanshan
 
-# swagger 显示判断
-swagger:
-  enable: true
-
 # file 文件路径
 file:
   path: D:\gitspace\gisdev\src\main\resources\Upload
+
+gis:
+  # swagger 显示判断
+  swagger:
+    enable: true
+    # token 使用判断
+  token:
+    enable: false
+
+# 忽略鉴权url
+ignored:
+  urls:
+    - /auth/login/**
+    - /auth/actuator/**
+    - /auth/admin/**
+    - /auth/regist
+    - /auth/test/**
+    - /auth/common/**
+    - /druid/**
+    - /swagger-ui.html
+    - /swagger-resources/**
+    - /swagger/**
+    - /**/v2/api-docs
+    - /**/*.js
+    - /**/*.css
+    - /**/*.png
+    - /**/*.ico
 

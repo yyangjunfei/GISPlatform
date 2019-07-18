@@ -1,6 +1,6 @@
 package cc.wanshan.gis.dao.droplayer;
 
-import cc.wanshan.gis.entity.Result;
+import cc.wanshan.gis.common.vo.Result;
 
 /**
  * @Author Li Cheng

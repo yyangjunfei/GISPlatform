@@ -1,20 +1,21 @@
 package cc.wanshan.gis.service.metadata.impl;
 
 import cc.wanshan.gis.common.enums.ResultCode;
+import cc.wanshan.gis.common.vo.Result;
 import cc.wanshan.gis.dao.metadata.DataManagementDao;
-import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.entity.metadata.metadata;
 import cc.wanshan.gis.service.metadata.DataManagementService;
 import cc.wanshan.gis.service.metadata.FileService;
 import cc.wanshan.gis.utils.LanguageUtils;
 import cc.wanshan.gis.utils.ResultUtil;
-import cc.wanshan.gis.utils.ShpReader;
+import cc.wanshan.gis.utils.geo.ShpReader;
 import com.alibaba.fastjson.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,7 @@ public class DataManagementServiceImpl implements DataManagementService {
     private DataManagementDao dataManagementDao;
 
     @Override
-    public Result metadataImport(String jsonString , MultipartFile[] file) {
+    public Result metadataImport(String jsonString, MultipartFile[] file) {
 
         LOG.info("metadataImport...");
         //本地文件上传服务器中
@@ -54,10 +55,10 @@ public class DataManagementServiceImpl implements DataManagementService {
 
         //读取shp文件并且发布到数据库
         try {
-            ShpReader.readSHP(filePath,metadata);
+            ShpReader.readSHP(filePath, metadata);
 
             //发布完成之后删除上传文件
-            for(Map<String, String> map :data){
+            for (Map<String, String> map : data) {
                 fileService.delFile(map.get("filePath"));
             }
 
@@ -84,9 +85,9 @@ public class DataManagementServiceImpl implements DataManagementService {
 
         int i = dataManagementDao.deleteLayerPropertiesData(id);
 
-        if(i>0){
-            return  ResultUtil.success("删除数据成功");
-        }else {
+        if (i > 0) {
+            return ResultUtil.success("删除数据成功");
+        } else {
             return ResultUtil.error("删除数据失败！");
         }
     }
@@ -94,17 +95,17 @@ public class DataManagementServiceImpl implements DataManagementService {
     @Override
     public Result editLayerPropertiesData(metadata metadata) {
 
-        int i =dataManagementDao.editLayerPropertiesData(metadata);
+        int i = dataManagementDao.editLayerPropertiesData(metadata);
 
-        if(i>0){
-            return  ResultUtil.success("更新数据成功");
-        }else {
+        if (i > 0) {
+            return ResultUtil.success("更新数据成功");
+        } else {
             return ResultUtil.error("更新数据失败！");
         }
     }
 
     @Override
-    public List<metadata> findLayerPropertiesData(metadata metadata ) {
+    public List<metadata> findLayerPropertiesData(metadata metadata) {
 
         return dataManagementDao.findLayerPropertiesData(metadata);
 
@@ -113,10 +114,10 @@ public class DataManagementServiceImpl implements DataManagementService {
     @Override
     public Result changePublicationStatus(int id) {
 
-        int i =dataManagementDao.changePublicationStatus(id);
-        if(i>0){
-            return  ResultUtil.success("更新数据成功");
-        }else {
+        int i = dataManagementDao.changePublicationStatus(id);
+        if (i > 0) {
+            return ResultUtil.success("更新数据成功");
+        } else {
             return ResultUtil.error("更新数据失败！");
         }
     }

@@ -1,6 +1,6 @@
 package cc.wanshan.gis.controller.plot;
 
-import cc.wanshan.gis.entity.Result;
+import cc.wanshan.gis.common.vo.Result;
 import cc.wanshan.gis.service.plot.PlotService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;

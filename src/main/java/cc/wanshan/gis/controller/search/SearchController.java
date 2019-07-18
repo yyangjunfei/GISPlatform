@@ -1,7 +1,7 @@
 package cc.wanshan.gis.controller.search;
 
 import cc.wanshan.gis.common.enums.ResultCode;
-import cc.wanshan.gis.entity.Result;
+import cc.wanshan.gis.common.vo.Result;
 import cc.wanshan.gis.service.search.SearchService;
 import cc.wanshan.gis.utils.ResultUtil;
 import com.alibaba.fastjson.JSONObject;
@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,6 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class SearchController {
 
     private Logger LOG = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    RedisTemplate redisTemplate;
 
     @Autowired
     private SearchService searchService;
@@ -78,6 +82,7 @@ public class SearchController {
     public Result test() {
 
         LOG.info("SearchController::test");
+        redisTemplate.opsForValue().set("af", "afsg");
 
         return searchService.test();
     }

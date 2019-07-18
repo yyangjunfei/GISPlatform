@@ -2,10 +2,10 @@ package cc.wanshan.gis.service.plot.impl;
 
 import cc.wanshan.gis.common.constants.Constant;
 import cc.wanshan.gis.common.enums.ResultCode;
+import cc.wanshan.gis.common.vo.Result;
 import cc.wanshan.gis.dao.plot.PlotLineDao;
 import cc.wanshan.gis.dao.plot.PlotPointMapper;
 import cc.wanshan.gis.dao.plot.PlotPolygonDao;
-import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.entity.plot.PlotPoint;
 import cc.wanshan.gis.service.plot.PlotService;
 import cc.wanshan.gis.utils.JsonUtils;

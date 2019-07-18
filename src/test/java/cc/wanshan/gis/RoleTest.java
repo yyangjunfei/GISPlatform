@@ -1,8 +1,8 @@
 /*
 package cc.wanshan.gis;
 
-import cc.wanshan.gis.dao.RoleDao;
-import cc.wanshan.gis.entity.usermanagement.Role;
+import cc.wanshan.gis.dao.authorize.RoleDao;
+import cc.wanshan.gis.entity.authorize.Role;
 import java.util.Date;
 import javax.annotation.Resource;
 import org.junit.Test;
