@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/rest/search")
 public class SearchController {
 
-    private static Logger LOG = LoggerFactory.getLogger(SearchController.class);
+    private Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private SearchService searchService;
@@ -58,6 +58,21 @@ public class SearchController {
 
         return searchService.searchByPlace(jsonObject);
     }
+
+    @ApiOperation(value = "联想suggest", notes = "搜索联想suggest自动补全")
+    @GetMapping("/suggest")
+    public Result suggest(@RequestParam String keyword) {
+
+        LOG.info("SearchController::Suggest keyword = [{}]", keyword);
+
+        // 判空
+        if (keyword == null || keyword.length() <= 0) {
+            return ResultUtil.error(ResultCode.PARAM_IS_NULL);
+        }
+
+        return searchService.getSuggestSearch(keyword);
+    }
+
 
     @ApiOperation(value = "test", notes = "test")
     @GetMapping("/test")

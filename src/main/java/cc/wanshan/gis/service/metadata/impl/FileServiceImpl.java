@@ -1,23 +1,36 @@
 package cc.wanshan.gis.service.metadata.impl;
 
 import cc.wanshan.gis.common.enums.ResultCode;
-import cc.wanshan.gis.controller.metadata.DataManagementController;
+import cc.wanshan.gis.dao.metadata.FilePublishDao;
 import cc.wanshan.gis.entity.Result;
+import cc.wanshan.gis.entity.metadata.ShpInfo;
+import cc.wanshan.gis.entity.metadata.metadata;
 import cc.wanshan.gis.service.metadata.FileService;
 import cc.wanshan.gis.utils.ResultUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.apache.ibatis.session.ExecutorType;
+import org.apache.ibatis.session.SqlSession;
+import org.geotools.data.FeatureSource;
+import org.geotools.data.shapefile.ShapefileDataStore;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureIterator;
+import org.geotools.geojson.feature.FeatureJSON;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.nio.charset.Charset;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,10 +39,13 @@ import java.util.Map;
 @Service
 public class FileServiceImpl implements FileService {
 
-    private static Logger LOG = LoggerFactory.getLogger(DataManagementController.class);
+    private Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     @Value("${file.path}")
-    private String filepath;
+    private String uploadFilePath;
+
+    @Autowired
+    private FilePublishDao filePublishDao;
 
     /**
      * 上传单文件
@@ -39,7 +55,7 @@ public class FileServiceImpl implements FileService {
      */
     @Override
     public Result upload(MultipartFile file) {
-        return uploadFile(file, filepath);
+        return uploadFile(file, uploadFilePath);
     }
 
     /**
@@ -51,7 +67,7 @@ public class FileServiceImpl implements FileService {
      */
     @Override
     public Result upload(MultipartFile file, String folderPath) {
-        return uploadFile(file, filepath + File.separator + folderPath);
+        return uploadFile(file, uploadFilePath + File.separator + folderPath);
     }
 
     /**
@@ -83,7 +99,6 @@ public class FileServiceImpl implements FileService {
     @Override
     public Result upload(List<MultipartFile> fileList, String folderPath) {
         List<Map<String, String>> pathList = Lists.newArrayList();
-
         for (MultipartFile file : fileList) {
             // 调用单文件
             Result result = upload(file, folderPath);
@@ -91,48 +106,154 @@ public class FileServiceImpl implements FileService {
                 return result;
             }
         }
-
         return ResultUtil.success(pathList);
     }
 
-    /**
-     * 删除文件
-     *
-     * @param path 文件完整路径
-     * @return
+    /***
+     * 删除文件夹和文件
+     * @param file
      */
+
     @Override
-    public String delFile(String path) {
-        String resultInfo;
-        File file = new File(path);
+    public void deleteFile(File file) {
         if (file.exists()) {
+            if (file.isDirectory()) {
+                File[] files = file.listFiles();
+                for (File f : files) {
+                    deleteFile(f);
+                }
+            }
+            file.delete();
+        }
+    }
+
+    public boolean  delFile(String filePath) {
+        File file = new File(filePath);
+        // 如果文件路径所对应的文件存在，并且是一个文件，则直接删除
+        if (file.exists() && file.isFile()) {
             if (file.delete()) {
-                resultInfo = "删除成功";
+                LOG.info("删除单个文件" + filePath + "成功！");
+                return true;
             } else {
-                resultInfo = "删除失败";
+                LOG.error("删除单个文件" + filePath + "失败！");
+                return false;
             }
         } else {
-            resultInfo = "文件不存在！";
+            LOG.warn("删除单个文件失败：" + filePath + "不存在！");
+            return false;
         }
-        return resultInfo;
     }
+
+
+    @Override
+    public List<ShpInfo> readSHP(String publishPath) {
+
+        // 一个数据存储实现，允许从Shapefiles读取和写入
+        ShapefileDataStore shpDataStore = null;
+        File file = new File(publishPath);
+        List<ShpInfo> geolist = new ArrayList<ShpInfo>();
+        try {
+            shpDataStore = new ShapefileDataStore(file.toURI().toURL());
+            shpDataStore.setCharset(Charset.forName("GBK"));
+            // 获取这个数据存储保存的类型名称数组
+            // getTypeNames:获取所有地理图层
+            String typeName = shpDataStore.getTypeNames()[0];
+
+            // 通过此接口可以引用单个shapefile、数据库表等。与数据存储进行比较和约束
+            FeatureSource<SimpleFeatureType, SimpleFeature> featureSource = null;
+            featureSource = (FeatureSource<SimpleFeatureType, SimpleFeature>) shpDataStore.getFeatureSource(typeName);
+
+            // 一个用于处理FeatureCollection的实用工具类。提供一个获取FeatureCollection实例的机制
+            FeatureCollection<SimpleFeatureType, SimpleFeature> result = featureSource.getFeatures();
+            FeatureIterator<SimpleFeature> iterator = result.features();
+            FeatureJSON fjson = new FeatureJSON();
+            while (iterator.hasNext()) {
+                SimpleFeature feature = iterator.next();
+                StringWriter writer = new StringWriter();
+                fjson.writeFeature(feature, writer);
+                // 构建实体
+                ShpInfo shpInfo = JSONObject.parseObject(writer.toString(), ShpInfo.class);
+
+                //单独封装geometryJson
+                shpInfo.setGeometryJson(JSONObject.toJSONString(shpInfo.getGeometry()));
+
+                geolist.add(shpInfo);
+
+            } // end 最外层 while
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return geolist;
+    }
+
+    @Override
+    public void publishShpData2DB(List<ShpInfo> shpInfoList, metadata metadata) {
+        String shpTableName = metadata.getLayerName();
+        int shpTabExist = filePublishDao.checkIfTablePShpExist(shpTableName);
+
+        if (shpTabExist == 0) {  //表不存在创建shp表
+            filePublishDao.createShpTable(metadata);
+        }
+        // 分页迭代List集合, 使用mybatis批量每1000条记录插入
+        int totalcount = shpInfoList.size();
+        int pagecount = 0;
+        int pagesize = 1000;
+
+        int m = totalcount % pagesize;
+        if (m > 0) {
+            pagecount = totalcount / pagesize + 1;
+        } else {
+            pagecount = totalcount / pagesize;
+        }
+        for (int i = 1; i <= pagecount; i++) {
+            if (m == 0) {
+                List<ShpInfo> subList = shpInfoList.subList((i - 1) * pagesize, pagesize * (i));
+                metadata.setShpInfoList(subList);
+                //插入shp数据到表
+                filePublishDao.insertTableShpData(metadata);
+            } else {
+                if (i == pagecount) {
+                    List<ShpInfo> subList = shpInfoList.subList((i - 1) * pagesize, totalcount);
+                    metadata.setShpInfoList(subList);
+                    //插入shp数据到表
+                    filePublishDao.insertTableShpData(metadata);
+                } else {
+                    List<ShpInfo> subList = shpInfoList.subList((i - 1) * pagesize, pagesize * (i));
+                    metadata.setShpInfoList(subList);
+                    //插入shp数据到表
+                    filePublishDao.insertTableShpData(metadata);
+                }
+            }
+        }
+
+        int layerPropertieseExist = filePublishDao.checkIfTableLayerPropertieseExist("LAYER_PROPERTIES");
+        if (layerPropertieseExist == 0) {  //表不存在创建LAYER_PROPERTIES表
+            filePublishDao.createLayerPropertieseTable("LAYER_PROPERTIES");
+        }
+        // 插入发布属性信息
+        filePublishDao.insertLayerPropertieseTableData(metadata);
+    }
+
 
     /**
      * 上传文件
      *
      * @param file     文件
-     * @param filePath 路劲路劲
+     * @param filePath 上传的目标路径
      * @return
      */
     private Result uploadFile(MultipartFile file, String filePath) {
         if (file.isEmpty()) {
             return ResultUtil.error(ResultCode.UPLOAD_FILE_NULL);
         }
+
         HashMap<String, Object> map = Maps.newHashMap();
-        InputStream is = null;
-        OutputStream os = null;
         try {
             String filename = file.getOriginalFilename();
+
             map.put("filename", filename);
 
             File targetFile = new File(filePath + File.separator + filename);
@@ -140,32 +261,15 @@ public class FileServiceImpl implements FileService {
             if (!targetFile.getParentFile().exists()) {
                 targetFile.getParentFile().mkdirs();
             }
-            //输入流读取文件
-            is = file.getInputStream();
-            //输出流读取文件
-            os = new FileOutputStream(targetFile);
+            // 将上传文件保存到目标文件目录
+            file.transferTo(targetFile);
 
-            byte buffer[] = new byte[4096];
-            int len = 0;
-            while ((len = is.read(buffer)) > 0) {
-                os.write(buffer, 0, len);
-            }
             map.put("filePath", targetFile.getAbsolutePath());
             return ResultUtil.success(map);
+
         } catch (IOException e) {
             e.printStackTrace();
             return ResultUtil.error(ResultCode.UPLOAD_FAIL);
-        } finally {
-            try {
-                is.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                os.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 

@@ -4,13 +4,13 @@ import cc.wanshan.gis.common.constants.Constant;
 import cc.wanshan.gis.common.enums.ResultCode;
 import cc.wanshan.gis.dao.search.SearchDao;
 import cc.wanshan.gis.entity.Result;
-import cc.wanshan.gis.entity.area.City;
-import cc.wanshan.gis.entity.area.Country;
-import cc.wanshan.gis.entity.area.Province;
-import cc.wanshan.gis.entity.area.Town;
+import cc.wanshan.gis.entity.search.City;
+import cc.wanshan.gis.entity.search.Country;
 import cc.wanshan.gis.entity.search.Poi;
-import cc.wanshan.gis.entity.search.RegionInput;
+import cc.wanshan.gis.entity.search.Province;
 import cc.wanshan.gis.entity.search.RegionOutput;
+import cc.wanshan.gis.entity.search.Suggest;
+import cc.wanshan.gis.entity.search.Town;
 import cc.wanshan.gis.mapper.search.CityMapper;
 import cc.wanshan.gis.mapper.search.CountryMapper;
 import cc.wanshan.gis.mapper.search.ProvinceMapper;
@@ -33,11 +33,12 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class SearchServiceImpl implements SearchService {
 
-    private static Logger LOG = LoggerFactory.getLogger(SearchServiceImpl.class);
+    private Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     private List<Country> countryList;
     private List<Province> provinceList;
@@ -200,7 +201,7 @@ public class SearchServiceImpl implements SearchService {
         double level = jsonObject.getDouble(Constant.SEARCH_LEVEL);
         String rectangle = jsonObject.getString(Constant.SEARCH_RECTANGLE);
 
-        List<RegionInput> regionInputList = Lists.newArrayList();
+        List<String> regionList = Lists.newArrayList();
 
         //根据关键字查询行政区数据
         List<RegionOutput> regionByKeyword = elasticsearchService.findRegionByKeyword(keyword);
@@ -226,15 +227,13 @@ public class SearchServiceImpl implements SearchService {
                 for (City city : cityList) {
                     Geometry geometry = GeoToolsUtils.geoJson2Geometry(city.getEnvelope());
                     if (polygon.intersects(geometry)) {
-                        //es入参
-                        RegionInput regionInput = RegionInput.builder().name(city.getName()).centroid(city.getCentroid()).build();
-                        regionInputList.add(regionInput);
+                        regionList.add(city.getName());
                     }
                 }
-                if (regionInputList != null) {
+                if (regionList != null) {
                     //从es查询市区的聚合数据
-                    List<RegionOutput> cityByKeyword = elasticsearchService.findCityByKeyword(keyword, regionInputList);
-                    if (regionInputList != null) {
+                    List<RegionOutput> cityByKeyword = elasticsearchService.findCityByKeyword(keyword, regionList);
+                    if (cityByKeyword != null) {
                         regionOutputList.addAll(cityByKeyword);
                     }
                 }
@@ -242,34 +241,32 @@ public class SearchServiceImpl implements SearchService {
                 for (Town town : townList) {
                     Geometry geometry = GeoToolsUtils.geoJson2Geometry(town.getEnvelope());
                     if (polygon.intersects(geometry)) {
-                        //es入参
-                        RegionInput regionInput = RegionInput.builder().name(town.getName()).centroid(town.getCentroid()).build();
-                        regionInputList.add(regionInput);
+                        regionList.add(town.getName());
                     }
                 }
-                if (regionInputList != null) {
+                if (regionList != null) {
                     //从es查询区县份的聚合数据
-                    List<RegionOutput> regionOutputs = elasticsearchService.findTownByKeyword(keyword, regionInputList);
-                    if (regionOutputs != null) {
-                        for (RegionOutput regionOutput : regionOutputs) {
-                            List<Poi> poiList = regionOutput.getPoiList();
-                            //判断点是否在包围形中
-                            List<Poi> pois = Lists.newArrayList();
-                            for (Poi poi : poiList) {
-                                Geometry geometry = GeoToolsUtils.geoJson2Geometry(poi.getGeometry());
-                                if (polygon.contains(geometry)) {
-                                    pois.add(poi);
-                                }
+                    RegionOutput regionOutput = elasticsearchService.findTownByKeyword(keyword, regionList);
+                    if (regionOutput != null) {
+                        List<Poi> poiList = regionOutput.getPoiList();
+                        //判断点是否在包围形中
+                        List<Poi> pois = Lists.newArrayList();
+                        for (Poi poi : poiList) {
+                            Geometry geometry = GeoToolsUtils.geoJson2Geometry(poi.getGeometry());
+                            if (polygon.contains(geometry)) {
+                                pois.add(poi);
                             }
-                            if (pois != null && !pois.isEmpty()) {
-                                regionOutput.setPoiList(null);
-                                regionOutput.setPoiList(pois);
-                                regionOutputList.add(regionOutput);
-                            }
+                        }
+                        if (pois != null && !pois.isEmpty()) {
+                            regionOutput.setPoiList(null);
+                            regionOutput.setPoiList(pois);
+                            regionOutput.setCount(Long.parseLong(String.valueOf(pois.size())));
+                            regionOutputList.add(regionOutput);
                         }
                     }
                 }
             }
+
             if (regionOutputList == null) {
                 return ResultUtil.error(ResultCode.FIND_NULL);
             } else {
@@ -278,6 +275,20 @@ public class SearchServiceImpl implements SearchService {
         } catch (IOException e) {
             e.printStackTrace();
             return ResultUtil.error(ResultCode.GEOMETRY_TRANSFORM_FAIL);
+        }
+    }
+
+    @Override
+    public Result getSuggestSearch(String keyword) {
+
+        Set<String> suggestSet = elasticsearchService.getSuggestSearch(keyword);
+
+        Suggest suggest = Suggest.builder().type(Constant.SEARCH_SUGGEST).suggestSet(suggestSet).build();
+
+        if (suggestSet == null) {
+            return ResultUtil.error(ResultCode.FIND_NULL);
+        } else {
+            return ResultUtil.success(suggest);
         }
     }
 
@@ -317,8 +328,10 @@ public class SearchServiceImpl implements SearchService {
             townMapper.updateByPrimaryKeySelective(town);
         }*/
 
-        List<String> list = elasticsearchService.getSuggestSearch("长安");
-        return ResultUtil.success(list);
+//        List<String> list = elasticsearchService.getSuggestSearch("西安");
+
+
+        return ResultUtil.success();
     }
 
 }

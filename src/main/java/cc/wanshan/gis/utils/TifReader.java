@@ -59,7 +59,7 @@ public class TifReader {
      * @param sourceTiffPath tif文件路劲
      * @return
      */
-    private static Map<String, Object> getGeoTiffInfo(String sourceTiffPath) {
+    private static Map<String, Object> getGeoTiffInfo(String sourceTiffPath){
         HashMap<String, Object> map = Maps.newHashMap();
         File sourceTiff = new File(sourceTiffPath);
         try {

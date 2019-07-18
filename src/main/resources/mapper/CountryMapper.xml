@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.wanshan.gis.mapper.search.CountryMapper">
-    <resultMap id="BaseResultMap" type="cc.wanshan.gis.entity.area.Country">
+    <resultMap id="BaseResultMap" type="cc.wanshan.gis.entity.search.Country">
         <id column="gid" jdbcType="INTEGER" property="gid"/>
         <result column="name" jdbcType="VARCHAR" property="name"/>
         <result column="geom" jdbcType="OTHER" property="geom"/>
@@ -27,7 +27,7 @@
     delete from country
     where gid = #{gid,jdbcType=INTEGER}
   </delete>
-    <insert id="insert" parameterType="cc.wanshan.gis.entity.area.Country">
+    <insert id="insert" parameterType="cc.wanshan.gis.entity.search.Country">
     insert into country (gid, name, geom, 
       centroid, min_x, min_y,
       max_x, max_y, remarks, 
@@ -37,7 +37,7 @@
       #{maxX,jdbcType=VARCHAR}, #{maxY,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR}, 
       #{envelope,jdbcType=VARCHAR}, #{rectangle,jdbcType=VARCHAR})
   </insert>
-    <insert id="insertSelective" parameterType="cc.wanshan.gis.entity.area.Country">
+    <insert id="insertSelective" parameterType="cc.wanshan.gis.entity.search.Country">
         insert into country
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="gid != null">
@@ -110,7 +110,7 @@
             </if>
         </trim>
     </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="cc.wanshan.gis.entity.area.Country">
+    <update id="updateByPrimaryKeySelective" parameterType="cc.wanshan.gis.entity.search.Country">
         update country
         <set>
             <if test="name != null">
@@ -146,7 +146,7 @@
         </set>
         where gid = #{gid,jdbcType=INTEGER}
     </update>
-    <update id="updateByPrimaryKey" parameterType="cc.wanshan.gis.entity.area.Country">
+    <update id="updateByPrimaryKey" parameterType="cc.wanshan.gis.entity.search.Country">
     update country
     set name = #{name,jdbcType=VARCHAR},
       geom = #{geom,jdbcType=OTHER},

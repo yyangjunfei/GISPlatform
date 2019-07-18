@@ -7,26 +7,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-
-/***
- *@program: Elasticsearch
- *@description: es增删查改
- *@author: Yang
- *@create: 2019-05-31 13:35
- */
+import org.springframework.web.bind.annotation.*;
 
 @Api(value = "ESCrudController", tags = "ES搜索接口")
 @RestController
 @RequestMapping("/rest/search/es")
 public class ESCrudController {
 
-    private static Logger LOG = LoggerFactory.getLogger(ESCrudController.class);
+    private Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private ElasticsearchService elasticsearchService;
@@ -55,6 +43,7 @@ public class ESCrudController {
     @ApiOperation(value = "导入postGis数据到ES", notes = "导入postGis数据到ES")
     @GetMapping("postGisDb2es")
     public ResponseEntity postGisDb2es(@RequestParam(value = "dbURL") String dbURL, @RequestParam(value = "dbUserName") String dbUserName, @RequestParam(value = "dbPassword") String dbPassword, @RequestParam(value = "driverClassName") String driverClassName, @RequestParam(value = "sql") String sql, @RequestParam(value = "esindexName") String esindexName, @RequestParam(value = "esTypeName") String esTypeName) {
+
 
         return elasticsearchService.postGisDb2es(dbURL, dbUserName, dbPassword, driverClassName, sql, esindexName, esTypeName);
     }

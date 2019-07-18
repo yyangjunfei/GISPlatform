@@ -1,12 +1,12 @@
-package cc.wanshan.gis.entity.area;
+package cc.wanshan.gis.entity.search;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-@ApiModel(value = "行政区--县", description = "town")
-public class Town {
+@ApiModel(value = "行政区--国家", description = "country")
+public class Country {
 
     @ApiModelProperty(value = "自增主键")
     private int gid;
@@ -43,4 +43,5 @@ public class Town {
 
     @ApiModelProperty(value = "备注")
     private String remarks;
+
 }

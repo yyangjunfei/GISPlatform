@@ -68,7 +68,7 @@
         <commons-validator.version>1.6</commons-validator.version>
         <commons-codec.version>1.12</commons-codec.version>
         <commons-httpclient.version>3.1</commons-httpclient.version>
-        <joda-time.version>2.10.1</joda-time.version>
+        <joda-time.version>2.10.2</joda-time.version>
         <jdom2.version>2.0.6</jdom2.version>
         <cors-filter.version>2.6</cors-filter.version>
         <thumbnailator.version>0.4.8</thumbnailator.version>
@@ -80,8 +80,8 @@
         <geoip2.version>2.12.0</geoip2.version>
         <log4j.version>2.11.2</log4j.version>
         <dom4j.version>2.1.1</dom4j.version>
-        <oauth2.version>2.3.4.RELEASE</oauth2.version>
-        <druid.version>1.1.12</druid.version>
+        <java-jwt.version>3.8.1</java-jwt.version>
+        <jjwt.version>0.9.1</jjwt.version>
     </properties>
     <dependencies>
         <!--springboot相关依赖-->
@@ -150,6 +150,16 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.belerweb</groupId>
+            <artifactId>pinyin4j</artifactId>
+            <version>2.5.0</version>
         </dependency>
 
         <!--Geotools相关依赖-->
@@ -512,6 +522,30 @@
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
             <version>${log4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vaadin.external.google</groupId>
+            <artifactId>android-json</artifactId>
+            <version>0.0.20131108.vaadin1</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>${java-jwt.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>${jjwt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
         </dependency>
 
     </dependencies>

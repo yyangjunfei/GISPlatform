@@ -4,8 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vividsolutions.jts.io.WKTReader;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.util.unit.DataSize;
+
+import javax.servlet.MultipartConfigElement;
 
 /**
  * @author Administrator
@@ -14,9 +18,7 @@ import org.springframework.context.annotation.Bean;
 public class GISPlatformApplication extends SpringBootServletInitializer {
 
     @Bean
-    public WKTReader wktReader() {
-        return new WKTReader();
-    }
+    public WKTReader wktReader() {return new WKTReader();}
 
     @Bean
     public ObjectMapper objectMapper() {

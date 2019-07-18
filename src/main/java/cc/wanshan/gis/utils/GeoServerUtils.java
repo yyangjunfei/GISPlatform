@@ -1,19 +1,24 @@
 package cc.wanshan.gis.utils;
+<<<<<<< HEAD
 
 import cc.wanshan.gis.entity.geoserver.GeoServer;
+=======
+import cc.wanshan.gis.entity.GeoServer;
+>>>>>>> develop
 import it.geosolutions.geoserver.rest.GeoServerRESTManager;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
 import it.geosolutions.geoserver.rest.GeoServerRESTReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 @Component
+@ComponentScan("cc.wanshan.gis.entity")
 public class GeoServerUtils {
     private static final Logger LOG = LoggerFactory.getLogger(GeoServerUtils.class);
 
@@ -29,6 +34,7 @@ public class GeoServerUtils {
     public static GeoServerRESTReader reader;
     public static GeoServerRESTPublisher publisher;
 
+
     /**
      * 初始化，发布时进行身份认证
      */
@@ -39,6 +45,7 @@ public class GeoServerUtils {
             manager = new GeoServerRESTManager(url, geoServer.getUsername(), geoServer.getPasswd());
             reader = manager.getReader();
             publisher = manager.getPublisher();
+
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }

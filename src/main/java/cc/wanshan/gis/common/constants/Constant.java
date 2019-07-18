@@ -90,6 +90,10 @@ public class Constant {
      */
     public static final String SEARCH_EXACT_POI = "4";
     /**
+     * 搜索类型-联想-Suggest
+     */
+    public static final String SEARCH_SUGGEST = "5";
+    /**
      * 搜索类型-通用查询
      */
     public static final String SEARCH_COMMON = "2";
@@ -120,11 +124,19 @@ public class Constant {
     /**
      * ES搜索查询数量
      */
-    public static int SEARCH_POI_SIZE = 128;
+    public static int SEARCH_POI_SIZE = 64;
     /**
      * ES搜索查询数量
      */
     public static int CHINA_CITY_SIZE = 334;
+    /**
+     * JWT生命周期
+     */
+    public static final long JWT_TTL = 60 * 60 * 1000;
+    /**
+     * 密钥
+     */
+    public static final String JWT_SECRET = "miyao";
 
 
 }
