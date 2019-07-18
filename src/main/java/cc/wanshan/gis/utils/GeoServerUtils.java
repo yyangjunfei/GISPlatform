@@ -1,10 +1,6 @@
 package cc.wanshan.gis.utils;
-<<<<<<< HEAD
 
 import cc.wanshan.gis.entity.geoserver.GeoServer;
-=======
-import cc.wanshan.gis.entity.GeoServer;
->>>>>>> develop
 import it.geosolutions.geoserver.rest.GeoServerRESTManager;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
 import it.geosolutions.geoserver.rest.GeoServerRESTReader;
