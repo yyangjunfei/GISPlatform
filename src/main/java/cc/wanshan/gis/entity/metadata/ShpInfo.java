@@ -1,15 +1,18 @@
 package cc.wanshan.gis.entity.metadata;
 
+import lombok.Builder;
 import lombok.Data;
 
-@Data
-public class ShpInfo {
+import java.io.Serializable;
 
-    private int gid;
-    private String osm_id;
-    private String fclass;
-    private int code;
-    private String name;
+@Data
+@Builder
+public class ShpInfo implements Serializable {
+    private Geometry geometry;
+    private String id;
     private String type;
-    private Object geom;
+    private Properties properties;
+
+    //方便数据库操作
+    private String geometryJson;
 }

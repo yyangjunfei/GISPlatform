@@ -1,6 +1,6 @@
 package cc.wanshan.gis.service.thematic.impl;
 
-import cc.wanshan.gis.dao.ThematicDao;
+import cc.wanshan.gis.dao.layer.ThematicDao;
 import cc.wanshan.gis.dao.createschema.CreateSchemaDao;
 import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.entity.thematic.Thematic;

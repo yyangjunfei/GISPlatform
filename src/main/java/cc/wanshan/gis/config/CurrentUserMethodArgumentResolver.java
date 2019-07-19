@@ -1,7 +1,7 @@
 package cc.wanshan.gis.config;
 
 import cc.wanshan.gis.common.annotation.CurrentUser;
-import cc.wanshan.gis.entity.usermanagement.User;
+import cc.wanshan.gis.entity.security.User;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;

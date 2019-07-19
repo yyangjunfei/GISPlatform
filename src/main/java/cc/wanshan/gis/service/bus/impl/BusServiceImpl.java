@@ -1,7 +1,7 @@
 package cc.wanshan.gis.service.bus.impl;
 
-import cc.wanshan.gis.dao.NanJingLines2Dao;
-import cc.wanshan.gis.dao.NanJingStationsDao;
+import cc.wanshan.gis.dao.bus.NanJingLines2Dao;
+import cc.wanshan.gis.dao.bus.NanJingStationsDao;
 import cc.wanshan.gis.entity.bus.NanJingLines2;
 import cc.wanshan.gis.entity.bus.NanJingStations;
 import cc.wanshan.gis.service.bus.BusService;

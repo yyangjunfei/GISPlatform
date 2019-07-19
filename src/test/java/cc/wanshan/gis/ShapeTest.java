@@ -1,7 +1,7 @@
 package cc.wanshan.gis;
 
 import cc.wanshan.gis.entity.drawlayer.Layer;
-import cc.wanshan.gis.service.layer.LayerService;
+import cc.wanshan.gis.service.thematic.LayerService;
 import cc.wanshan.gis.service.export.ExportService;
 import java.io.IOException;
 import javax.annotation.Resource;

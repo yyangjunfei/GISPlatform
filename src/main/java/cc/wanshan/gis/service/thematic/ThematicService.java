@@ -9,19 +9,16 @@ import cc.wanshan.gis.entity.thematic.Thematic;
 
 public interface ThematicService {
 
-    /**
-     * description: 新增thematic
-     *
-     * @param thematic
-     * @return
-     */
-    public Boolean insertThematic(Thematic thematic);
+  /**
+   * description: 新增thematic
+   */
+  Boolean insertThematic(Thematic thematic);
 
-    /**
-     * description: 根据专题id 查询专题图层信息
-     *
-     * @param thematicId 专题id
-     * @return java.util.List<cc.wanshan.gis.entity.drawlayer.Layer>
-     **/
-    public Thematic findByThematicId(String thematicId);
+  /**
+   * description: 根据专题id 查询专题图层信息
+   *
+   * @param thematicId 专题id
+   * @return java.util.List<cc.wanshan.gis.entity.drawlayer.Layer>
+   **/
+  Thematic findByThematicId(String thematicId);
 }

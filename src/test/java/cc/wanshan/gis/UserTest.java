@@ -1,14 +1,13 @@
 package cc.wanshan.gis;
 
-import cc.wanshan.gis.dao.RoleDao;
+import cc.wanshan.gis.dao.security.RoleDao;
 import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.entity.thematic.Thematic;
 import cc.wanshan.gis.entity.thematic.ThematicUser;
-import cc.wanshan.gis.entity.usermanagement.Role;
-import cc.wanshan.gis.entity.usermanagement.User;
-import cc.wanshan.gis.service.thematic.ThematicService;
-import cc.wanshan.gis.service.thematicuser.ThematicUserService;
-import cc.wanshan.gis.service.user.UserService;
+import cc.wanshan.gis.entity.security.Role;
+import cc.wanshan.gis.entity.security.User;
+import cc.wanshan.gis.service.thematic.ThematicUserService;
+import cc.wanshan.gis.service.security.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;

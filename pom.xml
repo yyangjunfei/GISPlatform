@@ -12,10 +12,8 @@
     <artifactId>GISPlatform</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
-
     <name>GISPlatform</name>
     <description>GIS project for Spring Boot</description>
-
     <repositories>
         <repository>
             <id>nexus-ALiYun</id>
@@ -40,7 +38,6 @@
             <url>http://maven.geo-solutions.it/</url>
         </repository>
     </repositories>
-
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -85,9 +82,7 @@
         <dom4j.version>2.1.1</dom4j.version>
         <java-jwt.version>3.8.1</java-jwt.version>
         <jjwt.version>0.9.1</jjwt.version>
-
     </properties>
-
     <dependencies>
         <!--springboot相关依赖-->
         <dependency>
@@ -151,7 +146,13 @@
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
 
-        <!--GeoTools相关依赖-->
+        <dependency>
+            <groupId>com.belerweb</groupId>
+            <artifactId>pinyin4j</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+
+        <!--Geotools相关依赖-->
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-shapefile</artifactId>
@@ -512,6 +513,11 @@
             <artifactId>log4j-core</artifactId>
             <version>${log4j.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.vaadin.external.google</groupId>
+            <artifactId>android-json</artifactId>
+            <version>0.0.20131108.vaadin1</version>
+        </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->
         <dependency>
@@ -524,6 +530,12 @@
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
             <version>${jjwt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
         </dependency>
 
     </dependencies>

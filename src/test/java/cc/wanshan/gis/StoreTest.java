@@ -1,9 +1,9 @@
 package cc.wanshan.gis;
 
-import cc.wanshan.gis.dao.StoreDao;
+import cc.wanshan.gis.dao.geoserver.StoreDao;
 import cc.wanshan.gis.entity.drawlayer.Store;
-import cc.wanshan.gis.entity.usermanagement.User;
-import cc.wanshan.gis.service.store.StoreService;
+import cc.wanshan.gis.entity.security.User;
+import cc.wanshan.gis.service.geoserver.StoreService;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;

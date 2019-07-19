@@ -2,8 +2,6 @@ package cc.wanshan.gis.entity.provider;
 
 import cc.wanshan.gis.entity.drawlayer.Layer;
 import cc.wanshan.gis.entity.drawlayer.LineString;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +30,7 @@ public class LineStringDaoProvider {
     logger.info("insertAll::map = [{}]", map);
     List<LineString> list = (List<LineString>) map.get("list");
     StringBuilder stringBuilder = new StringBuilder();
-    stringBuilder.append("INSERT INTO tb_linestring ");
+    stringBuilder.append("INSERT INTO linestring ");
     stringBuilder.append("(feature_name,"
         + "layer_id,"
         + "feature_class,"
@@ -68,7 +66,7 @@ public class LineStringDaoProvider {
     logger.info("updateAll::map = [{}]", map);
     List<LineString> list = (List<LineString>) map.get("list");
     StringBuilder stringBuilder = new StringBuilder();
-    stringBuilder.append("INSERT INTO tb_linestring ");
+    stringBuilder.append("INSERT INTO linestring ");
     stringBuilder.append("(feature_id,"
         + "feature_name,"
         + "layer_id,"
@@ -121,7 +119,7 @@ public class LineStringDaoProvider {
       {
         SELECT(
             "p.feature_id,p.feature_name,p.feature_class,ST_AsGeoJSON(p.geom),p.insert_time,p.update_time,p.epsg,p.describe,p.fill_color,p.stroke_color,p.stroke_width,p.opacity ");
-        FROM("public.tb_linestring p");
+        FROM("public.linestring p");
         WHERE("1=1");
         if (StringUtils.isNotBlank(layerId)) {
           WHERE("p.layer_id=#{layerId}");
@@ -151,7 +149,7 @@ public class LineStringDaoProvider {
       {
         SELECT(
             "p.feature_id,p.feature_name,p.feature_class,ST_AsGeoJSON(p.geom),p.epsg,p.describe,p.fill_color,p.stroke_color,p.stroke_width,p.opacity ");
-        FROM("public.tb_linestring p");
+        FROM("public.linestring p");
         WHERE("1=1");
         if (StringUtils.isNotBlank(layerId)) {
           WHERE("p.layer_id=#{layerId}");
@@ -174,7 +172,7 @@ public class LineStringDaoProvider {
         layerId, featureId, featureName, featureClass);
     return new SQL() {
       {
-        DELETE_FROM("tb_linestring p");
+        DELETE_FROM("linestring p");
         if (StringUtils.isNotBlank(layerId)) {
           WHERE("p.layer_id=#{layerId}");
         }
@@ -201,7 +199,7 @@ public class LineStringDaoProvider {
     logger.info("deleteAll::map = [{}]", map);
     List<LineString> list = (List<LineString>) map.get("list");
     StringBuilder stringBuilder = new StringBuilder();
-    stringBuilder.append("DELETE FROM tb_linestring WHERE feature_id in (");
+    stringBuilder.append("DELETE FROM linestring WHERE feature_id in (");
     for (int i = 0; i < list.size(); i++) {
       stringBuilder.append("'").append(list.get(i).getFeatureId()).append("'");
       if (i < list.size() - 1) {
@@ -222,7 +220,7 @@ public class LineStringDaoProvider {
     logger.info("deleteAllByLayerId::map = [{}]",map);
     List<Layer> list = (List<Layer>) map.get("list");
     StringBuilder stringBuilder = new StringBuilder();
-    stringBuilder.append("DELETE FROM tb_LineString WHERE layer_id in (");
+    stringBuilder.append("DELETE FROM LineString WHERE layer_id in (");
     for (int i = 0; i < list.size(); i++) {
       stringBuilder.append("'").append(list.get(i).getLayerId()).append("'");
       if (i < list.size() - 1) {

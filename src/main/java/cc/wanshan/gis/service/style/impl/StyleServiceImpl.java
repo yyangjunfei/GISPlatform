@@ -1,12 +1,8 @@
 package cc.wanshan.gis.service.style.impl;
 
-import cc.wanshan.gis.dao.StyleDao;
+import cc.wanshan.gis.dao.style.StyleDao;
 import cc.wanshan.gis.entity.style.Style;
-import cc.wanshan.gis.entity.thematic.FirstClassification;
-import cc.wanshan.gis.entity.thematic.SecondClassification;
-import cc.wanshan.gis.entity.thematic.Thematic;
 import cc.wanshan.gis.service.style.StyleService;
-import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;

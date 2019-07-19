@@ -2,8 +2,6 @@ package cc.wanshan.gis.entity.provider;
 
 import cc.wanshan.gis.entity.drawlayer.Layer;
 import cc.wanshan.gis.entity.drawlayer.Point;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +32,7 @@ public class PointDaoProvider {
     logger.info("insertAll::map = [{}]", map);
     List<Point> list = (List<Point>) map.get("list");
     StringBuilder stringBuilder = new StringBuilder();
-    stringBuilder.append("INSERT INTO tb_point ");
+    stringBuilder.append("INSERT INTO point ");
     stringBuilder.append("(feature_name,"
         + "layer_id,"
         + "feature_class,"
@@ -70,7 +68,7 @@ public class PointDaoProvider {
     logger.info("updateAll::map = [{}]", map);
     List<Point> list = (List<Point>) map.get("list");
     StringBuilder stringBuilder = new StringBuilder();
-    stringBuilder.append("INSERT INTO tb_point ");
+    stringBuilder.append("INSERT INTO point ");
     stringBuilder.append("(feature_id,"
         + "feature_name,"
         + "layer_id,"
@@ -123,7 +121,7 @@ public class PointDaoProvider {
       {
         SELECT(
             "p.feature_id,p.feature_name,p.feature_class,ST_AsGeoJSON(p.geom),p.insert_time,p.update_time,p.epsg,p.describe,p.fill_color,p.stroke_color,p.stroke_width,p.opacity ");
-        FROM("public.tb_point p");
+        FROM("public.point p");
         WHERE("1=1");
         if (StringUtils.isNotBlank(layerId)) {
           WHERE("p.layer_id=#{layerId}");
@@ -154,7 +152,7 @@ public class PointDaoProvider {
       {
         SELECT(
             "p.feature_id,p.feature_name,p.feature_class,ST_AsGeoJSON(p.geom),p.epsg,p.describe,p.fill_color,p.stroke_color,p.stroke_width,p.opacity ");
-        FROM("public.tb_point p");
+        FROM("public.point p");
         WHERE("1=1");
         if (StringUtils.isNotBlank(layerId)) {
           WHERE("p.layer_id=#{layerId}");
@@ -177,7 +175,7 @@ public class PointDaoProvider {
         layerId, featureId, featureName, featureClass);
     return new SQL() {
       {
-        DELETE_FROM("tb_point p");
+        DELETE_FROM("point p");
         if (StringUtils.isNotBlank(layerId)) {
           WHERE("p.layer_id=#{layerId}");
         }
@@ -204,7 +202,7 @@ public class PointDaoProvider {
     logger.info("deleteAll::map = [{}]", map);
     List<Point> list = (List<Point>) map.get("list");
     StringBuilder stringBuilder = new StringBuilder();
-    stringBuilder.append("DELETE FROM tb_point WHERE feature_id in (");
+    stringBuilder.append("DELETE FROM point WHERE feature_id in (");
     for (int i = 0; i < list.size(); i++) {
       stringBuilder.append("'").append(list.get(i).getFeatureId()).append("'");
       if (i < list.size() - 1) {
@@ -225,7 +223,7 @@ public class PointDaoProvider {
     logger.info("deleteAllByLayerId::map = [{}]",map);
     List<Layer> list = (List<Layer>) map.get("list");
     StringBuilder stringBuilder = new StringBuilder();
-    stringBuilder.append("DELETE FROM tb_point WHERE layer_id in (");
+    stringBuilder.append("DELETE FROM point WHERE layer_id in (");
     for (int i = 0; i < list.size(); i++) {
       stringBuilder.append("'").append(list.get(i).getLayerId()).append("'");
       if (i < list.size() - 1) {
