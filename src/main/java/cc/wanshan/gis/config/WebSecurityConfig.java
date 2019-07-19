@@ -1,16 +1,19 @@
 package cc.wanshan.gis.config;
 import cc.wanshan.gis.common.security.AccessDecisionManagerImpl;
 import cc.wanshan.gis.common.security.MyAccessDeniedHandler;
-import cc.wanshan.gis.service.user.impl.UserServiceImpl;
+import cc.wanshan.gis.service.security.impl.UserServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -51,7 +54,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
     auth.userDetailsService(userServiceImpl).passwordEncoder(new BCryptPasswordEncoder());
   }
-
+  @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
+  @Override
+  public AuthenticationManager authenticationManagerBean() throws Exception {
+    return super.authenticationManagerBean();
+  }
   //在这里配置哪些页面不需要认证
   @Override
   public void configure(WebSecurity web) {
@@ -78,7 +85,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .authorizeRequests()//配置安全策略
         .antMatchers(HttpMethod.OPTIONS)
         .permitAll()
-        .antMatchers(HttpMethod.POST, "/user/login", "/**").permitAll().anyRequest().authenticated()
+        .antMatchers(HttpMethod.POST, "/security/login", "/**").permitAll().anyRequest().authenticated()
         .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
           @Override
           public <O extends FilterSecurityInterceptor> O postProcess(O o) {

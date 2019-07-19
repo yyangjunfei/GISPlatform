@@ -1,9 +1,9 @@
 package cc.wanshan.gis.common.security;
 
-import cc.wanshan.gis.entity.usermanagement.Authority;
-import cc.wanshan.gis.entity.usermanagement.Role;
-import cc.wanshan.gis.service.authority.AuthorityService;
-import cc.wanshan.gis.service.role.RoleService;
+import cc.wanshan.gis.entity.security.Authority;
+import cc.wanshan.gis.entity.security.Role;
+import cc.wanshan.gis.service.security.AuthorityService;
+import cc.wanshan.gis.service.security.RoleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.ConfigAttribute;

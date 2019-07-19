@@ -63,11 +63,11 @@ geoserver:
   postgisPort: 5432
   postgisUser: postgres
   postgisPassword: wanshan
-  postgisDatabase: test
+  postgisDatabase: dev
 
 # postgis数据库配置
 postgis:
-  url: jdbc:postgresql://192.168.1.133:5432/test
+  url: jdbc:postgresql://192.168.1.133:5432/dev
   user: postgres
   password: wanshan
   driver-class-name: org.postgresql.Driver

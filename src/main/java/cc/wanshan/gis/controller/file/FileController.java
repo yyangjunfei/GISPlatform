@@ -1,7 +1,7 @@
 package cc.wanshan.gis.controller.file;
 
 import cc.wanshan.gis.entity.drawlayer.Layer;
-import cc.wanshan.gis.service.layer.LayerService;
+import cc.wanshan.gis.service.thematic.LayerService;
 import cc.wanshan.gis.service.export.ExportService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;

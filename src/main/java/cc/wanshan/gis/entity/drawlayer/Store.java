@@ -1,7 +1,7 @@
 package cc.wanshan.gis.entity.drawlayer;
 
 
-import cc.wanshan.gis.entity.usermanagement.User;
+import cc.wanshan.gis.entity.security.User;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.hibernate.validator.constraints.Length;
@@ -94,7 +94,7 @@ public class Store implements Serializable {
         return "Store{" +
                 "storeId='" + storeId + '\'' +
                 ", storeName='" + storeName + '\'' +
-                ", user=" + user +
+                ", security=" + user +
                 ", insertTime=" + insertTime +
                 ", updateTime=" + updateTime +
                 ", layerList=" + layerList +

@@ -2,8 +2,8 @@
 package cc.wanshan.gis.controller.user;
 
 import cc.wanshan.gis.entity.Result;
-import cc.wanshan.gis.entity.usermanagement.Role;
-import cc.wanshan.gis.service.role.RoleService;
+import cc.wanshan.gis.entity.security.Role;
+import cc.wanshan.gis.service.security.RoleService;
 import cc.wanshan.gis.utils.ResultUtil;
 import com.alibaba.fastjson.JSONObject;
 import io.micrometer.core.instrument.util.StringUtils;

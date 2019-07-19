@@ -4,12 +4,12 @@ import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.entity.drawlayer.Store;
 import cc.wanshan.gis.entity.thematic.Thematic;
 import cc.wanshan.gis.entity.thematic.ThematicUser;
-import cc.wanshan.gis.entity.usermanagement.Role;
-import cc.wanshan.gis.entity.usermanagement.User;
+import cc.wanshan.gis.entity.security.Role;
+import cc.wanshan.gis.entity.security.User;
 import cc.wanshan.gis.service.geoserver.GeoServerService;
-import cc.wanshan.gis.service.store.StoreService;
-import cc.wanshan.gis.service.thematicuser.ThematicUserService;
-import cc.wanshan.gis.service.user.UserService;
+import cc.wanshan.gis.service.geoserver.StoreService;
+import cc.wanshan.gis.service.thematic.ThematicUserService;
+import cc.wanshan.gis.service.security.UserService;
 import cc.wanshan.gis.utils.ResultUtil;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
@@ -53,7 +53,6 @@ public class UserController {
     private ThematicUserService thematicUserServiceImpl;
     @Resource(name = "storeServiceImpl")
     private StoreService storeServiceImpl;
-
     @RequestMapping("/findalluser")
     @ResponseBody
     public Result findAllUser() {
@@ -64,7 +63,6 @@ public class UserController {
             return ResultUtil.error(1, user.getMsg());
         }
     }
-
     @RequestMapping("/insertuser")
     @ResponseBody
     public Result insertUser(@RequestBody JSONObject jsonObject) {
@@ -293,7 +291,7 @@ public class UserController {
     @RequestMapping(value = "/finduser")
     @ResponseBody
     public Result findUser(HttpServletRequest request) {
-        logger.info("user::request = [{}]", request);
+        logger.info("security::request = [{}]", request);
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie : cookies) {
             String value = cookie.getValue();

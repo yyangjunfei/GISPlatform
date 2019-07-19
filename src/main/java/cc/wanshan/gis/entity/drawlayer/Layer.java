@@ -1,8 +1,5 @@
 package cc.wanshan.gis.entity.drawlayer;
-
-
 import cc.wanshan.gis.entity.style.RuleName;
-import cc.wanshan.gis.entity.style.Style;
 import cc.wanshan.gis.entity.thematic.Thematic;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

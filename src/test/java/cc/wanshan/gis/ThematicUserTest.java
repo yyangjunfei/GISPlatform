@@ -1,12 +1,9 @@
 package cc.wanshan.gis;
 
-import cc.wanshan.gis.entity.drawlayer.Layer;
 import cc.wanshan.gis.entity.thematic.Thematic;
 import cc.wanshan.gis.entity.thematic.ThematicUser;
-import cc.wanshan.gis.service.thematicuser.ThematicUserService;
-import com.alibaba.fastjson.JSON;
+import cc.wanshan.gis.service.thematic.ThematicUserService;
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;

@@ -10,5 +10,5 @@ import cc.wanshan.gis.entity.Result;
  * @return
  **/
 public interface CreateSchemaDao {
-    public Result createSchema(String schema);
+    Result createSchema(String schema);
 }
