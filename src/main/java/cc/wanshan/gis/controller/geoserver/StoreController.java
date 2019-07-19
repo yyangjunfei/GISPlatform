@@ -1,4 +1,4 @@
-package cc.wanshan.gis.controller.layer;
+package cc.wanshan.gis.controller.geoserver;
 
 import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.entity.drawlayer.Store;
