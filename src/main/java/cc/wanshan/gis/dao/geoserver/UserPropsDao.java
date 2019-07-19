@@ -3,17 +3,21 @@ package cc.wanshan.gis.dao.geoserver;
 import cc.wanshan.gis.entity.geoserver.UserProps;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.springframework.stereotype.Component;
 
 
 /**
  * @author Li Cheng
  * @date 2019/7/17 16:07
  */
+@Mapper
+@Component
 public interface UserPropsDao {
 
   @Select({
@@ -35,7 +39,7 @@ public interface UserPropsDao {
    * @param username 用户名
    * @return cc.wanshan.gis.dao.geoserver.UserPropsDao
    **/
-  UserPropsDao findUsersPropsByusername(String username);
+  UserProps findUsersPropsByUsername(String username);
   @Insert({
       "insert into "
           + "user_props "
@@ -84,7 +88,8 @@ public interface UserPropsDao {
       "delete from "
           + "user_props "
           + "where "
-          + "username=#{username}"
+          + "username=#{username} and "
+          + "propname=#{propName}"
   })
   /**
    * description:删除userProps
@@ -92,6 +97,6 @@ public interface UserPropsDao {
    * @param username
    * @return int
    */
-  int deleteUserProps(String username);
+  int deleteUserProps(String username, String propName);
 
 }

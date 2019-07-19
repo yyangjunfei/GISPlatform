@@ -1,5 +1,6 @@
 package cc.wanshan.gis.service.geoserver;
 
+import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.entity.geoserver.UserProps;
 
 /**
@@ -13,5 +14,29 @@ public interface UserPropsService {
    * @param username 用户名
    * @return cc.wanshan.gis.entity.geoserver.UserProps
    **/
-  UserProps findUserPropsByUsername(String username);
+  Result findUserPropsByUsername(String username);
+  /**
+   * description:新增userProps
+   *
+   * @param username 用户名
+   * @param propName 属性名
+   * @return java.lang.Integer
+   **/
+  Result saveUserProps(String username,String propName);
+  /**
+   * description: 更新userProps
+   *
+   * @param username
+   * @Param propName
+   * @return java.lang.Boolean
+   **/
+  Result updateUserProps(String username,String propName);
+  /**
+   * description: 删除UserProps
+   *
+   * @param username
+   * @param propName
+   * @return java.lang.Boolean
+   **/
+  Result deleteUserProps(String username,String propName);
 }
