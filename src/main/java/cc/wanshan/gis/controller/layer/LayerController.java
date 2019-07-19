@@ -36,14 +36,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
-@Api(value = "LayerController", tags = "二维标绘功能")
-@RestController
-@EnableTransactionManagement(proxyTargetClass = true)
-@RequestMapping("/layer")
+
 /**
  * @Author Li Cheng
  * @Date 14:28 2019/6/18
  **/
+@Api(value = "LayerController", tags = "二维标绘功能")
+@RestController
+@EnableTransactionManagement(proxyTargetClass = true)
+@RequestMapping("/layer")
 public class LayerController {
 
   private static final Logger logger = LoggerFactory.getLogger(LayerController.class);
