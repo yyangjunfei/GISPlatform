@@ -14,6 +14,12 @@ import java.util.List;
 @Component
 public interface UserDao {
 
+
+  /**
+   * description: 新增user
+   *
+   * @return int
+   */
   @Insert({
       "insert into " +
           "users (" +
@@ -46,15 +52,14 @@ public interface UserDao {
           ")"
   })
   @Options(useGeneratedKeys = true, keyColumn = "user_id", keyProperty = "userId")
-  /**
-   * description: 新增user
-   *
-   * @param security
-   * @return int
-   */
-
   int insertUser(User user);
 
+
+  /**
+   * description: 根据username查找user
+   *
+   * @return cc.wanshan.gisdev.entity.security.User
+   */
   @Select({
       "select " +
           "u.user_id," +
@@ -86,14 +91,14 @@ public interface UserDao {
       @Result(column = "email", property = "email"),
       @Result(column = "department", property = "department")
   })
-  /**
-   * description: 根据username查找user
-   *
-   * @param username
-   * @return cc.wanshan.gisdev.entity.security.User
-   */
   User findUserByUsername(String username);
 
+
+  /**
+   * description: 判断用户名是否存在
+   *
+   * @return int
+   */
   @Select({
       "select " +
           "count(*) " +
@@ -102,15 +107,14 @@ public interface UserDao {
           "where " +
           "name=#{username}"
   })
-  /**
-   * description: 判断用户名是否存在
-   *
-   * @param username
-   * @return int
-   */
   int findUserCountByUsername(String username);
 
 
+  /**
+   * description: 根据userId查找user
+   *
+   * @return cc.wanshan.gisdev.entity.security.User
+   */
   @Select({
       "select " +
           "u.user_id," +
@@ -143,15 +147,13 @@ public interface UserDao {
       @Result(column = "department", property = "department"),
       @Result(column = "user_id", property = "storeList", many = @Many(select = "cc.wanshan.demo.repository.StoreDao.findStoreByUserId", fetchType = FetchType.LAZY))
   })
-  /**
-   * description: 根据userId查找user
-   *
-   * @param userId
-   * @return cc.wanshan.gisdev.entity.security.User
-   */
   User findUserByUserId(String userId);
 
-
+  /**
+   * description: 根据roleId查找用户
+   *
+   * @return java.util.List<cc.wanshan.gisdev.entity.security.User>
+   */
   @Select({
       "select " +
           "u.user_id," +
@@ -181,14 +183,14 @@ public interface UserDao {
       @Result(column = "email", property = "email"),
       @Result(column = "department", property = "department")
   })
-  /**
-   * description: 根据roleId查找用户
-   *
-   * @param roleId
-   * @return java.util.List<cc.wanshan.gisdev.entity.security.User>
-   */
   List<User> findUsersByRoleId(String roleId);
 
+
+  /**
+   * description: 根据thematicId查找thematic
+   *
+   * @return java.util.List<cc.wanshan.gisdev.entity.security.User>
+   */
   @Select({
       "select " +
           "u.user_id," +
@@ -219,14 +221,14 @@ public interface UserDao {
       @Result(column = "email", property = "email"),
       @Result(column = "department", property = "department")
   })
-  /**
-   * description: 根据thematicId查找thematic
-   *
-   * @param thematicId
-   * @return java.util.List<cc.wanshan.gisdev.entity.security.User>
-   */
-  /*public List<User> findUsersByThematicId(String thematicId);*/
+  List<User> findUsersByThematicId(String thematicId);
 
+
+  /**
+   * description: 修改除密码以外的用户信息
+   *
+   * @return int
+   */
   @Update({
       "update " +
           "users " +
@@ -242,12 +244,6 @@ public interface UserDao {
           "status = 1 and " +
           "user_id=#{userId}"
   })
-  /**
-   * description: 修改除密码以外的用户信息
-   *
-   * @param security
-   * @return int
-   */
   int updateUser(User user);
 
   @Update({
@@ -270,6 +266,12 @@ public interface UserDao {
    */
   int updateUserPassword(User user);
 
+
+  /**
+   * description: 修改用户状态
+   *
+   * @return int
+   */
   @Update({
       "update " +
           "users " +
@@ -284,15 +286,14 @@ public interface UserDao {
           "status=0 and " +
           "user_id=#{userId}"
   })
-  /**
-   * description: 修改用户状态
-   *
-   * @param security
-   * @return int
-   */
   int updateUserStatus(User user);
 
 
+  /**
+   * description: 逻辑删除用户
+   *
+   * @return int
+   */
   @Update({
       "update " +
           "users " +
@@ -301,15 +302,14 @@ public interface UserDao {
           "where " +
           "user_id=#{userId}"
   })
-  /**
-   * description: 逻辑删除用户
-   *
-   * @param userId
-   * @return int
-   */
   int deleteUser(String userId);
 
 
+  /**
+   * description: 查找所有的用户
+   *
+   * @return java.util.List<cc.wanshan.gisdev.entity.security.User>
+   */
   @Select({
       "select " +
           "user_id," +
@@ -340,14 +340,14 @@ public interface UserDao {
       @Result(column = "email", property = "email"),
       @Result(column = "department", property = "department")
   })
-  /**
-   * description: 查找所有的用户
-   *
-   * @param
-   * @return java.util.List<cc.wanshan.gisdev.entity.security.User>
-   */
   List<User> findAllUser();
 
+
+  /**
+   * description: 查找所有的用户并根据role和user进行分组排序
+   *
+   * @return java.util.List<cc.wanshan.gisdev.entity.security.User>
+   */
   @MapKey("user_id")
   @Select({
       "select " +
@@ -387,11 +387,5 @@ public interface UserDao {
       @Result(column = "status", property = "status"),
       @Result(column = "role_name_zh", property = "role.roleNameZH"),
   })
-  /**
-   * description: 查找所有的用户并根据role和user进行分组排序
-   *
-   * @param
-   * @return java.util.List<cc.wanshan.gisdev.entity.security.User>
-   */
   List<User> findAllUserAndRole();
 }

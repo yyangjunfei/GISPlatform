@@ -15,6 +15,13 @@ import org.springframework.stereotype.Component;
 @Component
 public interface NanJingLines2Dao {
 
+
+  /**
+   * description: 根据起点坐标获得最近点公交路线索引
+   *
+   * @param sourcePoint 起点坐标
+   * @return int
+   **/
   @Select({
       "select nl.source from nanjing_lines2 nl order by nl.geom <-> st_geometryfromtext(#{sourcePoint},4326) limit 1"
   })
@@ -22,14 +29,15 @@ public interface NanJingLines2Dao {
       @Result(id = true, column = "gid", property = "gid"),
       @Result(column = "source", property = "source")
   })
-  /**
-   * description: 根据起点坐标获得最近点公交路线索引
-   *
-   * @param sourcePoint 起点坐标
-   * @return int
-   **/
   NanJingLines2 findSource(String sourcePoint);
 
+
+  /**
+   * description: 根据终点坐标获得最近点公交路线索引
+   *
+   * @param targetPoint
+   * @return int
+   **/
   @Select({
       "select nl.target from nanjing_lines2 nl order by nl.geom <-> st_geometryfromtext(#{targetPoint},4326) limit 1"
   })
@@ -37,12 +45,6 @@ public interface NanJingLines2Dao {
       @Result(id = true, column = "gid", property = "gid"),
       @Result(column = "target", property = "target")
   })
-  /**
-   * description: 根据终点坐标获得最近点公交路线索引
-   *
-   * @param targetPoint
-   * @return int
-   **/
   NanJingLines2 findTarget(String targetPoint);
 
 }

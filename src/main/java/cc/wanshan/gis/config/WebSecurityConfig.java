@@ -115,7 +115,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
               httpServletRequest, httpServletResponse, e);
           httpServletResponse.setContentType("application/json;charset=utf-8");
           PrintWriter out = httpServletResponse.getWriter();
-          StringBuffer sb = new StringBuffer();
+          StringBuilder sb = new StringBuilder();
           sb.append("{\"code\":1,\"msg\":");
           if (e instanceof UsernameNotFoundException || e instanceof BadCredentialsException) {
             sb.append("\"用户名或密码输入错误，登录失败!");

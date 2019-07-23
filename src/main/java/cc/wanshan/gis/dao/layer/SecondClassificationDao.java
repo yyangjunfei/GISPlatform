@@ -18,47 +18,51 @@ import org.springframework.stereotype.Component;
 @Mapper
 @Component
 public interface SecondClassificationDao {
-@Insert("insert into "
-    + "second_classification "
-    + "(second_classification_name,"
-    + "first_classification_id,"
-    + "describe,"
-    + "insert_time,"
-    + "update_time "
-    + ") values ("
-    + "#{secondClassificationName},"
-    + "#{firstClassification.firstClassificationId},"
-    + "#{describe},"
-    + "#{insertTime,jdbcType=TIMESTAMP},"
-    + "#{updateTime,jdbcType=TIMESTAMP}"
-    + ")"
-)
- /**
-  * description: 新增第二分类记录数
-  *
-  * @param secondClassification 第二分类
-  * @return int
-  **/
-   int insertSecondClassification(SecondClassification secondClassification);
-  @Select({"select * from "
+
+
+  /**
+   * description: 新增第二分类记录数
+   *
+   * @param secondClassification 第二分类
+   * @return int
+   **/
+  @Insert("insert into "
       + "second_classification "
-      + "where "
-      + "first_classification_id=#{firstClassification.firstClassificationId}"
-  })
-  @Results({
-      @Result(id = true,column = "second_classification_id",property = "secondClassificationId"),
-      @Result(column = "second_classification_name",property = "secondClassificationName"),
-      @Result(column = "first_classification_Id",property = "firstClassification.firstClassificationId"),
-      @Result(column = "insert_time",property = "insertTime"),
-      @Result(column = "update_time",property = "updateTime"),
-      @Result(column = "describe",property = "describe"),
-      @Result(column = "second_classification_id",property = "layer",many = @Many(select = "cc.wanshan.gis.dao.layer.LayerDao.findLayerBySecondClassId",fetchType = FetchType.LAZY)),
-  })
+      + "(second_classification_name,"
+      + "first_classification_id,"
+      + "describe,"
+      + "insert_time,"
+      + "update_time "
+      + ") values ("
+      + "#{secondClassificationName},"
+      + "#{firstClassification.firstClassificationId},"
+      + "#{describe},"
+      + "#{insertTime,jdbcType=TIMESTAMP},"
+      + "#{updateTime,jdbcType=TIMESTAMP}"
+      + ")"
+  )
+  int insertSecondClassification(SecondClassification secondClassification);
+
+
   /**
    * description: 查询第二分类
    *
    * @param firstClassificationId 第一分类id
    * @return java.util.List<cc.wanshan.gis.entity.thematic.SecondClassification>
    **/
-   List<SecondClassification> findByFirstClassificationId(String firstClassificationId);
+  @Select({"select * from "
+      + "second_classification "
+      + "where "
+      + "first_classification_id=#{firstClassification.firstClassificationId}"
+  })
+  @Results({
+      @Result(id = true, column = "second_classification_id", property = "secondClassificationId"),
+      @Result(column = "second_classification_name", property = "secondClassificationName"),
+      @Result(column = "first_classification_Id", property = "firstClassification.firstClassificationId"),
+      @Result(column = "insert_time", property = "insertTime"),
+      @Result(column = "update_time", property = "updateTime"),
+      @Result(column = "describe", property = "describe"),
+      @Result(column = "second_classification_id", property = "layer", many = @Many(select = "cc.wanshan.gis.dao.layer.LayerDao.findLayerBySecondClassId", fetchType = FetchType.LAZY)),
+  })
+  List<SecondClassification> findByFirstClassificationId(String firstClassificationId);
 }

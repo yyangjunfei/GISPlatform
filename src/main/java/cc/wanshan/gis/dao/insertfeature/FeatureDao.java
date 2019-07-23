@@ -21,12 +21,12 @@ public interface FeatureDao {
      * @Param [layer 图层实体类] 图层实体类
      * @return java.lang.Boolean
      **/
-    public Result insertFeatures(List<Feature> features, String tableName, String schema);
+    Result insertFeatures(List<Feature> features, String tableName, String schema);
     /**
      * description: 根据图层id查询相关元素
      *
      * @param layerId 图层Id
      * @return java.util.List<cc.wanshan.gis.entity.drawlayer.Feature>
      **/
-    public List<Feature> findFeatureByLayerId(String layerId);
+    List<Feature> findFeatureByLayerId(String layerId);
 }
