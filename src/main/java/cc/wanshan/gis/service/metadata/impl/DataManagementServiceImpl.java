@@ -112,9 +112,9 @@ public class DataManagementServiceImpl implements DataManagementService {
     }
 
     @Override
-    public Result changePublicationStatus(int id) {
+    public Result changePublicationStatus(int release_flag,int id) {
 
-        int i =dataManagementDao.changePublicationStatus(id);
+        int i =dataManagementDao.changePublicationStatus(release_flag,id);
         if(i>0){
             return  ResultUtil.success("更改发布状态成功");
         }else {
