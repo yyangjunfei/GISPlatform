@@ -16,6 +16,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.util.List;
 
+/***
+ * @author ：Yang
+ * @date ：2019-7-23
+ */
+
 @Api(value = "StyleController", tags = "风格文件接口")
 @Controller
 @ResponseBody
@@ -28,20 +33,27 @@ public class StyleController {
     private StyleService styleService;
 
     //创建风格样式
-    @ApiOperation(value = "创建风格样式",httpMethod = "POST",notes = "创建风格样式")
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public Result createStyle(@RequestParam MultipartFile styleFile) {
+    @ApiOperation(value = "创建风格样式来自SLD文件",httpMethod = "POST",notes = "创建风格样式来自SLD文件")
+    @RequestMapping(value = "/createByFile", method = RequestMethod.POST)
+    public Result createStyleBySldFile(@RequestParam String workspaceName, @RequestParam String sldName, @RequestParam MultipartFile styleFile) {
 
-         return styleService.createStyle(styleFile);
+         return styleService.createStyleBySldFile(workspaceName,sldName,styleFile);
+    }
+
+    @ApiOperation(value = "创建风格样式来自整个SLD文档字符串",httpMethod = "POST",notes = "创建风格样式来自整个SLD文档字符串")
+    @RequestMapping(value = "/createByDoc", method = RequestMethod.POST)
+    public Result createStyleBySldDocument (@RequestParam String workspaceName,@RequestParam String sldBody,@RequestParam String sldName) {
+
+        return styleService.createStyleBySldDocument(workspaceName,sldBody,sldName);
     }
 
 
     //移除样式
     @ApiOperation(value = "移除风格样式",httpMethod = "DELETE",notes = "移除风格样式")
     @RequestMapping(value = "/delete/{styleName}", method = RequestMethod.DELETE)
-    public Result deleteStyle(@PathVariable String styleName){
+    public Result deleteStyle(@RequestParam String workspaceName,@PathVariable String styleName){
         LOG.info("style Name:"+styleName);
-        boolean removed = GeoServerUtils.publisher.removeStyle(styleName, true);
+        boolean removed = GeoServerUtils.publisher.removeStyleInWorkspace(workspaceName,styleName);
         if(removed){
             return  ResultUtil.success("移除风格样式成功！");
         }else {
@@ -52,32 +64,45 @@ public class StyleController {
     //样式列表
     @ApiOperation(value = "查询风格类型列表",httpMethod = "GET",notes = "查询风格类型列表")
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public List<String> listStyle(){
+    public Result listStyle(@RequestParam String workspaceName){
         List<String> styleNames = Lists.newArrayList();
-        RESTStyleList styleList = GeoServerUtils.reader.getStyles();
+        RESTStyleList styleList = GeoServerUtils.reader.getStyles(workspaceName);
         for (int i=0; i<styleList.size(); i++) {
             styleNames.add(styleList.get(i).getName());
         }
-        return styleNames;
+        return ResultUtil.success(styleNames);
     }
 
     //获取样式内容
     @ApiOperation(value = "获取样式内容",httpMethod = "GET",notes = "获取样式内容")
     @RequestMapping(value = "/get/{styleName}", method = RequestMethod.GET)
-    public String getStyleSld(@PathVariable String styleName){
-        String sld = GeoServerUtils.reader.getSLD(styleName);
-        return sld;
+    public Result getStyleSld(@RequestParam String workspaceName,@PathVariable String styleName){
+        String sld = GeoServerUtils.reader.getSLD(workspaceName,styleName);
+        return ResultUtil.success(sld);
     }
 
     //修改样式内容
-    @ApiOperation(value = "更新样式内容",httpMethod = "PUT",notes = "更新样式内容")
-    @RequestMapping(value = "/update", method = RequestMethod.PUT)
-    public Result updateStyle(@RequestParam String sldFilePath,@RequestParam String styleName){
-        Boolean updated = GeoServerUtils.publisher.updateStyle(new File(sldFilePath),styleName);
+    @ApiOperation(value = "更新样式内容来自SLD文件",httpMethod = "PUT",notes = "更新样式内容来自SLD文件")
+    @RequestMapping(value = "/updateStyleByFile", method = RequestMethod.PUT)
+    public Result updateStyleByFile(@RequestParam String workspaceName,@RequestParam String sldFilePath,@RequestParam String styleName){
+        Boolean updated = GeoServerUtils.publisher.updateStyleInWorkspace(workspaceName,new File(sldFilePath),styleName);
         if(updated){
-            return  ResultUtil.success("修改风格样式成功！");
+            return  ResultUtil.success("修改风格样式成功!");
         }else {
             return  ResultUtil.error("修改风格样式失败！");
         }
     }
+
+    //修改样式内容
+    @ApiOperation(value = "更新样式内容来自SLD文档字符串",httpMethod = "PUT",notes = "更新样式内容来自SLD文档字符串")
+    @RequestMapping(value = "/updateStyleByDoc", method = RequestMethod.PUT)
+    public Result updateStyleByDoc(@RequestParam String workspaceName,@RequestParam String sldBody,@RequestParam String styleName){
+        Boolean updated = GeoServerUtils.publisher.updateStyleInWorkspace(workspaceName,sldBody,styleName);
+        if(updated){
+            return  ResultUtil.success("修改风格样式成功!");
+        }else {
+            return  ResultUtil.error("修改风格样式失败！");
+        }
+    }
+
 }
