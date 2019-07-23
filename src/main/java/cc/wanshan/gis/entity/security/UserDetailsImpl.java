@@ -7,7 +7,6 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,9 +26,7 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
-
             authorities.add(new SimpleGrantedAuthority(role.getRoleName()));
-
         return authorities;
     }
 

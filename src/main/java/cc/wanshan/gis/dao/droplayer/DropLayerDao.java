@@ -10,5 +10,5 @@ import cc.wanshan.gis.entity.Result;
  * @return
  **/
 public interface DropLayerDao {
-    public Result dropLayer(String schema, String layerName);
+    Result dropLayer(String schema, String layerName);
 }

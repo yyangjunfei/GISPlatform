@@ -15,36 +15,34 @@ import org.springframework.stereotype.Component;
  * @author Li Cheng
  * @date 2019/5/18 17:15
  */
+
 /**
- rule_value character varying(32) COLLATE pg_catalog."default" NOT NULL,
- rule_value_id character varying(32) NOT NULL DEFAULT replace(uuid_generate_v1()::text,'-',''),
- rule_name_id character varying(32) NOT NULL,
- fill_value character varying(8) COLLATE pg_catalog."default",
- stroke_value character varying(8) COLLATE pg_catalog."default",
- width_value character varying(8) COLLATE pg_catalog."default",
- opacity_value character varying(8) COLLATE pg_catalog."default",
- font_family_value character varying(8) COLLATE pg_catalog."default",
- font_size_value character varying(8) COLLATE pg_catalog."default",
- font_fill_value character varying(8) COLLATE pg_catalog."default",
- font_stroke_value character varying(8) COLLATE pg_catalog."default",
- font_style_value character varying(8) COLLATE pg_catalog."default",
- font_weight_value character varying(8) COLLATE pg_catalog."default",
- insert_time timestamp(0) with time zone NOT NULL,
- update_time timestamp(0) with time zone NOT NULL,
- CONSTRAINT fkcgvb4rn18kaq4pxb0piueexx7 FOREIGN KEY (rule_name_id)
- REFERENCES public.rule_name (rule_name_id) MATCH SIMPLE
- ON UPDATE NO ACTION
- ON DELETE NO ACTION,
- CONSTRAINT rule_value_rule_name_id_fkey FOREIGN KEY (rule_name_id)
- REFERENCES public.rule_name (rule_name_id) MATCH SIMPLE
- ON UPDATE CASCADE
- ON DELETE CASCADE,
- CONSTRAINT rule_value_pkey PRIMARY KEY (rule_value_id)
+ * rule_value character varying(32) COLLATE pg_catalog."default" NOT NULL, rule_value_id character
+ * varying(32) NOT NULL DEFAULT replace(uuid_generate_v1()::text,'-',''), rule_name_id character
+ * varying(32) NOT NULL, fill_value character varying(8) COLLATE pg_catalog."default", stroke_value
+ * character varying(8) COLLATE pg_catalog."default", width_value character varying(8) COLLATE
+ * pg_catalog."default", opacity_value character varying(8) COLLATE pg_catalog."default",
+ * font_family_value character varying(8) COLLATE pg_catalog."default", font_size_value character
+ * varying(8) COLLATE pg_catalog."default", font_fill_value character varying(8) COLLATE
+ * pg_catalog."default", font_stroke_value character varying(8) COLLATE pg_catalog."default",
+ * font_style_value character varying(8) COLLATE pg_catalog."default", font_weight_value character
+ * varying(8) COLLATE pg_catalog."default", insert_time timestamp(0) with time zone NOT NULL,
+ * update_time timestamp(0) with time zone NOT NULL, CONSTRAINT fkcgvb4rn18kaq4pxb0piueexx7 FOREIGN
+ * KEY (rule_name_id) REFERENCES public.rule_name (rule_name_id) MATCH SIMPLE ON UPDATE NO ACTION ON
+ * DELETE NO ACTION, CONSTRAINT rule_value_rule_name_id_fkey FOREIGN KEY (rule_name_id) REFERENCES
+ * public.rule_name (rule_name_id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE, CONSTRAINT
+ * rule_value_pkey PRIMARY KEY (rule_value_id)
  **/
 @Mapper
 @Component
 public interface RuleValueDao {
 
+
+  /**
+   * description: 根据layerId和ruleValueId删除ruleValue
+   *
+   * @return int
+   */
   @Delete({
       "delete from "
           + "rule_value "
@@ -52,15 +50,14 @@ public interface RuleValueDao {
           + "rule_value_id=#{ruleValueId} and "
           + "rule_name_id=#{ruleName.ruleNameId}"
   })
+  int deleteRuleValueByRuleValueIdAndRuleNameId(String ruleValueId, String ruleNameId);
+
+
   /**
-   * description: 根据layerId和ruleValueId删除ruleValue
+   * description: 新增ruleValue
    *
-   * @param ruleValueId
-   * @param ruleNameId
    * @return int
    */
-   int deleteRuleValueByRuleValueIdAndRuleNameId(String ruleValueId, String ruleNameId);
-
   @Insert({
       "insert into "
           + "rule_value ("
@@ -96,14 +93,14 @@ public interface RuleValueDao {
           + ")"
   })
   @Options(useGeneratedKeys = true, keyColumn = "rule_value_id", keyProperty = "ruleValueId")
+  int insertRuleValue(RuleValue ruleValue);
+
+
   /**
-   * description: 新增ruleValue
+   * description: 更新ruleValue信息
    *
-   * @param ruleValue
    * @return int
    */
-   int insertRuleValue(RuleValue ruleValue);
-
   @Update({
       "update "
           + "rule_value "
@@ -125,28 +122,27 @@ public interface RuleValueDao {
           + "where "
           + "rule_value_id=#{ruleValueId}"
   })
+  int updateRuleValue(RuleValue ruleValue);
+
+
   /**
-   * description: 更新ruleValue信息
+   * description: 删除ruleValue
    *
-   * @param ruleValue
    * @return int
    */
-   int updateRuleValue(RuleValue ruleValue);
-
-
   @Delete({"delete from "
       + "rule_value "
       + "where "
       + "rule_value_id=#{ruleValueId}"
   })
-  /**
-   * description: 删除ruleValue
-   *
-   * @param ruleValueId
-   * @return int
-   */
-   int deleteRuleValue(String ruleValueId);
+  int deleteRuleValue(String ruleValueId);
 
+
+  /**
+   * description:
+   *
+   * @return java.util.List<cc.wanshan.gis.entity.style.RuleValue>
+   */
   @Select({"select "
       + "* "
       + "from "
@@ -169,13 +165,11 @@ public interface RuleValueDao {
       @Result(column = "font_style_value", property = "fontStyleValue"),
       @Result(column = "font_weight_value", property = "fontWeightValue"),
   })
+  RuleValue findRuleValuesByRuleNameId(String ruleNameId);
+
   /**
-   * description:
-   *
-   * @param ruleNameId
-   * @return java.util.List<cc.wanshan.gis.entity.style.RuleValue>
+   * description: 根据ruleValueId查询ruleValue
    */
-   RuleValue findRuleValuesByRuleNameId(String ruleNameId);
   @Select({"select "
       + "* "
       + "from "
@@ -196,38 +190,5 @@ public interface RuleValueDao {
       @Result(column = "font_style_value", property = "fontStyleValue"),
       @Result(column = "font_weight_value", property = "fontWeightValue"),
   })
-  /**
-   * description: 根据ruleValueId查询ruleValue
-   *
-   * @param ruleValueId
-   * @return
-   */
-   RuleValueDao findRuleValueByRuleValueId(String ruleValueId);
-
- /* @Select({
-      "select "
-          + "count(*) "
-          + "from "
-          + "ruleValue as l "
-          + "where "
-          + "l.ruleValue_name = #{ruleValueName} and "
-          + "l.store_id = ("
-          + "select "
-          + "s.store_id "
-          + "from "
-          + "security as u "
-          + "inner join "
-          + "store as s "
-          + "on "
-          + "u.u_id = s.u_id "
-          + "where u.username=#{username})"
-  })
-  *//**
-   * description:
-   *
-   * @param username
-   * @param ruleValueName
-   * @return int
-   *//*
-  public int findruleValueCountByUsernameAndruleValueName(String username, String ruleValueName);*/
+  RuleValueDao findRuleValueByRuleValueId(String ruleValueId);
 }

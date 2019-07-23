@@ -21,15 +21,25 @@ import org.springframework.stereotype.Component;
 @Component
 public interface LineStringDao {
 
-  @InsertProvider(type = LineStringDaoProvider.class, method = "insertAll")
+
   /**
    * description: 批量插入点元素
    *
-   * @param LineStringList
    * @return int
    **/
-   int insertAllLineString(@Param("list") List<LineString> LineStringList);
+  @InsertProvider(type = LineStringDaoProvider.class, method = "insertAll")
+  int insertAllLineString(@Param("list") List<LineString> lineStringList);
 
+
+  /**
+   * description:
+   *
+   * @param layerId 图层名
+   * @param featureName 元素名
+   * @param featureId 元素Id
+   * @param featureClass 元素类别
+   * @return java.util.List<cc.wanshan.gis.entity.drawlayer.LineString>
+   **/
   @SelectProvider(type = LineStringDaoProvider.class, method = "select")
   @Results({
       @Result(id = true, column = "feature_id", property = "featureId"),
@@ -43,19 +53,17 @@ public interface LineStringDao {
       @Result(column = "stroke_width", property = "strokeWidth"),
       @Result(column = "opacity", property = "opacity"),
   })
-  /**
-   * description:
-   *
-   * @param layerId 图层名
-   * @param featureName 元素名
-   * @param featureId 元素Id
-   * @param featureClass 元素类别
-   * @return java.util.List<cc.wanshan.gis.entity.drawlayer.LineString>
-   **/
-   List<LineString> findLineString(@Param("layerId") String layerId,
+  List<LineString> findLineString(@Param("layerId") String layerId,
       @Param("featureName") String featureName, @Param("featureId") String featureId,
       @Param("featureClass") String featureClass);
-  @SelectProvider(type = LineStringDaoProvider.class,method = "findByLayerId")
+
+  /**
+   * description: 根据图层Id查询feature
+   *
+   * @param layerId 图层Id
+   * @return java.util.List<cc.wanshan.gis.entity.drawlayer.LineString>
+   **/
+  @SelectProvider(type = LineStringDaoProvider.class, method = "findByLayerId")
   @Results({
       @Result(id = true, column = "feature_id", property = "featureId"),
       @Result(column = "feature_name", property = "featureName"),
@@ -68,14 +76,8 @@ public interface LineStringDao {
       @Result(column = "stroke_width", property = "strokeWidth"),
       @Result(column = "opacity", property = "opacity"),
   })
-  /**
-   * description: 根据图层Id查询feature
-   *
-   * @param layerId 图层Id
-   * @return java.util.List<cc.wanshan.gis.entity.drawlayer.LineString>
-   **/
-   List<LineString> findLineStringByLayerId(@Param("layerId") String layerId);
-  @DeleteProvider(type = LineStringDaoProvider.class,method ="delete")
+  List<LineString> findLineStringByLayerId(@Param("layerId") String layerId);
+
   /**
    * description: 根据条件删除
    *
@@ -85,23 +87,26 @@ public interface LineStringDao {
    * @param featureClass 元素类别
    * @return int 返回值为0或1
    **/
-   int delete(@Param("layerId") String layerId, @Param("featureId") String featureId,
+  @DeleteProvider(type = LineStringDaoProvider.class, method = "delete")
+  int delete(@Param("layerId") String layerId, @Param("featureId") String featureId,
       @Param("featureName") String featureName, @Param("featureClass") String featureClass);
-  @DeleteProvider(type = LineStringDaoProvider.class,method = "deleteAll")
+
   /**
    * description: 根据feature批量删除
    *
    * @param list featureId集合
    * @return int
    **/
-   int deleteAll(@Param("list") List<LineString> list);
-  @DeleteProvider(type = LineStringDaoProvider.class,method = "deleteAllByLayerId")
+  @DeleteProvider(type = LineStringDaoProvider.class, method = "deleteAll")
+  int deleteAll(@Param("list") List<LineString> list);
+
   /**
    * description: 根据layerId批量删除
    *
    * @param list 图层集合
    * @return int
    **/
-   int deleteAllByLayerId(@Param("list") List<Layer> list);
+  @DeleteProvider(type = LineStringDaoProvider.class, method = "deleteAllByLayerId")
+  int deleteAllByLayerId(@Param("list") List<Layer> list);
 
 }

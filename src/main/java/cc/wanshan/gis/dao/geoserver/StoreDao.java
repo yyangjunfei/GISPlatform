@@ -16,6 +16,12 @@ import java.util.List;
 @Component
 public interface StoreDao {
 
+  /**
+   * description: 根据storeid查询store
+   *
+   * @param storeId
+   * @return cc.wanshan.gisdev.entity.drawlayer.Store
+   */
   @Select({
       "select * "
           + "from "
@@ -28,14 +34,15 @@ public interface StoreDao {
       @Result(column = "store_name", property = "storeName"),
       @Result(column = "user_id", property = "security.userId"),
   })
-  /**
-   * description: 根据storeid查询store
-   *
-   * @param storeId
-   * @return cc.wanshan.gisdev.entity.drawlayer.Store
-   */
   Store findStoreByStoreId(String storeId);
 
+
+  /**
+   * description: 根据userId查询store
+   *
+   * @param userId
+   * @return java.util.List<cc.wanshan.gisdev.entity.drawlayer.Store>
+   */
   @Select({
       "select "
           + "* "
@@ -49,15 +56,16 @@ public interface StoreDao {
       @Result(column = "user_id", property = "security.userId"),
       @Result(column = "store_name", property = "storeName")
   })
-  /**
-   * description: 根据userId查询store
-   *
-   * @param userId
-   * @return java.util.List<cc.wanshan.gisdev.entity.drawlayer.Store>
-   */
   List<Store> findStoreByUserId(String userId);
 
 
+
+  /**
+   * description:新增store
+   *
+   * @param store
+   * @return int
+   */
   @Insert({
       "insert into "
           + "store "
@@ -76,15 +84,14 @@ public interface StoreDao {
           + ")"
   })
   @Options(useGeneratedKeys = true, keyProperty = "storeId", keyColumn = "store_id")
+  int insertStore(Store store);
+
   /**
-   * description:新增store
+   * description: 更新store
    *
    * @param store
    * @return int
    */
-  int insertStore(Store store);
-
-
   @Update({
       "update "
           + "store "
@@ -96,44 +103,31 @@ public interface StoreDao {
           + "where "
           + "store_id=#{storeId}"
   })
-
-  /**
-   * description: 更新store
-   *
-   * @param store
-   * @return int
-   */
   int updateStore(Store store);
 
 
-  @Delete({
-      "delete from "
-          + "store "
-          + "where "
-          + "store_id=#{storeId}"
-  })
+
   /**
    * description:删除store
    *
    * @param storeId
    * @return int
    */
+  @Delete({
+      "delete from "
+          + "store "
+          + "where "
+          + "store_id=#{storeId}"
+  })
   int deleteStore(String storeId);
 
-  /*@Select({
-      "select "
-          + "* "
-          + "from "
-          + "store as s "
-          + "where "
-          + "s.user_id="
-          + "(select "
-          + "u.user_id "
-          + "from "
-          + "security as u "
-          + "where "
-          + "u.username=#{username})"
-  })*/
+
+  /**
+   * description: 根据用户名查找stores
+   *
+   * @param username
+   * @return java.util.List<cc.wanshan.gisdev.entity.drawlayer.Store>
+   */
   @Select({
       "select u.user_id,u.thematic_id,u.security,s.store_id,s.store_name from store as s inner join security as u on u.user_id = s.user_id where u.delete = 0 and u.status=1 and u.username=#{username}"})
   @Results(value = {
@@ -145,12 +139,5 @@ public interface StoreDao {
       @Result(column = "store_id", property = "layerList",
           many = @Many(select = "cc.wanshan.gis.dao.layer.LayerDao.findLayersByStoreId")),
   })
-  /**
-   * description: 根据用户名查找stores
-   *
-   * @param username
-   * @return java.util.List<cc.wanshan.gisdev.entity.drawlayer.Store>
-   */
-
   List<Store> findStoresByUsername(String username);
 }

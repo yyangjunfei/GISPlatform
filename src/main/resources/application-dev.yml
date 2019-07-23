@@ -9,7 +9,7 @@ spring:
       request-timeout: 600000
   datasource:
     platform: postgres
-    url: jdbc:postgresql://192.168.1.133:5432/test?useAffectedRows=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=serverTimezone=Asia/Shanghai
+    url: jdbc:postgresql://192.168.1.133:5432/dev?useAffectedRows=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=serverTimezone=Asia/Shanghai
     username: postgres
     password: wanshan
     driver-class-name: org.postgresql.Driver

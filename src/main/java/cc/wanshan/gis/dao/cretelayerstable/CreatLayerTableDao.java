@@ -12,5 +12,5 @@ public interface CreatLayerTableDao {
      * @param layerName  图层对应实体类
      * @return 是否创建成功
      */
-    public Result creatTable(String workspace, String layerName, String type, String epsg);
+    Result creatTable(String workspace, String layerName, String type, String epsg);
 }

@@ -30,6 +30,11 @@ import org.springframework.stereotype.Component;
 @Component
 public interface ThematicDao {
 
+  /**
+   * description: 根据thematicId查找Thematic
+   *
+   * @return cc.wanshan.gisdev.entity.thematic.Thematic
+   */
   @Select({
       "select "
           + "thematic_id,"
@@ -52,15 +57,14 @@ public interface ThematicDao {
       @Result(column = "insert_time", property = "updateTime"),
       @Result(column = "thematic_id", property = "firstClassificationList", many = @Many(select = "cc.wanshan.gis.dao.layer.FirstClassificationDao.findByThematicId", fetchType = FetchType.LAZY)),
   })
-  /**
-   * description: 根据thematicId查找Thematic
-   *
-   * @param thematicId
-   * @return cc.wanshan.gisdev.entity.thematic.Thematic
-   */
   Thematic findByThematicId(String thematicId);
 
 
+  /**
+   * description:新增thematic
+   *
+   * @return int
+   */
   @Insert({
       "insert into "
           + "thematic "
@@ -77,14 +81,14 @@ public interface ThematicDao {
           + "#{describe})"
   })
   @Options(useGeneratedKeys = true, keyColumn = "thematic_id", keyProperty = "thematicId")
-  /**
-   * description:新增thematic
-   *
-   * @param thematic
-   * @return int
-   */
   int insertThematic(Thematic thematic);
 
+
+  /**
+   * description:更新thematic
+   *
+   * @return int
+   */
   @Update({
       "update "
           + "thematic "
@@ -97,28 +101,28 @@ public interface ThematicDao {
           + "where "
           + "thematic_id=#{thematicId}"
   })
-  /**
-   * description:更新thematic
-   *
-   * @param thematic
-   * @return int
-   */
   int updateThematic(Thematic thematic);
 
+
+  /**
+   * description:根据thematicId删除thematic
+   *
+   * @return int
+   */
   @Delete({
       "delete from "
           + "thematic "
           + "where "
           + "thematic_id=#{thematicId}"
   })
-  /**
-   * description:根据thematicId删除thematic
-   *
-   * @param thematicId
-   * @return int
-   */
   int deleteThematic(String thematicId);
 
+
+  /**
+   * description:根据用户名查找thematic
+   *
+   * @return cc.wanshan.gisdev.entity.security.thematic
+   */
   @Select({
       "select "
           + "* "
@@ -141,14 +145,14 @@ public interface ThematicDao {
       @Result(column = "insert_time", property = "insertTime"),
       @Result(column = "insert_time", property = "updateTime"),
   })
-  /**
-   * description:根据用户名查找thematic
-   *
-   * @param username
-   * @return cc.wanshan.gisdev.entity.security.thematic
-   */
   Thematic findThematicByUserName(String username);
 
+
+  /**
+   * description: 查询所有的thematic
+   *
+   * @return java.util.List<cc.wanshan.gisdev.entity.security.thematic>
+   */
   @Select({
       "select "
           + "thematic_id ,"
@@ -168,14 +172,14 @@ public interface ThematicDao {
       @Result(column = "insert_time", property = "updateTime"),
       @Result(column = "thematic_id", property = "userList", many = @Many(select = "cc.wanshan.demo.repository.UserDao.findUsersByThematicId", fetchType = FetchType.LAZY))
   })
-  /**
-   * description: 查询所有的thematic
-   *
-   * @param
-   * @return java.util.List<cc.wanshan.gisdev.entity.security.thematic>
-   */
   List<Thematic> findAllThematic();
 
+
+  /**
+   * description: 根据thematicName查询thematic
+   *
+   * @return cc.wanshan.gisdev.entity.security.thematic
+   */
   @Select({
       "select"
           + "thematic_id,"
@@ -197,14 +201,14 @@ public interface ThematicDao {
       @Result(column = "insert_time", property = "updateTime"),
       @Result(column = "describe", property = "describe")
   })
-  /**
-   * description: 根据thematicName查询thematic
-   *
-   * @param thematicName
-   * @return cc.wanshan.gisdev.entity.security.thematic
-   */
   Thematic findThematicByThematicName(String thematicName);
 
+
+  /**
+   * description:判断thematic是否已存在
+   *
+   * @return int
+   */
   @Select({
       "select "
           + "count(*) "
@@ -213,15 +217,14 @@ public interface ThematicDao {
           + "where "
           + "thematic_name=#{thematicName}"
   })
-  /**
-   * description:判断thematic是否已存在
-   *
-   * @param thematicName
-   * @return int
-   */
   int findCountByThematicName(String thematicName);
 
 
+  /**
+   * description:根据thematicNameZh查询thematic
+   *
+   * @return cc.wanshan.gisdev.entity.security.thematic
+   */
   @Select({
       "select "
           + "thematic_id,"
@@ -243,14 +246,14 @@ public interface ThematicDao {
       @Result(column = "insert_time", property = "updateTime"),
       @Result(column = "describe", property = "describe")
   })
-  /**
-   * description:根据thematicNameZh查询thematic
-   *
-   * @param thematicNameZH
-   * @return cc.wanshan.gisdev.entity.security.thematic
-   */
   Thematic findThematicByThematicNameZH(String thematicNameZH);
 
+
+  /**
+   * description:判断thematicNameZH是否存在
+   *
+   * @return int
+   */
   @Select({
       "select "
           + "count(*) "
@@ -259,33 +262,6 @@ public interface ThematicDao {
           + "where "
           + "thematic_name_zh=#{thematicNameZH}"
   })
-  /**
-   * description:判断thematicNameZH是否存在
-   *
-   * @param thematicNameZH
-   * @return int
-   */
   int findCountByThematicNameZH(String thematicNameZH);
 
-  @Select({
-      "select "
-          + "r.thematic_name "
-          + "from authority_thematic as ar "
-          + "inner join "
-          + "thematic as r "
-          + "on "
-          + "ar.thematic_id=r.thematic_id "
-          + "where "
-          + "ar.authothematic_id=#{authorId}"
-  })
-  @Results({
-      @Result(column = "thematic_name", property = "thematicName")
-  })
-  /**
-   * description: 根据authorId查询store
-   *
-   * @param authorId
-   * @return java.util.List<cc.wanshan.gisdev.entity.security.thematic>
-   */
-  List<Thematic> findByAuthorId(String authorId);
 }
