@@ -1,16 +1,16 @@
 package cc.wanshan.gis.service.geoserver.impl;
 import cc.wanshan.gis.dao.createschema.CreateSchemaDao;
 import cc.wanshan.gis.dao.searchschema.SearchSchemaDao;
-import cc.wanshan.gis.entity.geoserver.GeoServer;
 import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.entity.drawlayer.Store;
+import cc.wanshan.gis.entity.geoserver.GeoServer;
 import cc.wanshan.gis.entity.security.User;
 import cc.wanshan.gis.service.geoserver.GeoServerService;
 import cc.wanshan.gis.service.geoserver.StoreService;
 import cc.wanshan.gis.service.security.UserService;
 import cc.wanshan.gis.utils.GeoServerUtils;
 import cc.wanshan.gis.utils.ResultUtil;
-import it.geosolutions.geoserver.rest.decoder.RESTDataStore;
+import it.geosolutions.geoserver.rest.decoder.RESTDataStoreList;
 import it.geosolutions.geoserver.rest.decoder.RESTLayer;
 import it.geosolutions.geoserver.rest.encoder.GSLayerEncoder;
 import it.geosolutions.geoserver.rest.encoder.datastore.GSPostGISDatastoreEncoder;
@@ -133,8 +133,9 @@ public class GeoServerServiceImpl implements GeoServerService {
         LOG.info("已进入createDataStore::manager = [{}], storeName = [{}], workspace = [{}]", GeoServerUtils.manager, storeName, workspace);
         //判断数据存储（datastore）是否已经存在，不存在则创建
         if (GeoServerUtils.manager != null && storeName != null && !"".equals(storeName)) {
-            RESTDataStore restStore = GeoServerUtils.reader.getDatastore(workspace, storeName);
-            if (restStore == null) {
+            RESTDataStoreList restDataStoreList = GeoServerUtils.manager.getReader().getDatastores(workspace);
+            List<String> listStoreName = restDataStoreList.getNames();
+            if (!listStoreName.contains(storeName)){
                 GSPostGISDatastoreEncoder store = new GSPostGISDatastoreEncoder(storeName);
                 //设置url
                 store.setHost(geoServer.getPostgisHost());
@@ -147,7 +148,7 @@ public class GeoServerServiceImpl implements GeoServerService {
                 // 那个数据库;
                 store.setDatabase(geoServer.getPostgisDatabase());
                 //当前先默认使用public这个schema
-                    store.setSchema(workspace);
+                store.setSchema(workspace);
                 // 超时设置
                 store.setConnectionTimeout(20);
                 // 最大连接数
@@ -161,7 +162,8 @@ public class GeoServerServiceImpl implements GeoServerService {
                     LOG.warn("存储点创建失败：createDataStore::manager = [{}], storeName = [{}], workspace = [{}]", storeName, workspace);
                     return ResultUtil.error(3, "存储点" + storeName + "创建失败");
                 }
-            } else {
+            }
+             else {
                 LOG.warn("存储点已存在:createDataStore::manager = [{}], storeName = [{}], workspace = [{}]", storeName, workspace);
                 return ResultUtil.error(1, "存储点" + storeName + "已存在");
             }
