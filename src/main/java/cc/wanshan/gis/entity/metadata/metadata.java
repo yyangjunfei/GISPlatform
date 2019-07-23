@@ -18,11 +18,14 @@ public class metadata implements Serializable {
     @ApiModelProperty(value = "主键UUID")
     private Integer id;
 
-    @ApiModelProperty(value = "专题/工作区")
+    @ApiModelProperty(value = "工作区")
     private String workspaceName;
 
-    @ApiModelProperty(value = "图层组/存储名称")
+    @ApiModelProperty(value = "存储名称")
     private String storeName;
+
+    @ApiModelProperty(value = "图层组")
+    private String layerGroup;
 
     @ApiModelProperty(value = "数据类型")
     private String DataType;
@@ -32,6 +35,9 @@ public class metadata implements Serializable {
 
     @ApiModelProperty(value = "保密级别")
     private String safetyLevel;
+
+    @ApiModelProperty(value = "归属部门")
+    private String attributionDepartment;
 
     @ApiModelProperty(value = "矢量类型")
     private String vectorTypes;

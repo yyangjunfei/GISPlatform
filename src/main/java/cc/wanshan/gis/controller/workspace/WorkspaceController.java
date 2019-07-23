@@ -23,7 +23,6 @@ public class WorkspaceController {
 
     private static Logger LOG = LoggerFactory.getLogger(WorkspaceController.class);
 
-    //获取样式内容
     @ApiOperation(value = "获取工作空间名称",httpMethod = "GET",notes = "获取工作空间名称")
     @RequestMapping(value = "/get", method = RequestMethod.GET)
     public Result getWorkspaceNames(){
@@ -32,4 +31,24 @@ public class WorkspaceController {
         return ResultUtil.success(workspaceNames);
     }
 
+    /**
+     * workspaceName The name of the workspace.
+     * recurse The recurse parameter is used to recursively delete all resources contained by the specified workspace. This includes data
+     *stores, coverage stores, feature types, etc...
+     * @param workspaceName
+     * @param recurse
+     * @return true if the WorkSpace was successfully removed.
+     */
+
+    @ApiOperation(value = "删除工作空间名称",httpMethod = "DELETE",notes = "删除工作空间名称")
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+    public Result deleteWorkspaceNames(String workspaceName,Boolean recurse ){
+        //删除工作空间名
+        Boolean  removeFlag = GeoServerUtils.publisher.removeWorkspace(workspaceName,recurse);
+        if (removeFlag){
+            return ResultUtil.success("删除工作空间成功！");
+        }else{
+            return ResultUtil.success("删除工作空间失败！");
+        }
+    }
 }
