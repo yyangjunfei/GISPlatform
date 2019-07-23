@@ -1,19 +1,24 @@
 package cc.wanshan.gis.service.metadata.impl;
+
 import cc.wanshan.gis.common.enums.ResultCode;
+import cc.wanshan.gis.common.pojo.Result;
 import cc.wanshan.gis.dao.metadata.DataManagementDao;
-import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.entity.metadata.ShpInfo;
 import cc.wanshan.gis.entity.metadata.metadata;
 import cc.wanshan.gis.service.metadata.DataManagementService;
 import cc.wanshan.gis.service.metadata.FileService;
 import cc.wanshan.gis.utils.LanguageUtils;
-import cc.wanshan.gis.utils.ResultUtil;
+import cc.wanshan.gis.utils.base.ResultUtil;
 import com.alibaba.fastjson.JSON;
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import java.util.*;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class DataManagementServiceImpl implements DataManagementService {
@@ -27,7 +32,7 @@ public class DataManagementServiceImpl implements DataManagementService {
     private DataManagementDao dataManagementDao;
 
     @Override
-    public Result metadataImportPublication(String jsonString , MultipartFile[] file) {
+    public Result metadataImportPublication(String jsonString, MultipartFile[] file) {
 
         LOG.info("metadataImport...");
         //本地文件上传服务器中
@@ -48,11 +53,10 @@ public class DataManagementServiceImpl implements DataManagementService {
         //读取shp文件并且发布到数据库
         try {
 
-            List<ShpInfo> shpInfoList= fileService.readSHP(filePath);
+            List<ShpInfo> shpInfoList = fileService.readSHP(filePath);
 
-            for (Map<String, String> maps :data){
+            for (Map<String, String> maps : data) {
 
-                System.out.println("filePath::"+maps.get("filePath"));
                 //删除上传的文件
                 fileService.delFile(maps.get("filePath"));
             }
@@ -64,7 +68,7 @@ public class DataManagementServiceImpl implements DataManagementService {
             metadata.setGeoType(shpInfoList.get(0).getGeometry().getType());
 
             //shp数据存储到数据库
-            fileService.publishShpData2DB(shpInfoList,metadata);
+            fileService.publishShpData2DB(shpInfoList, metadata);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -88,9 +92,9 @@ public class DataManagementServiceImpl implements DataManagementService {
 
         int i = dataManagementDao.deleteLayerPropertiesData(id);
 
-        if(i>0){
-            return  ResultUtil.success("删除数据成功");
-        }else {
+        if (i > 0) {
+            return ResultUtil.success("删除数据成功");
+        } else {
             return ResultUtil.error("删除数据失败！");
         }
     }
@@ -98,27 +102,27 @@ public class DataManagementServiceImpl implements DataManagementService {
     @Override
     public Result editLayerPropertiesData(metadata metadata) {
 
-        int i =dataManagementDao.editLayerPropertiesData(metadata);
+        int i = dataManagementDao.editLayerPropertiesData(metadata);
 
-        if(i>0){
-            return  ResultUtil.success("更新数据成功");
-        }else {
+        if (i > 0) {
+            return ResultUtil.success("更新数据成功");
+        } else {
             return ResultUtil.error("更新数据失败！");
         }
     }
 
     @Override
-    public List<metadata> findLayerPropertiesData(metadata metadata ) {
+    public List<metadata> findLayerPropertiesData(metadata metadata) {
         return dataManagementDao.findLayerPropertiesData(metadata);
     }
 
     @Override
     public Result changePublicationStatus(int id) {
 
-        int i =dataManagementDao.changePublicationStatus(id);
-        if(i>0){
-            return  ResultUtil.success("更改发布状态成功");
-        }else {
+        int i = dataManagementDao.changePublicationStatus(id);
+        if (i > 0) {
+            return ResultUtil.success("更改发布状态成功");
+        } else {
             return ResultUtil.error("更新发布状态失败！");
         }
     }

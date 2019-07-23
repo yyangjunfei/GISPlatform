@@ -1,9 +1,7 @@
 package cc.wanshan.gis.dao.layer;
 
-import cc.wanshan.gis.entity.drawlayer.Layer;
-import cc.wanshan.gis.entity.thematic.Thematic;
-import cc.wanshan.gis.entity.thematic.ThematicUser;
-import java.util.List;
+import cc.wanshan.gis.entity.layer.thematic.Thematic;
+import cc.wanshan.gis.entity.layer.thematic.ThematicUser;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Many;
@@ -14,7 +12,8 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.mapping.FetchType;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author Li Cheng
@@ -24,92 +23,92 @@ import org.springframework.stereotype.Service;
 @Component
 public interface ThematicUserDao {
 
-  @Insert("insert into "
-      + "thematic_user ("
-      + "thematic_id,"
-      + "user_id,"
-      + "insert_time,"
-      + "update_time "
-      + ") values "
-      + "("
-      + "#{thematicId},"
-      + "#{userId},"
-      + "#{insertTime,jdbcType=TIMESTAMP},"
-      + "#{updateTime,jdbcType=TIMESTAMP}"
-      + ")"
-  )
-  /**
-   * description: 新增专题和用户记录
-   *
-   * @param thematicUser 专题和用户关联对象
-   * @return int 新增记录数
-   **/
-  int insertThematicUser(ThematicUser thematicUser);
+    @Insert("insert into "
+            + "thematic_user ("
+            + "thematic_id,"
+            + "user_id,"
+            + "insert_time,"
+            + "update_time "
+            + ") values "
+            + "("
+            + "#{thematicId},"
+            + "#{userId},"
+            + "#{insertTime,jdbcType=TIMESTAMP},"
+            + "#{updateTime,jdbcType=TIMESTAMP}"
+            + ")"
+    )
+    /**
+     * description: 新增专题和用户记录
+     *
+     * @param thematicUser 专题和用户关联对象
+     * @return int 新增记录数
+     **/
+    int insertThematicUser(ThematicUser thematicUser);
 
-  @Update("update "
-      + "thematic_user "
-      + "set "
-      + "thematic_id =#{thematicId},"
-      + "user_id=#{userId},"
-      + "update_time=#{updateTime} "
-      + "where "
-      + "thematic_user_id=#{thematicUserId}"
-  )
-  /**
-   * description: 根据thematicUserId修改专题和用户记录
-   *
-   * @param thematicUser 专题和用户关联对象
-   * @return int 修改记录数
-   **/
-  int updateThematicUser(ThematicUser thematicUser);
+    @Update("update "
+            + "thematic_user "
+            + "set "
+            + "thematic_id =#{thematicId},"
+            + "user_id=#{userId},"
+            + "update_time=#{updateTime} "
+            + "where "
+            + "thematic_user_id=#{thematicUserId}"
+    )
+    /**
+     * description: 根据thematicUserId修改专题和用户记录
+     *
+     * @param thematicUser 专题和用户关联对象
+     * @return int 修改记录数
+     **/
+    int updateThematicUser(ThematicUser thematicUser);
 
-  @Delete("delete from "
-      + "thematic_user "
-      + "where "
-      + "thematic_user_id = #{thematicUserId}"
-  )
-  /**
-   * description: 根据thematicUserId删除专题和用户记录
-   *
-   * @param thematicUser 专题和用户关联对象
-   * @return int 删除记录数
-   **/
-  int deleteThematicUser(String thematicUser);
+    @Delete("delete from "
+            + "thematic_user "
+            + "where "
+            + "thematic_user_id = #{thematicUserId}"
+    )
+    /**
+     * description: 根据thematicUserId删除专题和用户记录
+     *
+     * @param thematicUser 专题和用户关联对象
+     * @return int 删除记录数
+     **/
+    int deleteThematicUser(String thematicUser);
 
-  /**
-   * description: 根据专题id查询关联用户
-   *
-   * @param thematicId 专题Id
-   * @return java.util.List<cc.wanshan.gis.entity.thematic.ThematicUser>
-   **/
-  List<ThematicUser> findThematicUserByThematicId(String thematicId);
+    /**
+     * description: 根据专题id查询关联用户
+     *
+     * @param thematicId 专题Id
+     * @return java.util.List<cc.wanshan.gis.entity.layer.thematic.ThematicUser>
+     **/
+    List<ThematicUser> findThematicUserByThematicId(String thematicId);
 
-  @Select({"select "
-      + "t.thematic_id,"
-      + "t.thematic_name,"
-      + "t.thematic_name_zh "
-      + "from "
-      + "thematic_user as tu "
-      + "left outer join "
-      + "thematic as t "
-      + "on "
-      + "tu.thematic_id=t.thematic_id "
-      + "where "
-      + "tu.user_id=#{userId}"
-  })
-  @Results({
-      @Result(id = true, column = "thematic_user_id", property = "thematicUserId"),
-      @Result(column = "thematic_id", property = "thematicId"),
-      @Result(column = "thematic_name", property = "thematicName"),
-      @Result(column = "thematic_name_zh", property = "thematicNameZH"),
-      @Result(column = "thematic_id", property = "firstClassificationList", many = @Many(select = "cc.wanshan.gis.dao.layer.FirstClassificationDao.findByThematicId", fetchType = FetchType.LAZY)),
-  })
+    @Select({"select "
+            + "t.thematic_id,"
+            + "t.thematic_name,"
+            + "t.thematic_name_zh "
+            + "from "
+            + "thematic_user as tu "
+            + "left outer join "
+            + "thematic as t "
+            + "on "
+            + "tu.thematic_id=t.thematic_id "
+            + "where "
+            + "tu.user_id=#{userId}"
+    })
+    @Results({
+            @Result(id = true, column = "thematic_user_id", property = "thematicUserId"),
+            @Result(column = "thematic_id", property = "thematicId"),
+            @Result(column = "thematic_name", property = "thematicName"),
+            @Result(column = "thematic_name_zh", property = "thematicNameZH"),
+            @Result(column = "thematic_id", property = "firstClassificationList", many = @Many(select = "cc.wanshan.gis.dao.layer.FirstClassificationDao.findByThematicId", fetchType = FetchType.LAZY)),
+    })
 
-  /**
-   * description: 根据用户Id查询当前用户的关联图层
-   *
-   * @param userId 用户Id
-   * @return java.util.List<cc.wanshan.gis.entity.drawlayer.Layer>
-   **/
-  List<Thematic> findThematicLayersByUserId(String userId);
+    /**
+     * description: 根据用户Id查询当前用户的关联图层
+     *
+     * @param userId 用户Id
+     * @return java.util.List<cc.wanshan.gis.entity.plot.of2d.Layer>
+     **/
+    List<Thematic> findThematicLayersByUserId(String userId);
 }

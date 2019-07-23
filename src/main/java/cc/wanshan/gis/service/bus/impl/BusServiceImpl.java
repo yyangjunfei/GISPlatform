@@ -5,8 +5,9 @@ import cc.wanshan.gis.dao.bus.NanJingStationsDao;
 import cc.wanshan.gis.entity.bus.NanJingLines2;
 import cc.wanshan.gis.entity.bus.NanJingStations;
 import cc.wanshan.gis.service.bus.BusService;
-import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 
 @Service(value = "busServiceImpl")
 /**
@@ -15,34 +16,35 @@ import org.springframework.stereotype.Service;
  */
 public class BusServiceImpl implements BusService {
 
-  @Resource
-  private NanJingLines2Dao nanJingLines2Dao;
-  @Resource
-  private NanJingStationsDao nanJingStationsDao;
-  @Override
-  public Integer findSource(String sourcePoint) {
-    NanJingLines2 source = nanJingLines2Dao.findSource(sourcePoint);
-    if (source!=null){
-      return source.getSource();
-    }
-    return null;
-  }
+    @Resource
+    private NanJingLines2Dao nanJingLines2Dao;
+    @Resource
+    private NanJingStationsDao nanJingStationsDao;
 
-  @Override
-  public Integer findTarget(String targetPoint) {
-    NanJingLines2 target = nanJingLines2Dao.findTarget(targetPoint);
-    if (target!=null){
-      return target.getTarget();
+    @Override
+    public Integer findSource(String sourcePoint) {
+        NanJingLines2 source = nanJingLines2Dao.findSource(sourcePoint);
+        if (source != null) {
+            return source.getSource();
+        }
+        return null;
     }
-    return null;
-  }
 
-  @Override
-  public NanJingStations findStation(String point) {
-    NanJingStations station = nanJingStationsDao.findStation(point);
-    if (station!=null){
-      return station;
+    @Override
+    public Integer findTarget(String targetPoint) {
+        NanJingLines2 target = nanJingLines2Dao.findTarget(targetPoint);
+        if (target != null) {
+            return target.getTarget();
+        }
+        return null;
     }
-    return null;
-  }
+
+    @Override
+    public NanJingStations findStation(String point) {
+        NanJingStations station = nanJingStationsDao.findStation(point);
+        if (station != null) {
+            return station;
+        }
+        return null;
+    }
 }

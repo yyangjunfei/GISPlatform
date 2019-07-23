@@ -5,7 +5,7 @@ public enum ResultCode {
     /**
      * 成功状态码
      */
-    SUCCESS(0, "成功"),
+    SUCCESS(200, "成功"),
 
     /**
      * 参数错误：10001-19999

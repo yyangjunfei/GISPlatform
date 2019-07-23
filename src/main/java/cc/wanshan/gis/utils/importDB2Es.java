@@ -1,4 +1,5 @@
 package cc.wanshan.gis.utils;
+
 import org.elasticsearch.action.bulk.BackoffPolicy;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.bulk.BulkRequest;
@@ -10,7 +11,14 @@ import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.unit.TimeValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.sql.*;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -19,43 +27,45 @@ import java.util.concurrent.TimeUnit;
 
 public class importDB2Es {
     private static Logger LOG = LoggerFactory.getLogger(importDB2Es.class);
-    public final static int BULK_COUNT = 20000;
-    public static  TransportClient transportClient;
+    public static TransportClient transportClient;
 
-  public static BulkProcessor createBulkProcessor() {
-      // 初始化Bulk处理器
-    BulkProcessor bulkProcessor = BulkProcessor.builder(transportClient, new BulkProcessor.Listener() {
-         long begin = 0;
-         long cost;
-         int count = 0;
-         @Override
-          public void beforeBulk(long l, BulkRequest bulkRequest) {
-                begin = System.currentTimeMillis();
-           }
+    public static BulkProcessor createBulkProcessor() {
+        // 初始化Bulk处理器
+        BulkProcessor bulkProcessor = BulkProcessor.builder(transportClient, new BulkProcessor.Listener() {
+            long begin = 0;
+            long cost;
+            int count = 0;
+
             @Override
-           public void afterBulk(long l, BulkRequest bulkRequest, BulkResponse bulkResponse) {
+            public void beforeBulk(long l, BulkRequest bulkRequest) {
+                begin = System.currentTimeMillis();
+            }
+
+            @Override
+            public void afterBulk(long l, BulkRequest bulkRequest, BulkResponse bulkResponse) {
                 cost = (System.currentTimeMillis() - begin) / 1000;
                 count += bulkRequest.numberOfActions();
                 LOG.info("bulk success. size:[{" + count + "}] cost:[{" + cost + "}s]");
-          }
-           @Override
-           public void afterBulk(long l, BulkRequest bulkRequest, Throwable throwable) {
+            }
+
+            @Override
+            public void afterBulk(long l, BulkRequest bulkRequest, Throwable throwable) {
                 LOG.info("bulk update has failures, will retry:" + throwable);
-               }
-           })
-           .setBulkActions(20000)// 批量导入个数
-           .setBulkSize(new ByteSizeValue(200, ByteSizeUnit.MB))// 满xMB进行导入
-           .setConcurrentRequests(10)// 并发数
-           .setFlushInterval(TimeValue.timeValueSeconds(50))// 冲刷间隔
-           .setBackoffPolicy(BackoffPolicy.constantBackoff(TimeValue.timeValueSeconds(1), 3)) // 重试3次，间隔1s
-           .build();
+            }
+        })
+                .setBulkActions(20000)// 批量导入个数
+                .setBulkSize(new ByteSizeValue(200, ByteSizeUnit.MB))// 满xMB进行导入
+                .setConcurrentRequests(10)// 并发数
+                .setFlushInterval(TimeValue.timeValueSeconds(50))// 冲刷间隔
+                .setBackoffPolicy(BackoffPolicy.constantBackoff(TimeValue.timeValueSeconds(1), 3)) // 重试3次，间隔1s
+                .build();
         return bulkProcessor;
     }
 
-    public static long importData(String dbURL,String dbUserName,String dbPassword,String driverClassName,String sql,String esindexName,String esTypeName)throws InterruptedException{
+    public static long importData(String dbURL, String dbUserName, String dbPassword, String driverClassName, String sql, String esindexName, String esTypeName) throws InterruptedException {
         try {
             Class.forName(driverClassName);
-        } catch (ClassNotFoundException e1){
+        } catch (ClassNotFoundException e1) {
             e1.printStackTrace();
         }
         boolean isLastEmpty = true;
@@ -67,7 +77,7 @@ public class importDB2Es {
         Statement st = null;
         ResultSet rs = null;
         try {
-            con = DriverManager.getConnection(dbURL,dbUserName,dbPassword);
+            con = DriverManager.getConnection(dbURL, dbUserName, dbPassword);
             ps = (PreparedStatement) con.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             ps.setFetchSize(0);
             ps.setFetchDirection(ResultSet.FETCH_REVERSE);
@@ -83,7 +93,7 @@ public class importDB2Es {
                     String name = rsmd.getColumnName(i);
                     if (columnName.contains(name)) {
                         String value = rs.getString(i);
-                        if (value != null && !"".equals(value.trim()) && value.trim().length() > 0){
+                        if (value != null && !"".equals(value.trim()) && value.trim().length() > 0) {
                             map.put(name, value);
                         }
                     }

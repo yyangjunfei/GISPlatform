@@ -14,30 +14,7 @@
     <packaging>jar</packaging>
     <name>GISPlatform</name>
     <description>GIS project for Spring Boot</description>
-    <repositories>
-        <repository>
-            <id>nexus-ALiYun</id>
-            <name>Nexus ALiYun</name>
-            <layout>default</layout>
-            <url>http://maven.aliyun.com/nexus/content/groups/public</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </repository>
-        <repository>
-            <id>OSGeo</id>
-            <name>Open Source GeoSpatial Foundation Repository</name>
-            <url>http://download.osgeo.org/webdav/geotools/</url>
-        </repository>
-        <repository>
-            <id>GeoSolutions</id>
-            <name>geoSolutions repository</name>
-            <url>http://maven.geo-solutions.it/</url>
-        </repository>
-    </repositories>
+
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -45,44 +22,33 @@
         <geotools.version>18.5</geotools.version>
         <postgresql.version>42.2.5</postgresql.version>
         <swagger.version>2.9.2</swagger.version>
-        <swagger-bootstrap-ui.version>1.9.4</swagger-bootstrap-ui.version>
+        <swagger.bootstrap.ui.version>1.9.4</swagger.bootstrap.ui.version>
         <jaxb-api.version>2.3.0</jaxb-api.version>
-        <gdal.version>3.0.0</gdal.version>
         <junit.version>4.12</junit.version>
-        <geoserver-manager.version>1.7.0</geoserver-manager.version>
+        <geoserver.manager.version>1.7.0</geoserver.manager.version>
         <lombok.version>1.16.22</lombok.version>
-        <commons-lang3.version>3.9</commons-lang3.version>
+        <commons.lang3.version>3.9</commons.lang3.version>
         <guava.version>23.0</guava.version>
         <fastjson.version>1.2.58</fastjson.version>
         <jts.version>1.13</jts.version>
-        <jts-core.version>1.16.1</jts-core.version>
+        <jts.core.version>1.16.1</jts.core.version>
         <httpclient.version>4.5.8</httpclient.version>
-        <poi.version>4.1.0</poi.version>
         <ant.version>1.10.5</ant.version>
-        <easyexcel.version>1.1.1</easyexcel.version>
-        <pinyin4j.version>2.5.1</pinyin4j.version>
-        <xmlbeans.version>3.1.0</xmlbeans.version>
-        <javacsv.version>2.0</javacsv.version>
-        <commons-fileupload.version>1.4</commons-fileupload.version>
-        <commons-io.version>2.6</commons-io.version>
-        <commons-validator.version>1.6</commons-validator.version>
-        <commons-codec.version>1.12</commons-codec.version>
-        <commons-httpclient.version>3.1</commons-httpclient.version>
-        <joda-time.version>2.10.2</joda-time.version>
-        <jdom2.version>2.0.6</jdom2.version>
-        <cors-filter.version>2.6</cors-filter.version>
+        <pinyin4j.version>2.5.0</pinyin4j.version>
+        <commons.fileupload.version>1.4</commons.fileupload.version>
+        <commons.io.version>2.6</commons.io.version>
+        <cors.filter.version>2.6</cors.filter.version>
         <thumbnailator.version>0.4.8</thumbnailator.version>
         <hibernate.version>5.3.9.Final</hibernate.version>
         <mybatis.version>2.0.1</mybatis.version>
-        <pagehelper-starter.version>1.2.10</pagehelper-starter.version>
-        <mybatis-ehcache.version>1.1.0</mybatis-ehcache.version>
-        <mybatis-plus.version>3.1.1</mybatis-plus.version>
-        <geoip2.version>2.12.0</geoip2.version>
         <log4j.version>2.11.2</log4j.version>
-        <dom4j.version>2.1.1</dom4j.version>
-        <java-jwt.version>3.8.1</java-jwt.version>
+        <java.jwt.version>3.8.1</java.jwt.version>
         <jjwt.version>0.9.1</jjwt.version>
+        <gson.version>2.8.5</gson.version>
+        <jasypt.version>2.1.1</jasypt.version>
+
     </properties>
+
     <dependencies>
         <!--springboot相关依赖-->
         <dependency>
@@ -146,13 +112,7 @@
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.belerweb</groupId>
-            <artifactId>pinyin4j</artifactId>
-            <version>2.5.0</version>
-        </dependency>
-
-        <!--Geotools相关依赖-->
+        <!--GeoTools相关依赖-->
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-shapefile</artifactId>
@@ -170,47 +130,12 @@
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>
-            <artifactId>gt-epsg-hsql</artifactId>
-            <version>${geotools.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.geotools</groupId>
             <artifactId>gt-swing</artifactId>
             <version>${geotools.version}</version>
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-geojson</artifactId>
-            <version>${geotools.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.geotools.ogc</groupId>
-            <artifactId>net.opengis.ows</artifactId>
-            <version>${geotools.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.geotools.ogc</groupId>
-            <artifactId>net.opengis.wfs</artifactId>
-            <version>${geotools.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.geotools.ogc</groupId>
-            <artifactId>net.opengis.wcs</artifactId>
-            <version>${geotools.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-imageio-ext-gdal</artifactId>
-            <version>${geotools.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-process-geometry</artifactId>
-            <version>${geotools.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-process-raster</artifactId>
             <version>${geotools.version}</version>
         </dependency>
         <dependency>
@@ -255,7 +180,7 @@
         <dependency>
             <groupId>org.locationtech.jts</groupId>
             <artifactId>jts-core</artifactId>
-            <version>${jts-core.version}</version>
+            <version>${jts.core.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.ant/ant -->
         <dependency>
@@ -267,14 +192,7 @@
         <dependency>
             <groupId>it.geosolutions</groupId>
             <artifactId>geoserver-manager</artifactId>
-            <version>${geoserver-manager.version}</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.gdal/gdal -->
-        <dependency>
-            <groupId>org.gdal</groupId>
-            <artifactId>gdal</artifactId>
-            <version>${gdal.version}</version>
-            <type>pom</type>
+            <version>${geoserver.manager.version}</version>
         </dependency>
 
         <!--数据库DB相关依赖-->
@@ -289,17 +207,6 @@
             <artifactId>mybatis-spring-boot-starter</artifactId>
             <version>${mybatis.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.github.pagehelper</groupId>
-            <artifactId>pagehelper-spring-boot-starter</artifactId>
-            <version>${pagehelper-starter.version}</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.baomidou/mybatis-plus-boot-starter -->
-        <!-- <dependency>
-             <groupId>com.baomidou</groupId>
-             <artifactId>mybatis-plus-boot-starter</artifactId>
-             <version>${mybatis-plus.version}</version>
-         </dependency>-->
         <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-spatial -->
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -337,7 +244,7 @@
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>swagger-bootstrap-ui</artifactId>
-            <version>${swagger-bootstrap-ui.version}</version>
+            <version>${swagger.bootstrap.ui.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
         <dependency>
@@ -370,59 +277,17 @@
             <artifactId>fastjson</artifactId>
             <version>${fastjson.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>${poi.version}</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.alibaba/easyexcel -->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>easyexcel</artifactId>
-            <version>${easyexcel.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>commons-logging</artifactId>
-                    <groupId>commons-logging</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>commons-collections</artifactId>
-                    <groupId>commons-collections</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>poi</artifactId>
-                    <groupId>org.apache.poi</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>xmlbeans</artifactId>
-                    <groupId>org.apache.xmlbeans</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/com.belerweb/pinyin4j -->
         <dependency>
             <groupId>com.belerweb</groupId>
             <artifactId>pinyin4j</artifactId>
             <version>${pinyin4j.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.xmlbeans/xmlbeans -->
-        <dependency>
-            <groupId>org.apache.xmlbeans</groupId>
-            <artifactId>xmlbeans</artifactId>
-            <version>${xmlbeans.version}</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/net.sourceforge.javacsv/javacsv -->
-        <dependency>
-            <groupId>net.sourceforge.javacsv</groupId>
-            <artifactId>javacsv</artifactId>
-            <version>${javacsv.version}</version>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload -->
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
-            <version>${commons-fileupload.version}</version>
+            <version>${commons.fileupload.version}</version>
             <exclusions>
                 <exclusion>
                     <artifactId>commons-io</artifactId>
@@ -434,7 +299,7 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>${commons-io.version}</version>
+            <version>${commons.io.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
         <dependency>
@@ -442,70 +307,17 @@
             <artifactId>commons-lang3</artifactId>
             <version>${commons-lang3.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/commons-validator/commons-validator -->
-        <dependency>
-            <groupId>commons-validator</groupId>
-            <artifactId>commons-validator</artifactId>
-            <version>${commons-validator.version}</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>${commons-codec.version}</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/commons-httpclient/commons-httpclient -->
-        <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-            <version>${commons-httpclient.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>commons-logging</artifactId>
-                    <groupId>commons-logging</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>${httpclient.version}</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/joda-time/joda-time -->
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>${joda-time.version}</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.jdom/jdom2 -->
-        <dependency>
-            <groupId>org.jdom</groupId>
-            <artifactId>jdom2</artifactId>
-            <version>${jdom2.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.dom4j</groupId>
-            <artifactId>dom4j</artifactId>
-            <version>${dom4j.version}</version>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/com.thetransactioncompany/cors-filter -->
         <dependency>
             <groupId>com.thetransactioncompany</groupId>
             <artifactId>cors-filter</artifactId>
-            <version>${cors-filter.version}</version>
+            <version>${cors.filter.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/net.coobird/thumbnailator -->
         <dependency>
             <groupId>net.coobird</groupId>
             <artifactId>thumbnailator</artifactId>
             <version>${thumbnailator.version}</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.maxmind.geoip2/geoip2 -->
-        <dependency>
-            <groupId>com.maxmind.geoip2</groupId>
-            <artifactId>geoip2</artifactId>
-            <version>${geoip2.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
         <dependency>
@@ -518,12 +330,11 @@
             <artifactId>android-json</artifactId>
             <version>0.0.20131108.vaadin1</version>
         </dependency>
-
         <!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->
         <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
-            <version>${java-jwt.version}</version>
+            <version>${java.jwt.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
         <dependency>
@@ -537,8 +348,61 @@
             <version>RELEASE</version>
             <scope>compile</scope>
         </dependency>
-
+        <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${gson.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.github.ulisesbocchio/jasypt-spring-boot-starter -->
+        <dependency>
+            <groupId>com.github.ulisesbocchio</groupId>
+            <artifactId>jasypt-spring-boot-starter</artifactId>
+            <version>${jasypt.version}</version>
+        </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>maven-ali</id>
+            <url>http://maven.aliyun.com/nexus/content/groups/public//</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>fail</checksumPolicy>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>boundless</id>
+            <name>Boundless Maven Repository</name>
+            <url>https://repo.boundlessgeo.com/main/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+        <repository>
+            <id>osgeo</id>
+            <name>Open Source Geospatial Foundation Repository</name>
+            <url>http://download.osgeo.org/webdav/geotools/</url>
+        </repository>
+        <repository>
+            <id>geosolutions</id>
+            <name>geosolutions repository</name>
+            <url>http://maven.geo-solutions.it/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
 
     <build>
         <finalName>GISPlatform</finalName>

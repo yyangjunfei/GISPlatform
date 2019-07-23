@@ -8,6 +8,7 @@ import java.io.Serializable;
 @Data
 @Builder
 public class ShpInfo implements Serializable {
+
     private Geometry geometry;
     private String id;
     private String type;

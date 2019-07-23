@@ -1,9 +1,9 @@
 package cc.wanshan.gis.common.security;
 
-import cc.wanshan.gis.entity.security.Authority;
-import cc.wanshan.gis.entity.security.Role;
-import cc.wanshan.gis.service.security.AuthorityService;
-import cc.wanshan.gis.service.security.RoleService;
+import cc.wanshan.gis.entity.authorize.Authority;
+import cc.wanshan.gis.entity.authorize.Role;
+import cc.wanshan.gis.service.authorize.AuthorityService;
+import cc.wanshan.gis.service.authorize.RoleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.ConfigAttribute;
@@ -18,9 +18,12 @@ import java.util.List;
 
 @Component
 public class FilterInvocationSecurityMetadataSourceImpl implements FilterInvocationSecurityMetadataSource {
+
     private static final Logger logger = LoggerFactory.getLogger(FilterInvocationSecurityMetadataSourceImpl.class);
+
     @Resource(name = "authorityServiceImpl")
     private AuthorityService authorityService;
+
     @Resource(name = "roleServiceImpl")
     private RoleService roleService;
 

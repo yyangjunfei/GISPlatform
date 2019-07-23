@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 @Builder
 public class Properties {
+
     private String province;
     private String city;
     private String second_cla;
