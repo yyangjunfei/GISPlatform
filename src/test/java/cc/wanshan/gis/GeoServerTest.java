@@ -49,7 +49,7 @@ public class GeoServerTest {
     @Test
     public void publishLayer() {
         logger.info("publishLayer::");
-        Result result = geoServerServiceImpl.publishLayer("shpdb", "shpdb", "hanzhong");
+        Result result = geoServerServiceImpl.publishLayer("shpdb", "shpdb", "hanzhong","");
         logger.info("searchLayer::" + result.toString());
     }
 }

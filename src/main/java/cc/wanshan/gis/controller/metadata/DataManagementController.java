@@ -101,7 +101,10 @@ public class DataManagementController {
 
         String storeName = LanguageUtils.getPinYin(met.getStoreName());
 
-        Result rest = geoServerService.publishLayer("shpdb",storeName,met.getLayerName());
+        //获取风格
+        String defaultStyle =met.getStyleName();
+
+        Result rest = geoServerService.publishLayer("shpdb",storeName,met.getLayerName(),defaultStyle);
 
         //发布成功之后 更改数据库中的发布状态
         dataManagementService.changePublicationStatus(id);

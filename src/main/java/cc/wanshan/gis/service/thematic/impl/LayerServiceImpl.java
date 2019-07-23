@@ -400,12 +400,12 @@ public class LayerServiceImpl implements LayerService {
     }
   }
 
-  private Result publishLayer(String workspace, String store, String layerName) {
+  private Result publishLayer(String workspace, String store, String layerName,String defaultStyle) {
     logger.info("publishLayer::workspace = [{}], store = [{}], layerName = [{}]", workspace, store,
         layerName);
     RESTLayer layer = GeoServerUtils.manager.getReader().getLayer(workspace, layerName);
     if (layer == null) {
-      Result result = geoServerService.publishLayer(workspace, store, layerName);
+      Result result = geoServerService.publishLayer(workspace, store, layerName,defaultStyle);
       if (result.getCode() == 0 || result.getCode() == 1) {
         return ResultUtil.success();
       } else {

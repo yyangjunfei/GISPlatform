@@ -48,5 +48,5 @@ public interface GeoServerService {
    * @param storeName 存储名称
    * @param tableName 数据库表名称
    */
-  Result publishLayer(String ws, String storeName, String tableName);
+  Result publishLayer(String ws, String storeName, String tableName,String defaultStyle);
 }

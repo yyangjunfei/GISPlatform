@@ -182,7 +182,7 @@ public class GeoServerServiceImpl implements GeoServerService {
      * @return
      */
     @Override
-    public Result publishLayer(String ws, String storeName, String tableName) {
+    public Result publishLayer(String ws, String storeName, String tableName,String defaultStyle) {
         LOG.info("已进入：publishLayer::manager = [{}], ws = [{}], storeName = [{}], tableName = [{}]", ws, storeName, tableName);
         if (ws != null && !"".equals(ws) && storeName != null && !"".equals(storeName) && tableName != null && !"".equals(tableName)) {
 
@@ -201,6 +201,8 @@ public class GeoServerServiceImpl implements GeoServerService {
                     pds.setName(tableName);
                     pds.setSRS("EPSG:4326");
                     GSLayerEncoder layerEncoder = new GSLayerEncoder();
+                    //设置发布风格
+                    layerEncoder.setDefaultStyle(defaultStyle);
                     boolean publishDBLayer = GeoServerUtils.publisher.publishDBLayer(ws, storeName, pds, layerEncoder);
 
                     if (publishDBLayer) {

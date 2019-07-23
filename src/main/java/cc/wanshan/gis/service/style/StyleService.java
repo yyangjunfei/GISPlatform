@@ -1,9 +1,12 @@
 package cc.wanshan.gis.service.style;
 
+import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.entity.style.Style;
 import cc.wanshan.gis.entity.thematic.Thematic;
 import java.util.List;
 import org.apache.ibatis.reflection.factory.DefaultObjectFactory;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author Li Cheng
@@ -31,5 +34,10 @@ public interface StyleService {
    * @return java.util.List<cc.wanshan.gis.entity.style.Style>
    **/
   List<Style> findStyleByStyleName(String styleName);
+
+
+
+ //创建风格文件(上传发布)
+  Result createStyle( MultipartFile styleFile);
 
 }
