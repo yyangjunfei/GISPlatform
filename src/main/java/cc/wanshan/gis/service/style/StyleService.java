@@ -36,8 +36,16 @@ public interface StyleService {
   List<Style> findStyleByStyleName(String styleName);
 
 
+    /***
+     * Yang 2019-7-23
+     * @param styleFile
+     * @return
+     */
 
- //创建风格文件(上传发布)
-  Result createStyle( MultipartFile styleFile);
+ //创建风格文件(来自SLD文件)
+  Result createStyleBySldFile(String workspaceName,String sldName,MultipartFile styleFile);
+
+  //创建风格文件(来自整个SLD文档字符串)
+  Result createStyleBySldDocument (String workspaceName,String sldBody,String sldName);
 
 }
