@@ -7,6 +7,8 @@ import com.google.common.collect.Lists;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import it.geosolutions.geoserver.rest.decoder.RESTStyleList;
+import it.geosolutions.geoserver.rest.decoder.RESTWmsList;
+import it.geosolutions.geoserver.rest.decoder.RESTWmsStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

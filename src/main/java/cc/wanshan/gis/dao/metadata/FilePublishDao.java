@@ -33,11 +33,11 @@ public interface FilePublishDao {
     int checkIfTableLayerPropertieseExist(String tabName);
 
 
-    @Update({"CREATE TABLE shpdb.\"${tableName}\"(id serial,workspace_name varchar(255),store_name varchar(255),data_type varchar(255),layer_name varchar(255),safety_level varchar(255),vector_types varchar(255),style_name varchar(255),create_time timestamp,create_by varchar(255),delete int8,release_flag int8,constraint pk_${tableName}_a_id primary key(id));"})
+    @Update({"CREATE TABLE shpdb.\"${tableName}\"(id serial,workspace_name varchar(255),store_name varchar(255),layer_group varchar(255),data_type varchar(255),layer_name varchar(255),safety_level varchar(255),vector_types varchar(255),style_name varchar(255),attribution_department varchar(255),create_time timestamp,create_by varchar(255),delete int8,release_flag int8,constraint pk_${tableName}_a_id primary key(id));"})
     int  createLayerPropertieseTable(@Param("tableName")String tableName);
 
 
-    @Insert({"INSERT INTO shpdb.\"LAYER_PROPERTIES\" (workspace_name,store_name,data_type,layer_name,safety_level,vector_types,style_name,create_time,create_by,delete,release_flag)VALUES (#{workspaceName},#{storeName},#{DataType},#{layerName},#{safetyLevel},#{vectorTypes},#{styleName},now(),#{createBy},0,0);"})
+    @Insert({"INSERT INTO shpdb.\"LAYER_PROPERTIES\" (workspace_name,store_name,layer_group,data_type,layer_name,safety_level,vector_types,style_name,attribution_department,create_time,create_by,delete,release_flag)VALUES (#{workspaceName},#{storeName},#{layerGroup},#{DataType},#{layerName},#{safetyLevel},#{vectorTypes},#{styleName},#{attributionDepartment},now(),#{createBy},0,0);"})
     int insertLayerPropertieseTableData(metadata metadata);
 
 }
