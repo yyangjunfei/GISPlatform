@@ -50,11 +50,10 @@ public class DataManagementServiceImpl implements DataManagementService {
 
             List<ShpInfo> shpInfoList= fileService.readSHP(filePath);
 
-            for (Map<String, String> maps :data){
+            //删除文件
+            for (Map<String, String> map:data ){
 
-                System.out.println("filePath::"+maps.get("filePath"));
-                //删除上传的文件
-                fileService.delFile(maps.get("filePath"));
+                fileService.delFile(map.get("filePath"));
             }
 
             //将中文图层名转换为拼音字符作为数据库中的表名
