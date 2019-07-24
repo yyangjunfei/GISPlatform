@@ -171,7 +171,7 @@ public interface ThematicDao {
             @Result(column = "describe", property = "describe"),
             @Result(column = "insert_time", property = "insertTime"),
             @Result(column = "insert_time", property = "updateTime"),
-            @Result(column = "thematic_id", property = "userList", many = @Many(select = "cc.wanshan.demo.repository.UserDao.findUsersByThematicId", fetchType = FetchType.LAZY))
+            @Result(column = "thematic_id", property = "userList", many = @Many(select = "cc.wanshan.gis.dao.authorize.UserDao.findUsersByThematicId", fetchType = FetchType.LAZY))
     })
     List<Thematic> findAllThematic();
 

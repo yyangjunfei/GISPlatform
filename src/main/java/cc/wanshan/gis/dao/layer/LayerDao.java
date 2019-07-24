@@ -231,9 +231,9 @@ public interface LayerDao {
             @Result(column = "stroke_color", property = "strokeColor"),
             @Result(column = "stroke_width", property = "strokeWidth"),
             @Result(column = "opacity", property = "opacity"),
-            @Result(column = "layer_id", property = "pointList", many = @Many(select = "cc.wanshan.gis.dao.layer.PointDao.findPointByLayerId", fetchType = FetchType.LAZY)),
-            @Result(column = "layer_id", property = "lineStringList", many = @Many(select = "cc.wanshan.gis.dao.layer.LineStringDao.findLineStringByLayerId", fetchType = FetchType.LAZY)),
-            @Result(column = "layer_id", property = "polygonList", many = @Many(select = "cc.wanshan.gis.dao.layer.PolygonDao.findPolygonByLayerId", fetchType = FetchType.LAZY))
+            @Result(column = "layer_id", property = "pointList", many = @Many(select = "cc.wanshan.gis.dao.plot.of2d.PointDao.findPointByLayerId", fetchType = FetchType.LAZY)),
+            @Result(column = "layer_id", property = "lineStringList", many = @Many(select = "cc.wanshan.gis.dao.plot.of2d.LineStringDao.findLineStringByLayerId", fetchType = FetchType.LAZY)),
+            @Result(column = "layer_id", property = "polygonList", many = @Many(select = "cc.wanshan.gis.dao.plot.of2d.PolygonDao.findPolygonByLayerId", fetchType = FetchType.LAZY))
     })
     Layer findLayerByLayerId(String layerId);
 
@@ -292,9 +292,9 @@ public interface LayerDao {
             @Result(column = "stroke_color", property = "strokeColor"),
             @Result(column = "stroke_width", property = "strokeWidth"),
             @Result(column = "opacity", property = "opacity"),
-            @Result(column = "layer_id", property = "pointList", many = @Many(select = "cc.wanshan.gis.dao.layer.PointDao.findPointByLayerId", fetchType = FetchType.LAZY)),
-            @Result(column = "layer_id", property = "lineStringList", many = @Many(select = "cc.wanshan.gis.dao.layer.LineStringDao.findLineStringByLayerId", fetchType = FetchType.LAZY)),
-            @Result(column = "layer_id", property = "polygonList", many = @Many(select = "cc.wanshan.gis.dao.layer.PolygonDao.findPolygonByLayerId", fetchType = FetchType.LAZY))
+            @Result(column = "layer_id", property = "pointList", many = @Many(select = "cc.wanshan.gis.dao.plot.of2d.PointDao.findPointByLayerId", fetchType = FetchType.LAZY)),
+            @Result(column = "layer_id", property = "lineStringList", many = @Many(select = "cc.wanshan.gis.dao.plot.of2d.LineStringDao.findLineStringByLayerId", fetchType = FetchType.LAZY)),
+            @Result(column = "layer_id", property = "polygonList", many = @Many(select = "cc.wanshan.gis.dao.plot.of2d.PolygonDao.findPolygonByLayerId", fetchType = FetchType.LAZY))
     })
     List<Layer> findByUserId(String userId);
 
@@ -337,7 +337,7 @@ public interface LayerDao {
             @Result(column = "stroke_color", property = "strokeColor"),
             @Result(column = "stroke_width", property = "strokeWidth"),
             @Result(column = "opacity", property = "opacity"),
-            @Result(column = "layer_name", property = "ruleNameList", many = @Many(select = "cc.wanshan.gis.dao.style.RuleNameDao.findRuleNamesByLayerName", fetchType = FetchType.LAZY)),
+            @Result(column = "layer_name", property = "ruleNameList", many = @Many(select = "cc.wanshan.gis.dao.layer.style.RuleNameDao.findRuleNamesByLayerName", fetchType = FetchType.LAZY)),
     })
     Layer findLayerBySecondClassId(String secondClassId);
 

@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,8 +26,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Date;
@@ -293,26 +290,24 @@ public class UserController {
 
     @RequestMapping(value = "/finduser")
     @ResponseBody
-    public Result findUser(HttpServletRequest request) {
-        logger.info("security::request = [{}]", request);
-        Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            String value = cookie.getValue();
-            logger.info("cookie" + value);
-        }
-        SecurityContextImpl securityContextImpl = (SecurityContextImpl) request
-                .getSession().getAttribute("SPRING_SECURITY_CONTEXT");
-        String username = securityContextImpl.getAuthentication().getName();
+    public Result findUser(Authentication authentication) {
+
+        logger.info("security::request = [{}]", authentication);
+
+        String username = (String) authentication.getPrincipal();
+
         User user = userServiceImpl.findUserByUsername(username);
+
         HashMap<String, String> map = new HashMap<>();
-        Authentication authentication = securityContextImpl.getAuthentication();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         for (GrantedAuthority authority : authorities) {
             String authority1 = authority.getAuthority();
             map.put("role", authority1);
         }
+
         map.put("username", username);
         map.put("userId", user.getUserId());
+
         return ResultUtil.success(map);
     }
 }

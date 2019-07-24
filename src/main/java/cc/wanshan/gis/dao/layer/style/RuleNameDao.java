@@ -40,6 +40,7 @@ import java.util.List;
 @Component
 public interface RuleNameDao {
 
+
     /**
      * description: 根据styleId和ruleNameId删除ruleName
      *

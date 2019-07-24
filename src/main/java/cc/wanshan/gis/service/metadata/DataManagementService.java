@@ -20,6 +20,6 @@ public interface DataManagementService {
 
     List<metadata> findLayerPropertiesData(metadata metadata);
 
-    Result changePublicationStatus(int id);
+    Result changePublicationStatus(int release_flag,int id);
 
 }

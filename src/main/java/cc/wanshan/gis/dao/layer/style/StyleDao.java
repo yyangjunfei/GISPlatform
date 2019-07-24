@@ -58,7 +58,7 @@ public interface StyleDao {
             @Result(column = "insert_time", property = "insertTime"),
             @Result(column = "update_time", property = "updateTime"),
             @Result(column = "style_id", property = "ruleNameList",
-                    many = @Many(select = "cc.wanshan.gis.dao.style.RuleNameDao.findRuleNamesByStyleId", fetchType = FetchType.LAZY))
+                    many = @Many(select = "cc.wanshan.gis.dao.layer.style.RuleNameDao.findRuleNamesByStyleId", fetchType = FetchType.LAZY))
     })
     Style findByStyleId(String styleId);
 
@@ -86,7 +86,7 @@ public interface StyleDao {
             @Result(column = "insert_time", property = "insertTime"),
             @Result(column = "update_time", property = "updateTime"),
             @Result(column = "style_id", property = "ruleNameList",
-                    many = @Many(select = "cc.wanshan.gis.dao.style.RuleNameDao.findRuleNamesByStyleId", fetchType = FetchType.LAZY))
+                    many = @Many(select = "cc.wanshan.gis.dao.layer.style.RuleNameDao.findRuleNamesByStyleId", fetchType = FetchType.LAZY))
     })
     List<Style> findByLayerId(String layerId);
 
@@ -162,7 +162,7 @@ public interface StyleDao {
             @Result(column = "insert_time", property = "insertTime"),
             @Result(column = "update_time", property = "updateTime"),
             @Result(column = "style_id", property = "ruleNameList",
-                    many = @Many(select = "cc.wanshan.gis.dao.style.RuleNameDao.findRuleNamesByStyleId", fetchType = FetchType.LAZY))
+                    many = @Many(select = "cc.wanshan.gis.dao.layer.style.RuleNameDao.findRuleNamesByStyleId", fetchType = FetchType.LAZY))
     })
     List<Style> findAllStyle();
 
@@ -183,7 +183,7 @@ public interface StyleDao {
     @Results({
             @Result(id = true, column = "style_id", property = "styleId"),
             @Result(column = "style_id", property = "ruleNameList",
-                    many = @Many(select = "cc.wanshan.gis.dao.style.RuleNameDao.findRuleNamesByStyleId", fetchType = FetchType.LAZY))
+                    many = @Many(select = "cc.wanshan.gis.dao.layer.style.RuleNameDao.findRuleNamesByStyleId", fetchType = FetchType.LAZY))
     })
     List<Style> findStyleByStyleName(String styleName);
 

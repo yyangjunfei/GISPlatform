@@ -17,6 +17,9 @@ import java.util.Collections;
 @JsonInclude(JsonInclude.Include.NON_NULL)    //注解控制null不序列化
 public class UserDetailsImpl implements UserDetails {
     private static final long serialVersionUID = 1L;
+
+    private String id;
+
     @NotBlank(message = "用户名不可为null")
     @Length(max = 24, message = "长度最多24位")
     private String username;
@@ -31,7 +34,7 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     public UserDetailsImpl(User user, Role role) {
-//        id = authorize.getUserId();
+        this.id = user.getUserId();
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.role = role;

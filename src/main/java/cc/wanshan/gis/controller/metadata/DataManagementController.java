@@ -114,11 +114,30 @@ public class DataManagementController {
 
         Result rest = geoServerService.publishLayer("shpdb", storeName, met.getLayerName(), defaultStyle);
 
-        //发布成功之后 更改数据库中的发布状态
-        dataManagementService.changePublicationStatus(id);
+        //发布成功之后 更改数据库中的发布状态为1
+        dataManagementService.changePublicationStatus(1,id);
 
         return rest;
     }
+
+
+    @ApiOperation(value = "删除geoserver发布的图层", notes = "删除geoserver发布的图层")
+    @DeleteMapping ("/deleteShpData2Geoserver")
+    public Result deleteShpData2Geoserver(@RequestParam("id") int id){
+
+        //1.前端传入id ，根据id 查询到已经发布的,工作空间，存储名称，图层名
+        metadata met =dataManagementService.shpData2Geoserver(id);
+        String storeName = LanguageUtils.getPinYin(met.getStoreName());
+         boolean deleteFlag= GeoServerUtils.publisher.unpublishFeatureType("shpdb",storeName,met.getLayerName());
+         if(deleteFlag){
+             //删除geoserver发布的图层成功之后 更改数据库中的发布状态为0
+             dataManagementService.changePublicationStatus(0,id);
+             return  ResultUtil.error("删除geoserver发布的图层成功!");
+         }else{
+             return  ResultUtil.error("删除geoserver发布的图层失败!");
+         }
+    }
+
 
     @ApiOperation(value = "预览显示发布geoServer图层数据", notes = "预览显示发布geoServer图层数据")
     @GetMapping("/publishPreviewLayer")

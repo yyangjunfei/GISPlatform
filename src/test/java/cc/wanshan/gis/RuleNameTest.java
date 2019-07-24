@@ -30,6 +30,7 @@ public class RuleNameTest {
     private static final Logger logger = LoggerFactory.getLogger(RuleNameTest.class);
     private Style style = new Style();
     private Layer layer = new Layer();
+
     @Resource
     private RuleNameService ruleNameService;
     @Resource

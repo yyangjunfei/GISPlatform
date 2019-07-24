@@ -87,8 +87,8 @@ public interface DataManagementDao {
     List<metadata> findLayerPropertiesData(metadata metadata);
 
     @Update({
-            "update shpdb.\"LAYER_PROPERTIES\" set release_flag =1 where id = #{id}"
+            "update shpdb.\"LAYER_PROPERTIES\" set release_flag =#{release_flag} where id = #{id}"
     })
-    int changePublicationStatus(int id);
+    int changePublicationStatus(int release_flag,int id);
 
 }

@@ -258,6 +258,9 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
 
         List<RegionOutput> regionOutputList = Lists.newArrayList();
         for (SearchHit searchHitFields : response.getHits()) {
+
+
+            System.out.println(searchHitFields.getSourceAsString());
             Region region = JSON.parseObject(searchHitFields.getSourceAsString(), Region.class);
 
 //            region.setGeometry(null);
