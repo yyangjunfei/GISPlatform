@@ -3,23 +3,27 @@ server:
   servlet:
     session:
       timeout: 7200
+  # salt加密配置
+jasypt:
+  encryptor:
+    password: gis
 spring:
   mvc:
     async:
       request-timeout: 600000
   datasource:
     platform: postgres
-    url: jdbc:postgresql://192.168.1.133:5432/test?useAffectedRows=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=serverTimezone=Asia/Shanghai
+    url: jdbc:postgresql://192.168.1.133:5432/dev?useAffectedRows=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
     username: postgres
     password: wanshan
     driver-class-name: org.postgresql.Driver
-  jackson:
-    default-property-inclusion: non_empty
-    date-format: yyyy-MM-dd HH:mm:ss
-    time-zone: GMT+8
-    serialization:
-      FAIL_ON_EMPTY_BEANS: false
-      write-dates-as-timestamps: false #使用时间戳，使用数值timestamp表示日期
+  # redis配置
+  redis:
+    host: 172.24.4.11
+    password: ENC(BgTB/HJz4yROF14Mf3Se5Q==)
+    database: 1
+    port: 6379
+    timeout: 3S
   data:
     # elasticsearch配置
     elasticsearch:
@@ -34,11 +38,23 @@ spring:
   elasticsearch:
     rest:
       uris: ["http://172.24.4.9:9200"]
-management:
   security:
     health:
       elasticsearch:
         enabled: false
+  jackson:
+    default-property-inclusion: non_empty
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
+      write-dates-as-timestamps: false #使用时间戳，使用数值timestamp表示日期
+  #配置spring 上传文件大小
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 1000MB
+      max-request-size: 1000MB
 
 # mybatis配置
 mybatis:
@@ -58,19 +74,38 @@ geoserver:
   postgisPort: 5432
   postgisUser: postgres
   postgisPassword: wanshan
-  postgisDatabase: test
+  postgisDatabase: dev
 
-# postgis数据库配置
+# postGIS数据库配置
 postgis:
-  url: jdbc:postgresql://192.168.1.133:5432/test
+  url: jdbc:postgresql://192.168.1.133:5432/dev
   user: postgres
   password: wanshan
-
-# swagger 显示判断
-swagger:
-  enable: true
+  driver-class-name: org.postgresql.Driver
 
 # file 文件路径
 file:
-  path: D:\Metadata
+  path: D:\Upload
 
+gis:
+  # swagger 显示判断
+  swagger:
+    enable: true
+    # token 使用判断
+  token:
+    enable: false
+
+# 忽略鉴权url
+ignored:
+  urls:
+    - /user/login/**
+    - /user/regist
+    - /druid/**
+    - /swagger-ui.html
+    - /swagger-resources/**
+    - /swagger/**
+    - /**/v2/api-docs
+    - /**/*.js
+    - /**/*.css
+    - /**/*.png
+    - /**/*.ico

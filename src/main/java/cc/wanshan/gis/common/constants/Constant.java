@@ -134,9 +134,11 @@ public class Constant {
      */
     public static final long JWT_TTL = 60 * 60 * 1000;
     /**
-     * 密钥
+     * 令牌无效
      */
-    public static final String JWT_SECRET = "miyao";
-
-
+    public static final String INVALID_TOKEN_MSG = "invalid token";
+    /**
+     * 过期的令牌
+     */
+    public static final String EXPIRED_TOKEN_MSG = "expired token";
 }

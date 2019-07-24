@@ -14,9 +14,7 @@ import org.springframework.context.annotation.Bean;
 public class GISPlatformApplication extends SpringBootServletInitializer {
 
     @Bean
-    public WKTReader wktReader() {
-        return new WKTReader();
-    }
+    public WKTReader wktReader() {return new WKTReader();}
 
     @Bean
     public ObjectMapper objectMapper() {

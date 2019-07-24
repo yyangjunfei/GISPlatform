@@ -1,7 +1,7 @@
 package cc.wanshan.gis.controller.plot;
 
-import cc.wanshan.gis.entity.Result;
-import cc.wanshan.gis.service.plot.PlotService;
+import cc.wanshan.gis.common.pojo.Result;
+import cc.wanshan.gis.service.plot.of3d.PlotService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -23,7 +23,6 @@ import javax.annotation.Resource;
 @Api(value = "PlotController", tags = "标绘接口")
 @RestController
 @RequestMapping("/rest/plot")
-//@EnableAutoConfiguration
 public class PlotController {
 
     private Logger LOG = LoggerFactory.getLogger(this.getClass());

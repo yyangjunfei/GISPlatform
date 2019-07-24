@@ -359,3 +359,33 @@ CREATE TABLE public.tb_linestring
                ON DELETE NO ACTION,
        CONSTRAINT tb_thematic_layer_pkey PRIMARY KEY (thematic_layer_id)
    )
+
+
+CREATE TABLE public.oauth_access_token
+   (
+       token_id character varying(256) COLLATE pg_catalog."default" NOT NULL,
+       token BYTEA NULL,
+       authentication_id character varying(256) COLLATE pg_catalog."default" NOT NULL,
+       user_name character varying(256) COLLATE pg_catalog."default" NOT NULL,
+       client_id character varying(256) COLLATE pg_catalog."default" NOT NULL,
+       authentication BYTEA NULL,
+       refresh_token character varying(256) COLLATE pg_catalog."default" NOT NULL,
+           CONSTRAINT oauth_access_token_pkey PRIMARY KEY (authentication_id)
+   )
+
+CREATE TABLE public.oauth_client_details
+   (
+       client_id character varying(256) COLLATE pg_catalog."default" NOT NULL,
+       resource_ids character varying(256) COLLATE pg_catalog."default" NOT NULL,
+       client_secret character varying(256) COLLATE pg_catalog."default" NOT NULL,
+       scope character varying(256) COLLATE pg_catalog."default" NOT NULL,
+       authorized_grant_types character varying(256) COLLATE pg_catalog."default" NOT NULL,
+       web_server_redirect_uri character varying(256) COLLATE pg_catalog."default" NOT NULL,
+       authorities character varying(256) COLLATE pg_catalog."default" NOT NULL,
+       access_token_validity int  NOT NULL,
+       refresh_token_validity int  NOT NULL,
+       additional_information character varying(4096) COLLATE pg_catalog."default" NOT NULL,
+       autoapprove character varying(256) COLLATE pg_catalog."default" NOT NULL,
+       CONSTRAINT oauth_client_details_pkey PRIMARY KEY (client_id)
+   )
+
