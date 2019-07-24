@@ -18,7 +18,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -29,7 +28,6 @@ import org.springframework.security.config.annotation.web.configurers.Expression
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
-import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 
 import javax.annotation.Resource;
 
@@ -111,7 +109,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         httpSecurity
                 .cors().and()
-                .exceptionHandling().accessDeniedHandler(myAccessDeniedHandler).and()
+                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).accessDeniedHandler(myAccessDeniedHandler).and()
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
@@ -123,6 +121,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         registry.antMatchers(HttpMethod.POST, "/security/login", "/**").permitAll()
                 .antMatchers(HttpMethod.OPTIONS).permitAll()
+                .anyRequest().authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/user/login")
@@ -132,16 +131,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                 .logoutUrl("/logout")
                 .logoutSuccessHandler(customLogoutSuccessHandler).and()
-                .authorizeRequests().anyRequest().authenticated()
-                .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
-                    @Override
-                    public <O extends FilterSecurityInterceptor> O postProcess(O o) {
-                        o.setSecurityMetadataSource(filterInvocationSecurityMetadataSource);
-                        o.setAccessDecisionManager(accessDecisionManager);
-                        return o;
-                    }
-                })
-                .and()
+//                .authorizeRequests().anyRequest().authenticated()
+//                .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
+//                    @Override
+//                    public <O extends FilterSecurityInterceptor> O postProcess(O o) {
+//                        o.setSecurityMetadataSource(filterInvocationSecurityMetadataSource);
+//                        o.setAccessDecisionManager(accessDecisionManager);
+//                        return o;
+//                    }
+//                })
+//                .and()
                 // 添加自定义权限过滤器
                 .addFilter(new JWTAuthorizationFilter(authenticationManager(), redisTemplate))
         ;
