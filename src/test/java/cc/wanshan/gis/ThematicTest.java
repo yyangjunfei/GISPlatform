@@ -1,6 +1,6 @@
 package cc.wanshan.gis;
 
-import cc.wanshan.gis.dao.layer.ThematicDao;
+import cc.wanshan.gis.dao.layer.thematic.ThematicDao;
 import cc.wanshan.gis.entity.layer.thematic.Thematic;
 import cc.wanshan.gis.service.layer.thematic.ThematicService;
 import com.alibaba.fastjson.JSONObject;

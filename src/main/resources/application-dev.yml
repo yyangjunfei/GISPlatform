@@ -85,7 +85,7 @@ postgis:
 
 # file 文件路径
 file:
-  path: D:\Metadata
+  path: D:\Upload
 
 gis:
   # swagger 显示判断
@@ -98,12 +98,8 @@ gis:
 # 忽略鉴权url
 ignored:
   urls:
-    - /auth/login/**
-    - /auth/actuator/**
-    - /auth/admin/**
-    - /auth/regist
-    - /auth/test/**
-    - /auth/common/**
+    - /user/login/**
+    - /user/regist
     - /druid/**
     - /swagger-ui.html
     - /swagger-resources/**
@@ -113,4 +109,3 @@ ignored:
     - /**/*.css
     - /**/*.png
     - /**/*.ico
-

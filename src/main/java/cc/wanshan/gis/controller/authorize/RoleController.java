@@ -5,7 +5,7 @@ import cc.wanshan.gis.entity.authorize.Role;
 import cc.wanshan.gis.service.authorize.RoleService;
 import cc.wanshan.gis.utils.base.ResultUtil;
 import com.alibaba.fastjson.JSONObject;
-import org.apache.commons.lang3.StringUtils;
+import io.micrometer.core.instrument.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -23,6 +23,7 @@ import javax.annotation.Resource;
 public class RoleController {
 
     private static final Logger logger = LoggerFactory.getLogger(RoleController.class);
+
     @Resource(name = "roleServiceImpl")
     private RoleService roleService;
 

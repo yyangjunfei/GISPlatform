@@ -6,14 +6,14 @@ import cc.wanshan.gis.service.layer.geoserver.StoreService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Service(value = "storeServiceImpl")
-public class StoreServiceImpl implements StoreService {
 
+public class StoreServiceImpl implements StoreService {
     private static final Logger logger = LoggerFactory.getLogger(StoreServiceImpl.class);
 
     @Resource

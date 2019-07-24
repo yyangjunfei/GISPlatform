@@ -15,8 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * user实体类
- *
+ * @Description user实体类
  * @Author Li Cheng
  * @Date 14:43 2019/5/18
  **/
@@ -26,6 +25,7 @@ import java.util.List;
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @NotBlank(message = "用户id不可为null")
     @Length(max = 32, message = "长度最多32位")
     private String userId;
@@ -55,5 +55,5 @@ public class User implements Serializable {
     private Integer delete;
     private Role role;
     private List<Store> storeList;
-
+    private String enabled;
 }

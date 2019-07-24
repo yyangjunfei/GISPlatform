@@ -1,6 +1,6 @@
 package cc.wanshan.gis;
 
-import cc.wanshan.gis.dao.layer.StyleDao;
+import cc.wanshan.gis.dao.layer.style.StyleDao;
 import cc.wanshan.gis.entity.layer.style.RuleName;
 import cc.wanshan.gis.entity.layer.style.RuleValue;
 import cc.wanshan.gis.entity.layer.style.Style;

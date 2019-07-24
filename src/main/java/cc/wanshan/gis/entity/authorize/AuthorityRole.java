@@ -18,7 +18,9 @@ import java.io.Serializable;
 @JsonIgnoreProperties(value = {"handler"})//排除mybatis懒加载json序列化中的异常
 @JsonInclude(JsonInclude.Include.NON_NULL)    //注解控制null不序列化
 public class AuthorityRole implements Serializable {
+
     private static final long serialVersionUID = 1L;
+
     @NotBlank(message = "权限角色中间表id不为null")
     @Length(max = 32, message = "权限角色中间表id长度最长为32字节")
     private String authorRoleId;

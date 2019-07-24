@@ -1,4 +1,4 @@
-package cc.wanshan.gis.controller.geoserver;
+package cc.wanshan.gis.controller.layer;
 
 import cc.wanshan.gis.common.pojo.Result;
 import cc.wanshan.gis.service.layer.geoserver.UserPropsService;

@@ -1,4 +1,4 @@
-package cc.wanshan.gis.dao.plot.of2d;
+package cc.wanshan.gis.dao.layer;
 
 import cc.wanshan.gis.common.pojo.Result;
 
@@ -10,5 +10,5 @@ import cc.wanshan.gis.common.pojo.Result;
  * @return
  **/
 public interface DropLayerDao {
-    public Result dropLayer(String schema, String layerName);
+    Result dropLayer(String schema, String layerName);
 }

@@ -2,7 +2,7 @@ package cc.wanshan.gis.service.layer.thematic.impl;
 
 import cc.wanshan.gis.common.pojo.Result;
 import cc.wanshan.gis.dao.layer.CreateSchemaDao;
-import cc.wanshan.gis.dao.layer.ThematicDao;
+import cc.wanshan.gis.dao.layer.thematic.ThematicDao;
 import cc.wanshan.gis.entity.layer.thematic.Thematic;
 import cc.wanshan.gis.service.layer.thematic.ThematicService;
 import org.slf4j.Logger;

@@ -7,8 +7,8 @@ import cc.wanshan.gis.entity.plot.of2d.Layer;
 import cc.wanshan.gis.entity.plot.of2d.LineString;
 import cc.wanshan.gis.entity.plot.of2d.Point;
 import cc.wanshan.gis.entity.plot.of2d.Polygon;
-import cc.wanshan.gis.service.layer.geoserver.LayerService;
 import cc.wanshan.gis.service.layer.style.StyleService;
+import cc.wanshan.gis.service.layer.thematic.LayerService;
 import cc.wanshan.gis.service.layer.thematic.ThematicService;
 import cc.wanshan.gis.service.layer.thematic.ThematicUserService;
 import cc.wanshan.gis.utils.base.ResultUtil;
@@ -47,6 +47,7 @@ import java.util.List;
 public class LayerController {
 
     private static final Logger logger = LoggerFactory.getLogger(LayerController.class);
+
     @Resource(name = "layerServiceImpl")
     private LayerService layerService;
     @Resource(name = "thematicServiceImpl")

@@ -48,17 +48,17 @@ public class DataManagementServiceImpl implements DataManagementService {
 
         //String uuid = UUID.randomUUID().toString().replaceAll("-", "");
 
-        metadata metadata = JSON.parseObject(jsonString, metadata.class);
+        metadata metadata = JSON.parseObject(jsonString, cc.wanshan.gis.entity.metadata.metadata.class);
 
         //读取shp文件并且发布到数据库
         try {
 
             List<ShpInfo> shpInfoList = fileService.readSHP(filePath);
 
-            for (Map<String, String> maps : data) {
+            //删除文件
+            for (Map<String, String> map : data) {
 
-                //删除上传的文件
-                fileService.delFile(maps.get("filePath"));
+                fileService.delFile(map.get("filePath"));
             }
 
             //将中文图层名转换为拼音字符作为数据库中的表名

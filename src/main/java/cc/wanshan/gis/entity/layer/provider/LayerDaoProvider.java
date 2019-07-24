@@ -11,8 +11,8 @@ import java.util.Map;
  * @author Li Cheng
  * @date 2019/6/4 15:04
  */
-public class LayerDaoProvider {
 
+public class LayerDaoProvider {
     private static final Logger logger = LoggerFactory.getLogger(LayerDaoProvider.class);
 
     /**

@@ -22,7 +22,7 @@ public interface SecondClassificationService {
      * description: 查询第二分类
      *
      * @param firstClassificationId 第一分类Id
-     * @return java.util.List<cc.wanshan.gis.entity.layer.thematic.SecondClassification>
+     * @return java.util.List<cc.wanshan.gis.entity.thematic.SecondClassification>
      **/
     List<SecondClassification> findByFirstClass(String firstClassificationId);
 }

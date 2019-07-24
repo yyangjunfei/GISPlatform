@@ -15,6 +15,7 @@ import java.sql.SQLException;
 
 @Repository(value = "searchLayerTableDaoImpl")
 public class SearchLayerTableDaoImpl implements SearchLayerTableDao {
+
     private static final Logger logger = LoggerFactory.getLogger(SearchLayerTableDaoImpl.class);
 
     @Override

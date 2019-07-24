@@ -11,7 +11,7 @@ public interface UserPropsService {
      * description:根据用户名查找userProps
      *
      * @param username 用户名
-     * @return cc.wanshan.gis.entity.layer.geoserver.UserProps
+     * @return cc.wanshan.gis.entity.geoserver.UserProps
      **/
     Result findUserPropsByUsername(String username);
 

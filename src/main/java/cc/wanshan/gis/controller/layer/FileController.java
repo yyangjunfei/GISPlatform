@@ -1,8 +1,8 @@
-package cc.wanshan.gis.controller.file;
+package cc.wanshan.gis.controller.layer;
 
 import cc.wanshan.gis.entity.plot.of2d.Layer;
 import cc.wanshan.gis.service.layer.export.ExportService;
-import cc.wanshan.gis.service.layer.geoserver.LayerService;
+import cc.wanshan.gis.service.layer.thematic.LayerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -42,6 +42,7 @@ import java.util.zip.ZipOutputStream;
 public class FileController {
 
     private static final Logger logger = LoggerFactory.getLogger(FileController.class);
+
     @Resource(name = "layerServiceImpl")
     private LayerService layerServiceImpl;
     @Resource(name = "exportServiceImpl")
@@ -201,8 +202,7 @@ public class FileController {
 
     private static HttpServletResponse downloadZip(File file, HttpServletResponse response) {
         if (!file.exists()) {
-
-            return null;
+            System.out.println("待压缩的文件目录：" + file + "不存在.");
         } else {
             try {
                 // 以流的形式下载文件。

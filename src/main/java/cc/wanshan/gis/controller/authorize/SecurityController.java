@@ -1,37 +1,31 @@
 package cc.wanshan.gis.controller.authorize;
 
-import cc.wanshan.gis.common.constants.SecurityConstant;
 import cc.wanshan.gis.common.pojo.Result;
-import cc.wanshan.gis.service.authorize.AuthorityService;
 import cc.wanshan.gis.utils.base.ResultUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-
-@RestController
-@RequestMapping(value = "/auth")
+@Controller
+@RequestMapping
 public class SecurityController {
 
     private static final Logger logger = LoggerFactory.getLogger(SecurityController.class);
 
-    @Autowired
-    private AuthorityService authorityService;
-
     @RequestMapping(value = "loginSuccess")
+    @ResponseBody
     public Result loginSuccess() {
         return ResultUtil.success();
     }
 
     @RequestMapping(value = "loginError")
+    @ResponseBody
     public Result loginError(AuthenticationException e) {
         logger.error("loginError::e = [{}]", e);
         if (e instanceof UsernameNotFoundException || e instanceof BadCredentialsException) {
@@ -41,22 +35,9 @@ public class SecurityController {
             logger.warn("账户被禁用，登录失败，请联系管理员!");
             return ResultUtil.error(1, "账户被禁用，登录失败，请联系管理员!");
         } else {
+            logger.warn("登录失败!");
             return ResultUtil.error(1, "登录失败!");
         }
-    }
-
-    @GetMapping(value = "refresh")
-    public Result refreshToken(HttpServletRequest request) {
-        String token = request.getHeader(SecurityConstant.TOKEN_HEADER);
-
-        return authorityService.refresh(token);
-    }
-
-    @GetMapping(value = "logout")
-    public Result logout(HttpServletRequest request) {
-        String token = request.getHeader(SecurityConstant.TOKEN_HEADER);
-
-        return authorityService.logout(token);
     }
 
 }

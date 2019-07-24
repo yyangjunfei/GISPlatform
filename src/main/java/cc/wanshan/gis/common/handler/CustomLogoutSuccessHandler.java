@@ -1,4 +1,4 @@
-package cc.wanshan.gis.common.security;
+package cc.wanshan.gis.common.handler;
 
 import cc.wanshan.gis.utils.base.ResponseUtil;
 import org.springframework.security.core.Authentication;

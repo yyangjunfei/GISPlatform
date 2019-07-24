@@ -1,4 +1,4 @@
-package cc.wanshan.gis.service.layer.geoserver;
+package cc.wanshan.gis.service.layer.thematic;
 
 import cc.wanshan.gis.common.pojo.Result;
 import cc.wanshan.gis.entity.layer.thematic.FirstClassification;
@@ -72,7 +72,7 @@ public interface LayerService {
      * description: 根据图层id查询图层
      *
      * @param layerId 图层id
-     * @return cc.wanshan.gis.entity.plot.of2d.Layer
+     * @return cc.wanshan.gis.entity.drawlayer.Layer
      **/
     Layer findLayerByLayerId(String layerId);
 
@@ -98,7 +98,7 @@ public interface LayerService {
      * description: 根据用户Id查询所有图层
      *
      * @param userId 用户Id
-     * @return java.util.List<cc.wanshan.gis.entity.plot.of2d.Layer>
+     * @return java.util.List<cc.wanshan.gis.entity.drawlayer.Layer>
      **/
     List<Layer> findByUserId(String userId);
 

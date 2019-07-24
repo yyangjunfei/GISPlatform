@@ -1,5 +1,6 @@
 package cc.wanshan.gis.entity.authorize;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;

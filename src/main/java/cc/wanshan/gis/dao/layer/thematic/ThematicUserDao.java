@@ -1,4 +1,4 @@
-package cc.wanshan.gis.dao.layer;
+package cc.wanshan.gis.dao.layer.thematic;
 
 import cc.wanshan.gis.entity.layer.thematic.Thematic;
 import cc.wanshan.gis.entity.layer.thematic.ThematicUser;
@@ -23,6 +23,13 @@ import java.util.List;
 @Component
 public interface ThematicUserDao {
 
+
+    /**
+     * description: 新增专题和用户记录
+     *
+     * @param thematicUser 专题和用户关联对象
+     * @return int 新增记录数
+     **/
     @Insert("insert into "
             + "thematic_user ("
             + "thematic_id,"
@@ -37,14 +44,15 @@ public interface ThematicUserDao {
             + "#{updateTime,jdbcType=TIMESTAMP}"
             + ")"
     )
-    /**
-     * description: 新增专题和用户记录
-     *
-     * @param thematicUser 专题和用户关联对象
-     * @return int 新增记录数
-     **/
     int insertThematicUser(ThematicUser thematicUser);
 
+
+    /**
+     * description: 根据thematicUserId修改专题和用户记录
+     *
+     * @param thematicUser 专题和用户关联对象
+     * @return int 修改记录数
+     **/
     @Update("update "
             + "thematic_user "
             + "set "
@@ -54,35 +62,28 @@ public interface ThematicUserDao {
             + "where "
             + "thematic_user_id=#{thematicUserId}"
     )
-    /**
-     * description: 根据thematicUserId修改专题和用户记录
-     *
-     * @param thematicUser 专题和用户关联对象
-     * @return int 修改记录数
-     **/
     int updateThematicUser(ThematicUser thematicUser);
 
-    @Delete("delete from "
-            + "thematic_user "
-            + "where "
-            + "thematic_user_id = #{thematicUserId}"
-    )
+
     /**
      * description: 根据thematicUserId删除专题和用户记录
      *
      * @param thematicUser 专题和用户关联对象
      * @return int 删除记录数
      **/
+    @Delete("delete from "
+            + "thematic_user "
+            + "where "
+            + "thematic_user_id = #{thematicUserId}"
+    )
     int deleteThematicUser(String thematicUser);
 
     /**
-     * description: 根据专题id查询关联用户
+     * description: 根据用户Id查询当前用户的关联图层
      *
-     * @param thematicId 专题Id
-     * @return java.util.List<cc.wanshan.gis.entity.layer.thematic.ThematicUser>
+     * @param userId 用户Id
+     * @return java.util.List<cc.wanshan.gis.entity.drawlayer.Layer>
      **/
-    List<ThematicUser> findThematicUserByThematicId(String thematicId);
-
     @Select({"select "
             + "t.thematic_id,"
             + "t.thematic_name,"
@@ -101,14 +102,7 @@ public interface ThematicUserDao {
             @Result(column = "thematic_id", property = "thematicId"),
             @Result(column = "thematic_name", property = "thematicName"),
             @Result(column = "thematic_name_zh", property = "thematicNameZH"),
-            @Result(column = "thematic_id", property = "firstClassificationList", many = @Many(select = "cc.wanshan.gis.dao.layer.FirstClassificationDao.findByThematicId", fetchType = FetchType.LAZY)),
+            @Result(column = "thematic_id", property = "firstClassificationList", many = @Many(select = "cc.wanshan.gis.dao.layer.thematic.FirstClassificationDao.findByThematicId", fetchType = FetchType.LAZY)),
     })
-
-    /**
-     * description: 根据用户Id查询当前用户的关联图层
-     *
-     * @param userId 用户Id
-     * @return java.util.List<cc.wanshan.gis.entity.plot.of2d.Layer>
-     **/
     List<Thematic> findThematicLayersByUserId(String userId);
 }

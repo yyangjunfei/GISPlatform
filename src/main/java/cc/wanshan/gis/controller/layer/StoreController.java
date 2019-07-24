@@ -1,4 +1,4 @@
-package cc.wanshan.gis.controller.geoserver;
+package cc.wanshan.gis.controller.layer;
 
 import cc.wanshan.gis.common.pojo.Result;
 import cc.wanshan.gis.entity.plot.of2d.Store;
@@ -22,7 +22,9 @@ import java.util.List;
 @EnableTransactionManagement(proxyTargetClass = true)
 @RequestMapping("/store")
 public class StoreController {
+
     private static final Logger logger = LoggerFactory.getLogger(StoreController.class);
+
     @Resource(name = "storeServiceImpl")
     private StoreService storeService;
 

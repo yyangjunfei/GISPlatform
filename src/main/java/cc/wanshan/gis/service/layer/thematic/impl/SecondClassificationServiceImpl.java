@@ -1,6 +1,6 @@
 package cc.wanshan.gis.service.layer.thematic.impl;
 
-import cc.wanshan.gis.dao.layer.SecondClassificationDao;
+import cc.wanshan.gis.dao.layer.thematic.SecondClassificationDao;
 import cc.wanshan.gis.entity.layer.thematic.SecondClassification;
 import cc.wanshan.gis.service.layer.thematic.SecondClassificationService;
 import org.springframework.stereotype.Service;

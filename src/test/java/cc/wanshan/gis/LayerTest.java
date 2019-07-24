@@ -7,7 +7,7 @@ import cc.wanshan.gis.entity.layer.thematic.FirstClassification;
 import cc.wanshan.gis.entity.layer.thematic.Thematic;
 import cc.wanshan.gis.entity.plot.of2d.Layer;
 import cc.wanshan.gis.entity.plot.of2d.Store;
-import cc.wanshan.gis.service.layer.geoserver.LayerService;
+import cc.wanshan.gis.service.layer.thematic.LayerService;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.junit.Test;
@@ -28,9 +28,12 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class LayerTest {
+
     private static final Logger logger = LoggerFactory.getLogger(LayerTest.class);
+
     private Layer layer = new Layer();
     private Store store = new Store();
+
     @Resource
     private LayerDao layerDao;
     @Resource

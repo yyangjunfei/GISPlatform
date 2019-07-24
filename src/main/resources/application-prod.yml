@@ -13,7 +13,7 @@ spring:
       request-timeout: 600000
   datasource:
     platform: postgres
-    url: jdbc:postgresql://192.168.1.133:5432/test?useAffectedRows=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
+    url: jdbc:postgresql://192.168.1.133:5432/dev?useAffectedRows=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
     username: postgres
     password: wanshan
     driver-class-name: org.postgresql.Driver
@@ -85,7 +85,7 @@ postgis:
 
 # file 文件路径
 file:
-  path: D:\Metadata
+  path: D:\Upload
 
 gis:
   # swagger 显示判断
@@ -98,12 +98,8 @@ gis:
 # 忽略鉴权url
 ignored:
   urls:
-    - /auth/login/**
-    - /auth/actuator/**
-    - /auth/admin/**
-    - /auth/regist
-    - /auth/test/**
-    - /auth/common/**
+    - /user/login/**
+    - /user/regist
     - /druid/**
     - /swagger-ui.html
     - /swagger-resources/**
@@ -113,4 +109,3 @@ ignored:
     - /**/*.css
     - /**/*.png
     - /**/*.ico
-

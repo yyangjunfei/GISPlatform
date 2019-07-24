@@ -1,12 +1,12 @@
 package cc.wanshan.gis.config.web;
 
 import cc.wanshan.gis.common.filter.JWTAuthorizationFilter;
+import cc.wanshan.gis.common.handler.AuthenticationFailHandler;
+import cc.wanshan.gis.common.handler.AuthenticationSuccessHandler;
+import cc.wanshan.gis.common.handler.CustomLogoutSuccessHandler;
+import cc.wanshan.gis.common.handler.MyAccessDeniedHandler;
 import cc.wanshan.gis.common.security.AccessDecisionManagerImpl;
-import cc.wanshan.gis.common.security.AuthenticationFailHandler;
-import cc.wanshan.gis.common.security.AuthenticationSuccessHandler;
-import cc.wanshan.gis.common.security.CustomLogoutSuccessHandler;
 import cc.wanshan.gis.common.security.JWTAuthenticationEntryPoint;
-import cc.wanshan.gis.common.security.MyAccessDeniedHandler;
 import cc.wanshan.gis.config.properties.IgnoredUrlsProperties;
 import cc.wanshan.gis.service.authorize.impl.UserServiceImpl;
 import org.slf4j.Logger;

@@ -1,4 +1,4 @@
-package cc.wanshan.gis.dao.layer;
+package cc.wanshan.gis.dao.layer.thematic;
 
 import cc.wanshan.gis.entity.layer.thematic.SecondClassification;
 import org.apache.ibatis.annotations.Insert;
@@ -19,6 +19,13 @@ import java.util.List;
 @Mapper
 @Component
 public interface SecondClassificationDao {
+
+    /**
+     * description: 新增第二分类记录数
+     *
+     * @param secondClassification 第二分类
+     * @return int
+     **/
     @Insert("insert into "
             + "second_classification "
             + "(second_classification_name,"
@@ -34,14 +41,15 @@ public interface SecondClassificationDao {
             + "#{updateTime,jdbcType=TIMESTAMP}"
             + ")"
     )
-    /**
-     * description: 新增第二分类记录数
-     *
-     * @param secondClassification 第二分类
-     * @return int
-     **/
     int insertSecondClassification(SecondClassification secondClassification);
 
+
+    /**
+     * description: 查询第二分类
+     *
+     * @param firstClassificationId 第一分类id
+     * @return java.util.List<cc.wanshan.gis.entity.thematic.SecondClassification>
+     **/
     @Select({"select * from "
             + "second_classification "
             + "where "
@@ -56,11 +64,5 @@ public interface SecondClassificationDao {
             @Result(column = "describe", property = "describe"),
             @Result(column = "second_classification_id", property = "layer", many = @Many(select = "cc.wanshan.gis.dao.layer.LayerDao.findLayerBySecondClassId", fetchType = FetchType.LAZY)),
     })
-    /**
-     * description: 查询第二分类
-     *
-     * @param firstClassificationId 第一分类id
-     * @return java.util.List<cc.wanshan.gis.entity.layer.thematic.SecondClassification>
-     **/
     List<SecondClassification> findByFirstClassificationId(String firstClassificationId);
 }

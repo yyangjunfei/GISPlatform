@@ -26,6 +26,11 @@ import java.util.List;
 @Component
 public interface LayerDao {
 
+    /**
+     * description: 新增图层
+     *
+     * @return int
+     */
     @Insert({
             "insert into "
                     + "layer ("
@@ -79,14 +84,14 @@ public interface LayerDao {
                     + ")"
     })
     @Options(useGeneratedKeys = true, keyColumn = "layer_id", keyProperty = "layerId")
-    /**
-     * description: 新增图层
-     *
-     * @param layer
-     * @return int
-     */
     int insertLayer(Layer layer);
 
+
+    /**
+     * description: 根据storeId和图层名删除图层
+     *
+     * @return int
+     */
     @Delete({
             "delete from "
                     + "layer "
@@ -94,24 +99,24 @@ public interface LayerDao {
                     + "layer_name=#{layerName} and "
                     + "store_id=#{storeId}"
     })
-    /**
-     * description: 根据storeId和图层名删除图层
-     *
-     * @param layerName
-     * @param storeId
-     * @return int
-     */
     int deleteLayerByLayerNameAndStoreId(String layerName, String storeId);
 
-    @DeleteProvider(type = LayerDaoProvider.class, method = "deleteAll")
+
     /**
      * description: 根据layerId批量删除
      *
      * @param layers 图层集合
      * @return int
      **/
+    @DeleteProvider(type = LayerDaoProvider.class, method = "deleteAll")
     int deleteAll(@Param("list") List<Layer> layers);
 
+
+    /**
+     * description: 更新图层信息
+     *
+     * @return int
+     */
     @Update({
             "update "
                     + "layer "
@@ -137,28 +142,27 @@ public interface LayerDao {
                     + "where "
                     + "layer_id=#{layerId}"
     })
-    /**
-     * description: 更新图层信息
-     *
-     * @param layer
-     * @return int
-     */
     int updateLayer(Layer layer);
 
 
+    /**
+     * description: 删除layer
+     *
+     * @return int
+     */
     @Delete({"delete from "
             + "layer "
             + "where "
             + "layer_id=#{layerId}"
     })
-    /**
-     * description: 删除layer
-     *
-     * @param layerId
-     * @return int
-     */
     int deleteLayer(String layerId);
 
+
+    /**
+     * description: 根据storeId查询图层
+     *
+     * @return java.util.List<cc.wanshan.gisdev.entity.drawlayer.Layer>
+     */
     @Select({"select "
             + "* "
             + "from "
@@ -191,14 +195,12 @@ public interface LayerDao {
             @Result(column = "stroke_width", property = "strokeWidth"),
             @Result(column = "opacity", property = "opacity"),
     })
-    /**
-     * description: 根据storeId查询图层
-     *
-     * @param storeId
-     * @return java.util.List<cc.wanshan.gisdev.entity.drawlayer.Layer>
-     */
     List<Layer> findLayersByStoreId(String storeId);
 
+
+    /**
+     * description: 根据layerId查询Layer
+     */
     @Select({"select "
             + "layer_id,"
             + "layer_name,"
@@ -233,14 +235,14 @@ public interface LayerDao {
             @Result(column = "layer_id", property = "lineStringList", many = @Many(select = "cc.wanshan.gis.dao.layer.LineStringDao.findLineStringByLayerId", fetchType = FetchType.LAZY)),
             @Result(column = "layer_id", property = "polygonList", many = @Many(select = "cc.wanshan.gis.dao.layer.PolygonDao.findPolygonByLayerId", fetchType = FetchType.LAZY))
     })
-    /**
-     * description: 根据layerId查询Layer
-     *
-     * @param layerId
-     * @return
-     */
     Layer findLayerByLayerId(String layerId);
 
+
+    /**
+     * description:
+     *
+     * @return int
+     */
     @Select({
             "select "
                     + "layer_id "
@@ -251,15 +253,15 @@ public interface LayerDao {
                     + "user_id=#{userId} and "
                     + "layer_name = #{layerName};"
     })
-    /**
-     * description:
-     *
-     * @param userId
-     * @param layerName
-     * @return int
-     */
     Layer findLayerByUserIdAndLayerName(String userId, String layerName);
 
+
+    /**
+     * description: 根据用户Id查询所有图层
+     *
+     * @param userId 用户Id
+     * @return java.util.List<cc.wanshan.gis.entity.drawlayer.Layer>
+     **/
     @Select({"select "
             + "layer_id,"
             + "layer_name,"
@@ -294,14 +296,14 @@ public interface LayerDao {
             @Result(column = "layer_id", property = "lineStringList", many = @Many(select = "cc.wanshan.gis.dao.layer.LineStringDao.findLineStringByLayerId", fetchType = FetchType.LAZY)),
             @Result(column = "layer_id", property = "polygonList", many = @Many(select = "cc.wanshan.gis.dao.layer.PolygonDao.findPolygonByLayerId", fetchType = FetchType.LAZY))
     })
-    /**
-     * description: 根据用户Id查询所有图层
-     *
-     * @param userId 用户Id
-     * @return java.util.List<cc.wanshan.gis.entity.plot.of2d.Layer>
-     **/
     List<Layer> findByUserId(String userId);
 
+
+    /**
+     * description:
+     *
+     * @return cc.wanshan.gis.entity.drawlayer.Layer
+     **/
     @Select({"select "
             + "* "
             + "from "
@@ -337,14 +339,12 @@ public interface LayerDao {
             @Result(column = "opacity", property = "opacity"),
             @Result(column = "layer_name", property = "ruleNameList", many = @Many(select = "cc.wanshan.gis.dao.style.RuleNameDao.findRuleNamesByLayerName", fetchType = FetchType.LAZY)),
     })
-    /**
-     * description:
-     *
-     * @param secondClassId
-     * @return cc.wanshan.gis.entity.plot.of2d.Layer
-     **/
     Layer findLayerBySecondClassId(String secondClassId);
 
+
+    /**
+     * description: 根据thematicId查询layer
+     */
     @Select({"select "
             + "layer_id,"
             + "layer_name,"
@@ -393,11 +393,5 @@ public interface LayerDao {
             @Result(column = "stroke_width", property = "strokeWidth"),
             @Result(column = "opacity", property = "opacity"),
     })
-    /**
-     * description: 根据thematicId查询layer
-     *
-     * @param thematicId
-     * @return
-     */
     List<Layer> findLayerByThematicIdAndNullUserId(String thematicId);
 }

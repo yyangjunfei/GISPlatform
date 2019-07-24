@@ -20,6 +20,7 @@ import java.util.List;
 public class Layer implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @NotBlank(message = "图层Id不可为null")
     @Length(max = 32, message = "图层Id长度不可超过32字节")
     private String layerId;

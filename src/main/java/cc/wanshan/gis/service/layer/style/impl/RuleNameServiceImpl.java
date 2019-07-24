@@ -1,6 +1,6 @@
 package cc.wanshan.gis.service.layer.style.impl;
 
-import cc.wanshan.gis.dao.plot.of2d.RuleNameDao;
+import cc.wanshan.gis.dao.layer.style.RuleNameDao;
 import cc.wanshan.gis.entity.layer.style.RuleName;
 import cc.wanshan.gis.service.layer.style.RuleNameService;
 import org.slf4j.Logger;
@@ -18,6 +18,8 @@ import java.util.List;
 public class RuleNameServiceImpl implements RuleNameService {
 
     private static final Logger logger = LoggerFactory.getLogger(RuleNameServiceImpl.class);
+
+    private RuleName ruleName = new RuleName();
 
     @Resource
     private RuleNameDao ruleNameDao;

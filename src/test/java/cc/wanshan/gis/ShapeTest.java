@@ -2,7 +2,7 @@ package cc.wanshan.gis;
 
 import cc.wanshan.gis.entity.plot.of2d.Layer;
 import cc.wanshan.gis.service.layer.export.ExportService;
-import cc.wanshan.gis.service.layer.geoserver.LayerService;
+import cc.wanshan.gis.service.layer.thematic.LayerService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -21,6 +21,7 @@ import java.io.IOException;
  */
 public class ShapeTest {
     private static final Logger logger = LoggerFactory.getLogger(ShapeTest.class);
+
     @Resource(name = "exportServiceImpl")
     private ExportService exportServiceImpl;
     @Resource(name = "layerServiceImpl")

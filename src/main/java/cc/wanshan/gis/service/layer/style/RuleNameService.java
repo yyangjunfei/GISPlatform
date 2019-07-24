@@ -22,7 +22,7 @@ public interface RuleNameService {
     /**
      * description: 根据layerId查询RuleName
      *
-     * @return java.util.List<cc.wanshan.gis.entity.layer.style.RuleName>
+     * @return java.util.List<cc.wanshan.gis.entity.style.RuleName>
      **/
     List<RuleName> findRuleNameByStyleId(String styleId);
 
@@ -30,7 +30,7 @@ public interface RuleNameService {
      * description: 根据图层名查询style集合
      *
      * @param layerName 图层名
-     * @return java.util.List<cc.wanshan.gis.entity.layer.style.RuleName>
+     * @return java.util.List<cc.wanshan.gis.entity.style.RuleName>
      **/
     List<RuleName> findRuleNamesByLayerName(String layerName);
 }

@@ -24,6 +24,7 @@ import java.util.List;
 public class Role implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @NotBlank(message = "角色id不可为null")
     @Length(max = 32, message = "角色id可超过32字节")
     private String roleId;

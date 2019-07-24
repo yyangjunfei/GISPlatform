@@ -21,6 +21,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Resource
     private RoleDao roleDao;
+
     @Resource
     private UserDao userDao;
 

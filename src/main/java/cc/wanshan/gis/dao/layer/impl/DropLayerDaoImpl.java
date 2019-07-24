@@ -1,7 +1,7 @@
-package cc.wanshan.gis.dao.plot.of2d.impl;
+package cc.wanshan.gis.dao.layer.impl;
 
 import cc.wanshan.gis.common.pojo.Result;
-import cc.wanshan.gis.dao.plot.of2d.DropLayerDao;
+import cc.wanshan.gis.dao.layer.DropLayerDao;
 import cc.wanshan.gis.utils.JDBCConnectUtils;
 import cc.wanshan.gis.utils.base.ResultUtil;
 import org.slf4j.Logger;
@@ -14,6 +14,7 @@ import java.sql.SQLException;
 
 @Repository(value = "dropLayerDaoImpl")
 public class DropLayerDaoImpl implements DropLayerDao {
+
     private static final Logger logger = LoggerFactory.getLogger(DropLayerDaoImpl.class);
 
     @Override

@@ -46,11 +46,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Service(value = "exportServiceImpl")
 /**
  * @author Li Cheng
  * @date 2019/6/14 16:25
  */
-@Service(value = "exportServiceImpl")
 public class ExportServiceImpl implements ExportService {
 
     private static final Logger logger = LoggerFactory.getLogger(ExportServiceImpl.class);

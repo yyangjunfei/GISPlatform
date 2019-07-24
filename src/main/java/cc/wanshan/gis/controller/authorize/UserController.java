@@ -34,17 +34,18 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 
-/**
- * @Author Li Cheng
- * @Date 14:27 2019/6/18
- **/
 @Api(value = "UserController", tags = "用户管理模块")
 @RestController
 @EnableTransactionManagement(proxyTargetClass = true)
 @RequestMapping("/user")
+/**
+ * @Author Li Cheng
+ * @Date 14:27 2019/6/18
+ **/
 public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
     @Resource(name = "userServiceImpl")
     private UserService userServiceImpl;
     @Resource(name = "geoServerServiceImpl")
@@ -293,8 +294,7 @@ public class UserController {
     @RequestMapping(value = "/finduser")
     @ResponseBody
     public Result findUser(HttpServletRequest request) {
-
-        logger.info("authorize::request = [{}]", request);
+        logger.info("security::request = [{}]", request);
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie : cookies) {
             String value = cookie.getValue();

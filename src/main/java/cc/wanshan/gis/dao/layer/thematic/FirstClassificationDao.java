@@ -1,4 +1,4 @@
-package cc.wanshan.gis.dao.layer;
+package cc.wanshan.gis.dao.layer.thematic;
 
 import cc.wanshan.gis.entity.layer.thematic.FirstClassification;
 import org.apache.ibatis.annotations.Insert;
@@ -20,6 +20,12 @@ import java.util.List;
 @Component
 public interface FirstClassificationDao {
 
+    /**
+     * description: 新增第一分类记录
+     *
+     * @param firstClassification 第一分类
+     * @return int 新增记录数
+     **/
     @Insert("insert into "
             + "first_classification ("
             + "first_classification_name,"
@@ -35,14 +41,14 @@ public interface FirstClassificationDao {
             + "#{updateTime,jdbcType=TIMESTAMP}"
             + ")"
     )
-    /**
-     * description: 新增第一分类记录
-     *
-     * @param firstClassification 第一分类
-     * @return int 新增记录数
-     **/
     int insertFirstClassification(FirstClassification firstClassification);
 
+    /**
+     * description: 根据专题Id查询第一分类
+     *
+     * @param thematicId 专题id
+     * @return java.util.List<cc.wanshan.gis.entity.thematic.FirstClassification>
+     **/
     @Select({"select * from "
             + "first_classification "
             + "where "
@@ -55,13 +61,7 @@ public interface FirstClassificationDao {
             @Result(column = "insert_time", property = "insertTime"),
             @Result(column = "update_time", property = "updateTime"),
             @Result(column = "describe", property = "describe"),
-            @Result(column = "first_classification_id", property = "secondClassificationList", many = @Many(select = "cc.wanshan.gis.dao.layer.SecondClassificationDao.findByFirstClassificationId", fetchType = FetchType.LAZY)),
+            @Result(column = "first_classification_id", property = "secondClassificationList", many = @Many(select = "cc.wanshan.gis.dao.layer.thematic.SecondClassificationDao.findByFirstClassificationId", fetchType = FetchType.LAZY)),
     })
-    /**
-     * description: 根据专题Id查询第一分类
-     *
-     * @param thematicId 专题id
-     * @return java.util.List<cc.wanshan.gis.entity.layer.thematic.FirstClassification>
-     **/
     List<FirstClassification> findByThematicId(String thematicId);
 }

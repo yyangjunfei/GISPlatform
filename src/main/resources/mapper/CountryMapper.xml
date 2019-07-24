@@ -20,15 +20,15 @@
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from country
+        from search_country
         where gid = #{gid,jdbcType=INTEGER}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from country
+    delete from search_country
     where gid = #{gid,jdbcType=INTEGER}
   </delete>
     <insert id="insert" parameterType="cc.wanshan.gis.entity.search.Country">
-    insert into country (gid, name, geom, 
+    insert into search_country (gid, name, geom,
       centroid, min_x, min_y,
       max_x, max_y, remarks, 
       envelope, rectangle)
@@ -38,7 +38,7 @@
       #{envelope,jdbcType=VARCHAR}, #{rectangle,jdbcType=VARCHAR})
   </insert>
     <insert id="insertSelective" parameterType="cc.wanshan.gis.entity.search.Country">
-        insert into country
+        insert into search_country
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="gid != null">
                 gid,
@@ -111,7 +111,7 @@
         </trim>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="cc.wanshan.gis.entity.search.Country">
-        update country
+        update search_country
         <set>
             <if test="name != null">
                 name = #{name,jdbcType=VARCHAR},
@@ -147,7 +147,7 @@
         where gid = #{gid,jdbcType=INTEGER}
     </update>
     <update id="updateByPrimaryKey" parameterType="cc.wanshan.gis.entity.search.Country">
-    update country
+    update search_country
     set name = #{name,jdbcType=VARCHAR},
       geom = #{geom,jdbcType=OTHER},
       centroid = #{centroid,jdbcType=VARCHAR},

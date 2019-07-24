@@ -1,6 +1,6 @@
 package cc.wanshan.gis.service.layer.thematic.impl;
 
-import cc.wanshan.gis.dao.layer.ThematicUserDao;
+import cc.wanshan.gis.dao.layer.thematic.ThematicUserDao;
 import cc.wanshan.gis.entity.layer.thematic.Thematic;
 import cc.wanshan.gis.entity.layer.thematic.ThematicUser;
 import cc.wanshan.gis.service.layer.thematic.ThematicUserService;
@@ -15,6 +15,7 @@ import java.util.List;
  */
 @Service(value = "thematicUserServiceImpl")
 public class ThematicUserServiceImpl implements ThematicUserService {
+
     @Resource
     private ThematicUserDao thematicUserDao;
 

@@ -14,9 +14,9 @@ public interface RoleService {
      * @Date 15:02 2019/4/12
      * @Param [username]
      **/
-    public Role findRoleByUsername(String username);
+    Role findRoleByUsername(String username);
 
-    public Result findRoleByRoleId(String roleId);
+    Result findRoleByRoleId(String roleId);
 
     /**
      * @return cc.wanshan.demo.entity.Result
@@ -25,7 +25,7 @@ public interface RoleService {
      * @Date 8:30 2019/4/19
      * @Param [authorId]
      **/
-    public List<Role> findRoleByAuthorId(String authorId);
+    List<Role> findRoleByAuthorId(String authorId);
 
     /**
      * @return cc.wanshan.demo.entity.Result
@@ -34,7 +34,7 @@ public interface RoleService {
      * @Date 15:02 2019/4/12
      * @Param []
      **/
-    public Result findAllRole();
+    Result findAllRole();
 
     /**
      * @return cc.wanshan.demo.entity.Result
@@ -43,7 +43,7 @@ public interface RoleService {
      * @Date 15:03 2019/4/12
      * @Param [role]
      **/
-    public Result insertRole(Role role);
+    Result insertRole(Role role);
 
     /**
      * @return cc.wanshan.demo.entity.Result
@@ -52,7 +52,7 @@ public interface RoleService {
      * @Date 10:11 2019/4/15
      * @Param [roleName]
      **/
-    public Result findRoleByRoleName(String roleName);
+    Result findRoleByRoleName(String roleName);
 
     /**
      * @return cc.wanshan.demo.entity.Result
@@ -61,7 +61,7 @@ public interface RoleService {
      * @Date 10:53 2019/4/15
      * @Param [roleName]
      **/
-    public Result findCountByRoleName(String roleName);
+    Result findCountByRoleName(String roleName);
 
     /**
      * @return cc.wanshan.demo.entity.Result
@@ -70,7 +70,7 @@ public interface RoleService {
      * @Date 11:25 2019/4/15
      * @Param [roleNameZH]
      **/
-    public Result findCountByRoleNameZH(String roleNameZH);
+    Result findCountByRoleNameZH(String roleNameZH);
 
     /**
      * @return cc.wanshan.demo.entity.Result
@@ -79,7 +79,7 @@ public interface RoleService {
      * @Date 14:05 2019/4/15
      * @Param [role]
      **/
-    public Result updateRole(Role role);
+    Result updateRole(Role role);
 
     /**
      * @return cc.wanshan.demo.entity.Result
@@ -88,5 +88,5 @@ public interface RoleService {
      * @Date 14:56 2019/4/15
      * @Param [roleId]
      **/
-    public Result deleteRole(String roleId);
+    Result deleteRole(String roleId);
 }

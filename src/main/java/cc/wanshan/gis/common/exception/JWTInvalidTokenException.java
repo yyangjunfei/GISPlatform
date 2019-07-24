@@ -1,6 +1,6 @@
 package cc.wanshan.gis.common.exception;
 
-public class JWTInvalidTokenException extends RuntimeException {
+public class JWTInvalidTokenException extends BaseException {
 
     private static final long serialVersionUID = 1L;
 

@@ -1,11 +1,11 @@
-package cc.wanshan.gis.service.layer.geoserver.impl;
+package cc.wanshan.gis.service.layer.thematic.impl;
 
 import cc.wanshan.gis.common.pojo.Result;
 import cc.wanshan.gis.dao.layer.CreatLayerTableDao;
+import cc.wanshan.gis.dao.layer.DropLayerDao;
 import cc.wanshan.gis.dao.layer.FeatureDao;
 import cc.wanshan.gis.dao.layer.LayerDao;
 import cc.wanshan.gis.dao.layer.SearchLayerTableDao;
-import cc.wanshan.gis.dao.plot.of2d.DropLayerDao;
 import cc.wanshan.gis.dao.plot.of2d.LineStringDao;
 import cc.wanshan.gis.dao.plot.of2d.PointDao;
 import cc.wanshan.gis.dao.plot.of2d.PolygonDao;
@@ -15,7 +15,7 @@ import cc.wanshan.gis.entity.plot.of2d.LineString;
 import cc.wanshan.gis.entity.plot.of2d.Point;
 import cc.wanshan.gis.entity.plot.of2d.Polygon;
 import cc.wanshan.gis.service.layer.geoserver.GeoServerService;
-import cc.wanshan.gis.service.layer.geoserver.LayerService;
+import cc.wanshan.gis.service.layer.thematic.LayerService;
 import cc.wanshan.gis.utils.base.ResultUtil;
 import cc.wanshan.gis.utils.geo.GeoServerUtils;
 import io.micrometer.core.instrument.util.StringUtils;
@@ -38,31 +38,22 @@ public class LayerServiceImpl implements LayerService {
     private static final String POINT = "point";
     private static final String LINESTRING = "linestring";
     private static final String POLYGON = "polygon";
-
     @Resource
     private LayerDao layerDao;
-
     @Resource
     private DropLayerDao dropLayerDao;
-
     @Resource
     private PointDao pointDao;
-
     @Resource
     private LineStringDao lineStringDao;
-
     @Resource
     private PolygonDao polygonDao;
-
     @Resource(name = "searchLayerTableDaoImpl")
     private SearchLayerTableDao searchLayerTableDao;
-
     @Resource(name = "createLayerTableDaoImpl")
     private CreatLayerTableDao createLayerTableDao;
-
     @Resource(name = "insertLayerDaoImpl")
     private FeatureDao featureDao;
-
     @Resource(name = "geoServerServiceImpl")
     private GeoServerService geoServerService;
 
@@ -411,12 +402,12 @@ public class LayerServiceImpl implements LayerService {
         }
     }
 
-    private Result publishLayer(String workspace, String store, String layerName) {
+    private Result publishLayer(String workspace, String store, String layerName, String defaultStyle) {
         logger.info("publishLayer::workspace = [{}], store = [{}], layerName = [{}]", workspace, store,
                 layerName);
         RESTLayer layer = GeoServerUtils.manager.getReader().getLayer(workspace, layerName);
         if (layer == null) {
-            Result result = geoServerService.publishLayer(workspace, store, layerName);
+            Result result = geoServerService.publishLayer(workspace, store, layerName, defaultStyle);
             if (result.getCode() == 0 || result.getCode() == 1) {
                 return ResultUtil.success();
             } else {

@@ -14,19 +14,20 @@ import org.springframework.stereotype.Component;
  * @date 2019/6/13 9:37
  */
 public interface NanJingStationsDao {
-  @Select({
-      "select ns.gid,ns.name,st_AsText(ns.geom) from nanjing_stations ns order by ns.geom <-> ST_geometryfromtext(#{point},4326) limit 1;"
-  })
-      @Results({
-          @Result(id = true,column = "gid",property = "gid"),
-          @Result(column = "name",property = "name"),
-          @Result(column = "st_AsText",property = "geom")
-      })
-  /**
-   * description: 根据起点查找附近公交站点
-   *
-   * @param point 起点坐标
-   * @return cc.wanshan.gis.entity.bus.NanJingStations
-   **/
-  NanJingStations findStation(String point);
+
+    /**
+     * description: 根据起点查找附近公交站点
+     *
+     * @param point 起点坐标
+     * @return cc.wanshan.gis.entity.bus.NanJingStations
+     **/
+    @Select({
+            "select ns.gid,ns.name,st_AsText(ns.geom) from nanjing_stations ns order by ns.geom <-> ST_geometryfromtext(#{point},4326) limit 1;"
+    })
+    @Results({
+            @Result(id = true, column = "gid", property = "gid"),
+            @Result(column = "name", property = "name"),
+            @Result(column = "st_AsText", property = "geom")
+    })
+    NanJingStations findStation(String point);
 }

@@ -1,6 +1,6 @@
 package cc.wanshan.gis.service.layer.style.impl;
 
-import cc.wanshan.gis.dao.plot.of2d.RuleValueDao;
+import cc.wanshan.gis.dao.layer.style.RuleValueDao;
 import cc.wanshan.gis.entity.layer.style.RuleValue;
 import cc.wanshan.gis.service.layer.style.RuleValueService;
 import org.slf4j.Logger;

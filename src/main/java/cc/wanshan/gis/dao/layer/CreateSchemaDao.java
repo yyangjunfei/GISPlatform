@@ -10,6 +10,5 @@ import cc.wanshan.gis.common.pojo.Result;
  * @return
  **/
 public interface CreateSchemaDao {
-
     Result createSchema(String schema);
 }

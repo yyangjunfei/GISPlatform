@@ -1,6 +1,7 @@
-package cc.wanshan.gis.common.security;
+package cc.wanshan.gis.common.handler;
 
 import cc.wanshan.gis.utils.base.ResponseUtil;
+import org.apache.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.AuthenticationException;
@@ -27,11 +28,11 @@ public class AuthenticationFailHandler extends SimpleUrlAuthenticationFailureHan
 
         if (exception instanceof UsernameNotFoundException || exception instanceof BadCredentialsException) {
 
-            ResponseUtil.out(response, ResponseUtil.resultMap(false, 403, "用户名或密码错误，请重试"));
+            ResponseUtil.out(response, ResponseUtil.resultMap(false, HttpStatus.SC_UNAUTHORIZED, "用户名或密码错误，请重试"));
         } else if (exception instanceof DisabledException) {
-            ResponseUtil.out(response, ResponseUtil.resultMap(false, 403, "账户被禁用，请联系管理员"));
+            ResponseUtil.out(response, ResponseUtil.resultMap(false, HttpStatus.SC_UNAUTHORIZED, "账户被禁用，请联系管理员"));
         } else {
-            ResponseUtil.out(response, ResponseUtil.resultMap(false, 403, "登录失败，未知错误"));
+            ResponseUtil.out(response, ResponseUtil.resultMap(false, HttpStatus.SC_UNAUTHORIZED, "登录失败，未知错误"));
         }
     }
 

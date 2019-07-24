@@ -38,6 +38,7 @@ public class FeatureDaoImpl implements FeatureDao {
                 preparedStatement.addBatch();
             }
             de = preparedStatement.executeBatch();
+            System.out.println(de.length);
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -69,6 +70,7 @@ public class FeatureDaoImpl implements FeatureDao {
         preparedStatement.addBatch();
       }
       de = preparedStatement.executeBatch();
+      System.out.println(de.length);
     } catch (SQLException e) {
       e.printStackTrace();
     } finally {

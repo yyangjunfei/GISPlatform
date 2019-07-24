@@ -20,6 +20,7 @@ import java.util.Date;
 public class LineString {
 
     private static final long serialVersionUID = 1L;
+
     private String featureId;
     private String featureName;
     private Object geom;

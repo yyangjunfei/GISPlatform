@@ -36,7 +36,7 @@ public interface UserPropsDao {
      * description: 根据用户名查询对应的Geoserver authkey
      *
      * @param username 用户名
-     * @return cc.wanshan.gis.dao.layer.UserPropsDao
+     * @return cc.wanshan.gis.dao.geoserver.UserPropsDao
      **/
     UserProps findUsersPropsByUsername(String username);
 

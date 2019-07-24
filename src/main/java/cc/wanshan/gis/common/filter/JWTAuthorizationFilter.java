@@ -8,6 +8,7 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -73,24 +74,24 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             String tokenByRedis = (String) redisTemplate.opsForValue().get(SecurityConstant.USER_TOKEN + username);
 
             if (tokenByRedis == null) {
-                ResponseUtil.out(response, ResponseUtil.resultMap(false, 401, "token已失效，请重新登录"));
+                ResponseUtil.out(response, ResponseUtil.resultMap(false, HttpStatus.SC_FORBIDDEN, "token已失效，请重新登录"));
             }
 
             logger.info("tokenByRedis;;[{}]", tokenByRedis);
 
             if (!tokenByRedis.equals(header)) {
-                ResponseUtil.out(response, ResponseUtil.resultMap(false, 401, "token错误，请重新登录"));
+                ResponseUtil.out(response, ResponseUtil.resultMap(false, HttpStatus.SC_FORBIDDEN, "token错误，请重新登录"));
             }
 
             return new UsernamePasswordAuthenticationToken(username, null,
                     Collections.singleton(new SimpleGrantedAuthority(role))
             );
         } catch (ExpiredJwtException e) {
-            ResponseUtil.out(response, ResponseUtil.resultMap(false, 401, "token已过期，请重新登录"));
+            ResponseUtil.out(response, ResponseUtil.resultMap(false, HttpStatus.SC_FORBIDDEN, "token已过期，请重新登录"));
         } catch (UnsupportedJwtException | MalformedJwtException | IllegalArgumentException | SignatureException ex) {
-            ResponseUtil.out(response, ResponseUtil.resultMap(false, 401, "解析token错误,非法token"));
+            ResponseUtil.out(response, ResponseUtil.resultMap(false, HttpStatus.SC_FORBIDDEN, "解析token错误,非法token"));
         } catch (Exception ex) {
-            ResponseUtil.out(response, ResponseUtil.resultMap(false, 500, "未知错误"));
+            ResponseUtil.out(response, ResponseUtil.resultMap(false, HttpStatus.SC_INTERNAL_SERVER_ERROR, "未知错误"));
         }
 
         return null;

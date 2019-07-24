@@ -20,7 +20,9 @@ import javax.annotation.Resource;
 @SpringBootTest(classes = GISPlatformApplication.class)
 @WebAppConfiguration
 public class GeoServerTest {
+
     private static final Logger logger = LoggerFactory.getLogger(GeoServerTest.class);
+
     @Resource(name = "geoServerServiceImpl")
     private GeoServerService geoServerServiceImpl;
 
@@ -51,7 +53,7 @@ public class GeoServerTest {
     @Test
     public void publishLayer() {
         logger.info("publishLayer::");
-        Result result = geoServerServiceImpl.publishLayer("shpdb", "shpdb", "hanzhong");
+        Result result = geoServerServiceImpl.publishLayer("shpdb", "shpdb", "hanzhong", "");
         logger.info("searchLayer::" + result.toString());
     }
 }

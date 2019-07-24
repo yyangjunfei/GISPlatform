@@ -5,7 +5,7 @@ import cc.wanshan.gis.dao.layer.UserPropsDao;
 import cc.wanshan.gis.entity.layer.geoserver.UserProps;
 import cc.wanshan.gis.service.layer.geoserver.UserPropsService;
 import cc.wanshan.gis.utils.base.ResultUtil;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,6 @@ import java.util.UUID;
 public class UserPropsServiceImpl implements UserPropsService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserPropsServiceImpl.class);
-
     @Resource
     private UserPropsDao userPropsDao;
 

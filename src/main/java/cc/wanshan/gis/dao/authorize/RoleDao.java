@@ -23,6 +23,11 @@ import java.util.List;
 @Component
 public interface RoleDao {
 
+    /**
+     * description: 根据roleId查找role
+     *
+     * @return cc.wanshan.gisdev.entity.security.Role
+     */
     @Select({
             "select "
                     + "role_id,"
@@ -32,7 +37,7 @@ public interface RoleDao {
                     + "update_time,"
                     + "describe "
                     + "from "
-                    + "tb_role "
+                    + "role "
                     + "where "
                     + "role_id=#{roleId}"
     })
@@ -46,18 +51,17 @@ public interface RoleDao {
             @Result(column = "role_id", property = "userList", many = @Many(select = "cc.wanshan.demo.repository.UserDao.findUsersByRoleId", fetchType = FetchType.LAZY)),
             @Result(column = "role_id", property = "authorityList", many = @Many(select = "cc.wanshan.demo.repository.AuthorityDao.findAuthoritiesByRoleId", fetchType = FetchType.LAZY))
     })
-
-    /**
-     * description: 根据roleId查找role
-     *
-     * @param roleId
-     * @return cc.wanshan.gisdev.entity.authorize.Role
-     */
     Role findByRoleId(String roleId);
 
+
+    /**
+     * description:新增role
+     *
+     * @return int
+     */
     @Insert({
             "insert into "
-                    + "tb_role "
+                    + "role "
                     + "(role_name,"
                     + "role_name_zh,"
                     + "insert_time,"
@@ -71,18 +75,17 @@ public interface RoleDao {
                     + "#{describe})"
     })
     @Options(useGeneratedKeys = true, keyColumn = "role_id", keyProperty = "roleId")
-
-    /**
-     * description:新增role
-     *
-     * @param role
-     * @return int
-     */
     int insertRole(Role role);
 
+
+    /**
+     * description:更新role
+     *
+     * @return int
+     */
     @Update({
             "update "
-                    + "tb_role "
+                    + "role "
                     + "set "
                     + "role_id=#{roleId},"
                     + "role_name=#{roleName},"
@@ -92,41 +95,40 @@ public interface RoleDao {
                     + "where "
                     + "role_id=#{roleId}"
     })
-    /**
-     * description:更新role
-     *
-     * @param role
-     * @return int
-     */
     int updateRole(Role role);
 
-    @Delete({
-            "delete from "
-                    + "tb_role "
-                    + "where "
-                    + "role_id=#{roleId}"
-    })
     /**
      * description:根据roleId删除role
      *
-     * @param roleId
      * @return int
      */
+    @Delete({
+            "delete from "
+                    + "role "
+                    + "where "
+                    + "role_id=#{roleId}"
+    })
     int deleteRole(String roleId);
 
+
+    /**
+     * description:根据用户名查找role
+     *
+     * @return cc.wanshan.gisdev.entity.security.Role
+     */
     @Select({
             "select "
                     + "* "
                     + "from "
-                    + "tb_role "
+                    + "role "
                     + "where "
                     + "role_id =( "
                     + "select  "
                     + "u.role_id "
                     + "from "
-                    + "tb_user as u "
+                    + "users as u "
                     + "where "
-                    + "u.username=#{username})"
+                    + "u.name=#{username})"
     })
     @Results({
             @Result(id = true, column = "role_id", property = "roleId"),
@@ -136,15 +138,14 @@ public interface RoleDao {
             @Result(column = "insert_time", property = "insertTime"),
             @Result(column = "insert_time", property = "updateTime"),
     })
-
-    /**
-     * description:根据用户名查找role
-     *
-     * @param username
-     * @return cc.wanshan.gisdev.entity.authorize.Role
-     */
     Role findRoleByUserName(String username);
 
+
+    /**
+     * description: 查询所有的role
+     *
+     * @return java.util.List<cc.wanshan.gisdev.entity.security.Role>
+     */
     @Select({
             "select "
                     + "role_id ,"
@@ -154,7 +155,7 @@ public interface RoleDao {
                     + "insert_time,"
                     + "update_time "
                     + "from "
-                    + "tb_role"})
+                    + "role"})
     @Results({
             @Result(id = true, column = "role_id", property = "roleId"),
             @Result(column = "role_name", property = "roleName"),
@@ -164,15 +165,14 @@ public interface RoleDao {
             @Result(column = "insert_time", property = "updateTime"),
             @Result(column = "role_id", property = "userList", many = @Many(select = "cc.wanshan.demo.repository.UserDao.findUsersByRoleId", fetchType = FetchType.LAZY))
     })
-
-    /**
-     * description: 查询所有的role
-     *
-     * @param
-     * @return java.util.List<cc.wanshan.gisdev.entity.authorize.Role>
-     */
     List<Role> findAllRole();
 
+
+    /**
+     * description: 根据roleName查询role
+     *
+     * @return cc.wanshan.gisdev.entity.security.Role
+     */
     @Select({
             "select"
                     + "role_id,"
@@ -182,7 +182,7 @@ public interface RoleDao {
                     + "insert_time,"
                     + "update_time "
                     + "from "
-                    + "tb_role "
+                    + "role "
                     + "where "
                     + "role_name=#{roleName}"
     })
@@ -194,33 +194,30 @@ public interface RoleDao {
             @Result(column = "insert_time", property = "updateTime"),
             @Result(column = "describe", property = "describe")
     })
-
-    /**
-     * description: 根据roleName查询role
-     *
-     * @param roleName
-     * @return cc.wanshan.gisdev.entity.authorize.Role
-     */
     Role findRoleByRoleName(String roleName);
 
-    @Select({
-            "select "
-                    + "count(*) "
-                    + "from "
-                    + "tb_role "
-                    + "where "
-                    + "role_name=#{roleName}"
-    })
 
     /**
      * description:判断role是否已存在
      *
-     * @param roleName
      * @return int
      */
+    @Select({
+            "select "
+                    + "count(*) "
+                    + "from "
+                    + "role "
+                    + "where "
+                    + "role_name=#{roleName}"
+    })
     int findCountByRoleName(String roleName);
 
 
+    /**
+     * description:根据roleNameZh查询role
+     *
+     * @return cc.wanshan.gisdev.entity.security.Role
+     */
     @Select({
             "select "
                     + "role_id,"
@@ -230,7 +227,7 @@ public interface RoleDao {
                     + "insert_time,"
                     + "update_time "
                     + "from "
-                    + "tb_role "
+                    + "role "
                     + "where "
                     + "role_name_zh=#{roleNameZH}"
     })
@@ -242,38 +239,36 @@ public interface RoleDao {
             @Result(column = "insert_time", property = "updateTime"),
             @Result(column = "describe", property = "describe")
     })
-
-    /**
-     * description:根据roleNameZh查询role
-     *
-     * @param roleNameZH
-     * @return cc.wanshan.gisdev.entity.authorize.Role
-     */
     Role findRoleByRoleNameZH(String roleNameZH);
 
-    @Select({
-            "select "
-                    + "count(*) "
-                    + "from "
-                    + "tb_role "
-                    + "where "
-                    + "role_name_zh=#{roleNameZH}"
-    })
 
     /**
      * description:判断roleNameZH是否存在
      *
-     * @param roleNameZH
      * @return int
      */
+    @Select({
+            "select "
+                    + "count(*) "
+                    + "from "
+                    + "role "
+                    + "where "
+                    + "role_name_zh=#{roleNameZH}"
+    })
     int findCountByRoleNameZH(String roleNameZH);
 
+
+    /**
+     * description: 根据authorId查询store
+     *
+     * @return java.util.List<cc.wanshan.gisdev.entity.security.Role>
+     */
     @Select({
             "select "
                     + "r.role_name "
-                    + "from tb_authority_role as ar "
+                    + "from authority_role as ar "
                     + "inner join "
-                    + "tb_role as r "
+                    + "role as r "
                     + "on "
                     + "ar.role_id=r.role_id "
                     + "where "
@@ -282,12 +277,5 @@ public interface RoleDao {
     @Results({
             @Result(column = "role_name", property = "roleName")
     })
-
-    /**
-     * description: 根据authorId查询store
-     *
-     * @param authorId
-     * @return java.util.List<cc.wanshan.gisdev.entity.authorize.Role>
-     */
     List<Role> findByAuthorId(String authorId);
 }

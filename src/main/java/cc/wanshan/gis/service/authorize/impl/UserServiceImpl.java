@@ -39,14 +39,8 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         logger.info("loadUserByUsername::s = [{}]", username);
         User user = findUserByUsername(username);
-//        UserDetailsImpl userDetails = new UserDetailsImpl();
-//        userDetails.setUsername(username);
-//        userDetails.setPassword(authorize.getPassword());
-//        userDetails.setRole(roleServiceImpl.findRoleByUsername(username));
-//        Role roleByUsername = roleServiceImpl.findRoleByUsername(username);
-//        return userDetails;
-        return new UserDetailsImpl(user, roleServiceImpl.findRoleByUsername(username));
 
+        return new UserDetailsImpl(user, roleServiceImpl.findRoleByUsername(username));
     }
 
     @Override

@@ -45,7 +45,6 @@ public class DataManagementController {
     public Result metadataImport(String jsonString, @RequestParam MultipartFile[] file) {
 
         return dataManagementService.metadataImportPublication(jsonString, file);
-
     }
 
     @ApiOperation(value = "查询显示存储数据", notes = "查询显示存储数据")
@@ -68,7 +67,7 @@ public class DataManagementController {
     public Result editLayerPropertiesData(@RequestParam("metadataJson") String metadataJson) {
 
         // 构建实体
-        metadata metadata = JSONObject.parseObject(metadataJson, metadata.class);
+        metadata metadata = JSONObject.parseObject(metadataJson, cc.wanshan.gis.entity.metadata.metadata.class);
 
         return dataManagementService.editLayerPropertiesData(metadata);
     }
@@ -92,9 +91,9 @@ public class DataManagementController {
     public Result findLayerPropertiesData(String metadataJson) {
 
         // 构建实体
-        metadata metadata = JSONObject.parseObject(metadataJson, metadata.class);
+        metadata metadata = JSONObject.parseObject(metadataJson, cc.wanshan.gis.entity.metadata.metadata.class);
 
-        List<metadata> listMeta = dataManagementService.findLayerPropertiesData(metadata);
+        List<cc.wanshan.gis.entity.metadata.metadata> listMeta = dataManagementService.findLayerPropertiesData(metadata);
 
         return ResultUtil.success(listMeta);
     }
@@ -110,7 +109,10 @@ public class DataManagementController {
 
         String storeName = LanguageUtils.getPinYin(met.getStoreName());
 
-        Result rest = geoServerService.publishLayer("shpdb", storeName, met.getLayerName());
+        //获取风格
+        String defaultStyle = met.getStyleName();
+
+        Result rest = geoServerService.publishLayer("shpdb", storeName, met.getLayerName(), defaultStyle);
 
         //发布成功之后 更改数据库中的发布状态
         dataManagementService.changePublicationStatus(id);
@@ -130,6 +132,7 @@ public class DataManagementController {
         String url = GeoServerUtils.url.toString() + "/shpdb/wms?service=WMS&version=1.1.0&request=GetMap&layers=" + layerNames + "&bbox=105.4952,32.1507,108.2567,33.8539&width=768&height=473&srs=EPSG:4326&format=application/openlayers";
 
         return ResultUtil.success(url);
+
     }
 
 }

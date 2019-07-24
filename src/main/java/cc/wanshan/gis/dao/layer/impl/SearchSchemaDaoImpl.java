@@ -15,6 +15,7 @@ import java.sql.SQLException;
 
 @Repository(value = "searchSchemaDaoImpl")
 public class SearchSchemaDaoImpl implements SearchSchemaDao {
+
     private static final Logger logger = LoggerFactory.getLogger(SearchSchemaDaoImpl.class);
 
     @Override

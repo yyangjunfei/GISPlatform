@@ -1,6 +1,6 @@
 package cc.wanshan.gis.service.layer.thematic.impl;
 
-import cc.wanshan.gis.dao.layer.FirstClassificationDao;
+import cc.wanshan.gis.dao.layer.thematic.FirstClassificationDao;
 import cc.wanshan.gis.entity.layer.thematic.FirstClassification;
 import cc.wanshan.gis.service.layer.thematic.FirstClassificationService;
 import org.springframework.stereotype.Service;
@@ -13,6 +13,7 @@ import javax.annotation.Resource;
  */
 @Service(value = "firstClassificationServiceImpl")
 public class FirstClassificationServiceImpl implements FirstClassificationService {
+
     @Resource
     private FirstClassificationDao firstClassificationDao;
 

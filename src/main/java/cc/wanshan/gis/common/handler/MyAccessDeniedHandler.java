@@ -1,4 +1,4 @@
-package cc.wanshan.gis.common.security;
+package cc.wanshan.gis.common.handler;
 
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
