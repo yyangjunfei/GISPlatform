@@ -23,7 +23,7 @@ public class JWTAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json; charset=utf-8");
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        Result result = ResultUtil.error(HttpServletResponse.SC_FORBIDDEN, authException.getMessage());
+        Result result = ResultUtil.error(HttpServletResponse.SC_FORBIDDEN, "[匿名无权限访问]");
 
         response.getWriter().write(new ObjectMapper().writeValueAsString(result));
     }
