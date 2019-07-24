@@ -1,36 +1,34 @@
 package cc.wanshan.gis.service.metadata.impl;
 
 import cc.wanshan.gis.common.enums.ResultCode;
+import cc.wanshan.gis.common.pojo.Result;
 import cc.wanshan.gis.dao.metadata.FilePublishDao;
-import cc.wanshan.gis.entity.Result;
 import cc.wanshan.gis.entity.metadata.ShpInfo;
 import cc.wanshan.gis.entity.metadata.metadata;
 import cc.wanshan.gis.service.metadata.FileService;
-import cc.wanshan.gis.utils.ResultUtil;
+import cc.wanshan.gis.utils.base.ResultUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import org.apache.ibatis.session.ExecutorType;
-import org.apache.ibatis.session.SqlSession;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.geojson.feature.FeatureJSON;
-import org.mybatis.spring.SqlSessionTemplate;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.slf4j.Logger;
-import org.slf4j.*;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.nio.charset.Charset;
-import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -127,7 +125,7 @@ public class FileServiceImpl implements FileService {
         }
     }
 
-    public boolean  delFile(String filePath) {
+    public boolean delFile(String filePath) {
         File file = new File(filePath);
         // 如果文件路径所对应的文件存在，并且是一个文件，则直接删除
         if (file.exists() && file.isFile()) {

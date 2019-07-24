@@ -1,8 +1,13 @@
 /*
 package cc.wanshan.gis;
 
+<<<<<<< HEAD
 import cc.wanshan.gis.dao.security.RoleDao;
 import cc.wanshan.gis.entity.security.Role;
+=======
+import cc.wanshan.gis.dao.authorize.RoleDao;
+import cc.wanshan.gis.entity.authorize.Role;
+>>>>>>> renmy
 import java.util.Date;
 import javax.annotation.Resource;
 import org.junit.Test;
@@ -34,7 +39,6 @@ public class RoleTest {
     role.setInsertTime(new Date());
     role.setUpdateTime(new Date());
     int i = roleDao.insertRole(role);
-    System.out.println("结果为"+i);
   }
   @Test
   public void deleteRose(){
