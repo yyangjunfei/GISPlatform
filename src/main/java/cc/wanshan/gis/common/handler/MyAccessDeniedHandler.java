@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@Component
+@Component(value = "myAccessDeniedHandler")
 public class MyAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
@@ -18,9 +18,8 @@ public class MyAccessDeniedHandler implements AccessDeniedHandler {
         httpServletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
         httpServletResponse.setCharacterEncoding("UTF-8");
         httpServletResponse.setContentType("application/json;charset=UTF-8");
-        httpServletRequest.getRequestDispatcher("/403").forward(httpServletRequest, httpServletResponse);
         PrintWriter out = httpServletResponse.getWriter();
-        out.write("{\"status\":\"error\",\"msg\":\"权限不足，请联系管理员!\"}");
+        out.write("{\"code\":\"403\",\"msg\":\"权限不足，请联系管理员!\"}");
         out.flush();
         out.close();
     }

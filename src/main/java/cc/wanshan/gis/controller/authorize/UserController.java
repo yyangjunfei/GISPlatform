@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import javax.annotation.Resource;
 import java.net.URISyntaxException;
 import java.util.Collection;
@@ -62,7 +61,6 @@ public class UserController {
             return ResultUtil.error(1, user.getMsg());
         }
     }
-
     @RequestMapping("/insertuser")
     @ResponseBody
     public Result insertUser(@RequestBody JSONObject jsonObject) {
@@ -84,7 +82,7 @@ public class UserController {
             user.setInsertTime(new Date());
             Result i = userServiceImpl.insertUser(user);
             logger.info("userServiceImpl.insertUser::" + i);
-            if (i.getCode() == 0) {
+            if (i.getCode() == 200) {
                 thematic.setThematicId("72f0f0747bad11e9ac6420040ff72212");
                 role.setRoleId("2d8aa47c7c2911e9a6f820040ff72212");
                 user.setSecurity("秘密");
@@ -94,7 +92,7 @@ public class UserController {
                 user.setUpdateTime(new Date());
                 Result updateUserStatus = userServiceImpl.updateUserStatus(user);
                 logger.info("userServiceImpl.updateUserStatus::" + updateUserStatus);
-                if (updateUserStatus.getCode() == 0) {
+                if (updateUserStatus.getCode() == 200) {
                     for (String s : thematicId) {
                         thematicUser.setThematicId(s);
                         thematicUser.setUserId(user.getUserId());
@@ -139,7 +137,6 @@ public class UserController {
             return ResultUtil.error(1, "用户名为null");
         }
     }
-
     @RequestMapping("/finduserbyusername")
     @ResponseBody
     public Result findUserByUsername(@RequestBody JSONObject jsonObject) {
@@ -304,7 +301,6 @@ public class UserController {
             String authority1 = authority.getAuthority();
             map.put("role", authority1);
         }
-
         map.put("username", username);
         map.put("userId", user.getUserId());
 

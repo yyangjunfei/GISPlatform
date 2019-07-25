@@ -16,7 +16,7 @@ import javax.annotation.Resource;
 import java.util.Collection;
 import java.util.List;
 
-@Component
+@Component(value = "filterInvocationSecurityMetadataSourceImpl")
 public class FilterInvocationSecurityMetadataSourceImpl implements FilterInvocationSecurityMetadataSource {
 
     private static final Logger logger = LoggerFactory.getLogger(FilterInvocationSecurityMetadataSourceImpl.class);
@@ -31,7 +31,7 @@ public class FilterInvocationSecurityMetadataSourceImpl implements FilterInvocat
     public Collection<ConfigAttribute> getAttributes(Object o) throws IllegalArgumentException {
         String requestUrl = ((FilterInvocation) o).getRequestUrl();
         logger.info("用户的请求地址为：" + requestUrl);
-        if ("/login".equals(requestUrl)) {
+        if ("/user/login".equals(requestUrl)) {
             return null;
         }
         Authority authority = authorityService.findAuthorityByUrl(requestUrl);
@@ -47,7 +47,6 @@ public class FilterInvocationSecurityMetadataSourceImpl implements FilterInvocat
             return SecurityConfig.createList(values);
         }
     }
-
     @Override
     public Collection<ConfigAttribute> getAllConfigAttributes() {
         return null;
