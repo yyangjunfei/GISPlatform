@@ -25,6 +25,36 @@ public class Role implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public Role() {
+    }
+
+    public Role(
+        @NotBlank(message = "角色id不可为null") @Length(max = 32, message = "角色id可超过32字节") String roleId,
+        @NotBlank(message = "角色名不可为null") @Length(min = 8, message = "长度最短为8位") String roleName,
+        @NotBlank(message = "角色中文名不为null") @Length(max = 24, message = "角色中文名不可超过24字节") String roleNameZH,
+        @NotNull(message = "插入时间不可为null") @Past(message = "插入日期必须为过去时间") Date insertTime,
+        @NotNull(message = "修改时间不可为null") @Past(message = "修改日期必须为过去时间") Date updateTime,
+        @Length(max = 100, message = "描述长度不可超过100字节") String describe) {
+        this.roleId = roleId;
+        this.roleName = roleName;
+        this.roleNameZH = roleNameZH;
+        this.insertTime = insertTime;
+        this.updateTime = updateTime;
+        this.describe = describe;
+    }
+
+    public Role(
+        @NotBlank(message = "角色名不可为null") @Length(min = 8, message = "长度最短为8位") String roleName,
+        @NotBlank(message = "角色中文名不为null") @Length(max = 24, message = "角色中文名不可超过24字节") String roleNameZH,
+        @NotNull(message = "插入时间不可为null") @Past(message = "插入日期必须为过去时间") Date insertTime,
+        @NotNull(message = "修改时间不可为null") @Past(message = "修改日期必须为过去时间") Date updateTime,
+        @Length(max = 100, message = "描述长度不可超过100字节") String describe) {
+        this.roleName = roleName;
+        this.roleNameZH = roleNameZH;
+        this.insertTime = insertTime;
+        this.updateTime = updateTime;
+        this.describe = describe;
+    }
     @NotBlank(message = "角色id不可为null")
     @Length(max = 32, message = "角色id可超过32字节")
     private String roleId;

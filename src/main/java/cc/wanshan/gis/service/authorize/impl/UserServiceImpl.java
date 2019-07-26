@@ -1,6 +1,7 @@
 package cc.wanshan.gis.service.authorize.impl;
 
 import cc.wanshan.gis.common.pojo.Result;
+import cc.wanshan.gis.dao.authorize.RoleDao;
 import cc.wanshan.gis.dao.authorize.UserDao;
 import cc.wanshan.gis.entity.authorize.User;
 import cc.wanshan.gis.entity.authorize.UserDetailsImpl;
@@ -27,7 +28,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Resource
     private UserDao userDao;
     @Resource
-    private RoleServiceImpl roleServiceImpl;
+    private RoleDao roleDao;
 
     @Override
     public User findUserByUsername(String username) {
@@ -40,7 +41,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         logger.info("loadUserByUsername::s = [{}]", username);
         User user = findUserByUsername(username);
 
-        return new UserDetailsImpl(user, roleServiceImpl.findRoleByUsername(username));
+        return new UserDetailsImpl(user, roleDao.findRoleByUserName(username));
     }
 
     @Override
