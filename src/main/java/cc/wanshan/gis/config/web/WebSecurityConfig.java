@@ -9,7 +9,6 @@ import cc.wanshan.gis.common.security.AccessDecisionManagerImpl;
 import cc.wanshan.gis.common.security.JWTAuthenticationEntryPoint;
 import cc.wanshan.gis.config.properties.IgnoredUrlsProperties;
 import cc.wanshan.gis.service.authorize.impl.UserServiceImpl;
-import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,10 +95,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   public void configure(WebSecurity web) {
 
     logger.info("configure::web = [{}]", web);
-
     web.ignoring().antMatchers(
         "/swagger_ui.html", "/doc.html"
     );
+
   }
 
   /**
@@ -137,14 +136,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .loginPage("/user/login")
         .successHandler(authenticationSuccessHandler)
         .failureHandler(authenticationFailHandler).and()
-        .headers().frameOptions().disable().and()
+        .headers().frameOptions().disable()
+        .and()
         .logout()
         .logoutUrl("/logout")
         .logoutSuccessHandler(customLogoutSuccessHandler)
         .and()
         .authorizeRequests().anyRequest().authenticated()
         .and()
-        // 添加自定义权限过滤器
+         //添加自定义权限过滤器
         .addFilter(new JWTAuthorizationFilter(authenticationManager(), redisTemplate))
     ;
   }

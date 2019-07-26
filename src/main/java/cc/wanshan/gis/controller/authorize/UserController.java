@@ -30,14 +30,14 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 
-@Api(value = "UserController", tags = "用户管理模块")
-@RestController
-@EnableTransactionManagement(proxyTargetClass = true)
-@RequestMapping("/user")
 /**
  * @Author Li Cheng
  * @Date 14:27 2019/6/18
  **/
+@Api(value = "UserController", tags = "用户管理模块")
+@RestController
+@EnableTransactionManagement(proxyTargetClass = true)
+@RequestMapping("/user")
 public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -54,12 +54,7 @@ public class UserController {
     @RequestMapping("/findalluser")
     @ResponseBody
     public Result findAllUser() {
-        Result user = userServiceImpl.findAllUser();
-        if (user.getCode() == 0) {
-            return ResultUtil.success(user.getData());
-        } else {
-            return ResultUtil.error(1, user.getMsg());
-        }
+        return userServiceImpl.findAllUser();
     }
     @RequestMapping("/insertuser")
     @ResponseBody

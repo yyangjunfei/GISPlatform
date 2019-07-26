@@ -4,17 +4,19 @@ import cc.wanshan.gis.common.pojo.Result;
 import cc.wanshan.gis.entity.authorize.Role;
 
 import java.util.List;
-
+/**
+ * @Author Li Cheng
+ * @Date 9:00 2019/7/26
+ **/
 public interface RoleService {
 
     /**
-     * @return cc.wanshan.demo.entity.Role
-     * @Author Li Cheng
-     * @Description 根据用户名查找当前用户角色
-     * @Date 15:02 2019/4/12
-     * @Param [username]
+     * description: 根据用户名查找角色
+     *
+     * @param username 用户名
+     * @return cc.wanshan.gis.entity.authorize.Role
      **/
-    Role findRoleByUsername(String username);
+    Result findRoleByUsername(String username);
 
     Result findRoleByRoleId(String roleId);
 
@@ -25,7 +27,7 @@ public interface RoleService {
      * @Date 8:30 2019/4/19
      * @Param [authorId]
      **/
-    List<Role> findRoleByAuthorId(String authorId);
+    Result findRoleByAuthorId(String authorId);
 
     /**
      * @return cc.wanshan.demo.entity.Result
@@ -43,7 +45,7 @@ public interface RoleService {
      * @Date 15:03 2019/4/12
      * @Param [role]
      **/
-    Result insertRole(Role role);
+    Result insertRole(String roleName,String roleNameZH,String describe);
 
     /**
      * @return cc.wanshan.demo.entity.Result
@@ -79,7 +81,7 @@ public interface RoleService {
      * @Date 14:05 2019/4/15
      * @Param [role]
      **/
-    Result updateRole(Role role);
+    Result updateRole(String roleId,String roleName,String roleNameZH,String describe);
 
     /**
      * @return cc.wanshan.demo.entity.Result

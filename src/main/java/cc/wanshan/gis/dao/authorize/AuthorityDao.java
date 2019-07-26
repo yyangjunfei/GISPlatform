@@ -42,7 +42,7 @@ public interface AuthorityDao {
                     + "authority_role "
                     + "where role_id=#{roleId})"
     })
-    List<Authority> findAuthoritiesByRoleId(String roleId);
+    List<Authority> findByRoleId(String roleId);
 
     /**
      * description:根据url查找权限
@@ -101,7 +101,7 @@ public interface AuthorityDao {
             + "#{updateTime,jdbcType=TIMESTAMP})"
     })
     @Options(useGeneratedKeys = true, keyColumn = "author_id", keyProperty = "authorId")
-    int insertAuthority(Authority authority);
+    int insert(Authority authority);
 
 
     /**
@@ -115,12 +115,12 @@ public interface AuthorityDao {
                     + "set "
                     + "author_id=#{authorId},"
                     + "author_name=#{authorName},"
-                    + "url=#{url} "
-                    + "update_time=#{updateTime,jdbcType=TIMESTAMP}) "
+                    + "url=#{url},"
+                    + "update_time=#{updateTime,jdbcType=TIMESTAMP} "
                     + "where "
                     + "author_id=#{authorId}"
     })
-    int updateAuthority(Authority authority);
+    int update(Authority authority);
 
 
     /**
@@ -133,5 +133,5 @@ public interface AuthorityDao {
             + "where "
             + "author_id=#{authorId}"
     })
-    int deleteAuthority(String authorId);
+    int delete(String authorId);
 }
