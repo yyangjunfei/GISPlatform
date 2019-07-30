@@ -1,6 +1,6 @@
 package cc.wanshan.gis.common.filter;
 
-import cc.wanshan.gis.common.constants.SecurityConstant;
+import cc.wanshan.gis.common.constant.SecurityConstant;
 import cc.wanshan.gis.utils.JwtTokenUtils;
 import cc.wanshan.gis.utils.base.ResponseUtil;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -30,7 +30,6 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     private RedisTemplate redisTemplate;
-
 
     public JWTAuthorizationFilter(AuthenticationManager authenticationManager,
                                   RedisTemplate redisTemplate) {
@@ -63,7 +62,8 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
         try {
             if (!header.startsWith("Bearer ")) {
-                ResponseUtil.out(response, ResponseUtil.resultMap(false, 500, "暂无权限"));
+                response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+                ResponseUtil.out(response, ResponseUtil.toMap(false, HttpStatus.SC_INTERNAL_SERVER_ERROR, "暂无权限"));
             }
             String token = header.replace(SecurityConstant.TOKEN_PREFIX, "");
             String username = JwtTokenUtils.getUsername(token);
@@ -73,27 +73,31 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
             String tokenByRedis = (String) redisTemplate.opsForValue().get(SecurityConstant.USER_TOKEN + username);
 
-            if (tokenByRedis == null) {
-                ResponseUtil.out(response, ResponseUtil.resultMap(false, HttpStatus.SC_FORBIDDEN, "token已失效，请重新登录"));
+            if (StringUtils.isBlank(tokenByRedis)) {
+                response.setStatus(HttpStatus.SC_FORBIDDEN);
+                ResponseUtil.out(response, ResponseUtil.toMap(false, HttpStatus.SC_FORBIDDEN, "token已失效，请重新登录"));
             }
 
             logger.info("tokenByRedis;;[{}]", tokenByRedis);
 
             if (!tokenByRedis.equals(header)) {
-                ResponseUtil.out(response, ResponseUtil.resultMap(false, HttpStatus.SC_FORBIDDEN, "token错误，请重新登录"));
+                response.setStatus(HttpStatus.SC_FORBIDDEN);
+                ResponseUtil.out(response, ResponseUtil.toMap(false, HttpStatus.SC_FORBIDDEN, "token错误，请重新登录"));
             }
 
             return new UsernamePasswordAuthenticationToken(username, null,
                     Collections.singleton(new SimpleGrantedAuthority(role))
             );
         } catch (ExpiredJwtException e) {
-            ResponseUtil.out(response, ResponseUtil.resultMap(false, HttpStatus.SC_FORBIDDEN, "token已过期，请重新登录"));
-        } catch (UnsupportedJwtException | MalformedJwtException | IllegalArgumentException | SignatureException ex) {
-            ResponseUtil.out(response, ResponseUtil.resultMap(false, HttpStatus.SC_FORBIDDEN, "解析token错误,非法token"));
-        } catch (Exception ex) {
-            ResponseUtil.out(response, ResponseUtil.resultMap(false, HttpStatus.SC_INTERNAL_SERVER_ERROR, "未知错误"));
+            response.setStatus(HttpStatus.SC_FORBIDDEN);
+            ResponseUtil.out(response, ResponseUtil.toMap(false, HttpStatus.SC_FORBIDDEN, e.getMessage(), "token已过期，请重新登录"));
+        } catch (UnsupportedJwtException | MalformedJwtException | IllegalArgumentException | SignatureException e) {
+            response.setStatus(HttpStatus.SC_FORBIDDEN);
+            ResponseUtil.out(response, ResponseUtil.toMap(false, HttpStatus.SC_FORBIDDEN, e.getMessage(), "解析token错误,非法token"));
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+            ResponseUtil.out(response, ResponseUtil.toMap(false, HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage(), "未知错误"));
         }
-
         return null;
     }
 }

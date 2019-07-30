@@ -2,6 +2,8 @@ package cc.wanshan.gis.service.authorize;
 
 import cc.wanshan.gis.common.pojo.Result;
 import cc.wanshan.gis.entity.authorize.User;
+import java.util.Date;
+import org.springframework.security.core.Authentication;
 
 public interface UserService {
 
@@ -12,7 +14,7 @@ public interface UserService {
      * @Date 9:30 2019/4/17
      * @Param [username]
      **/
-    User findUserByUsername(String username);
+    Result findByUsername(String username);
 
     /**
      * @return cc.wanshan.demo.entity.Result
@@ -21,16 +23,18 @@ public interface UserService {
      * @Date 9:30 2019/4/17
      * @Param [userPage]
      **/
-    Result insertUser(User user);
+    Result insert(String username,String password,String roleId,String security,String  phoneNum,String email,String department,Integer status,
+        Integer delete,String enabledd);
 
     /**
+     *
+     *  查找当前所有用户
      * @return cc.wanshan.demo.entity.Result
      * @Author Li Cheng
-     * @Description 查找当前所有用户
      * @Date 9:29 2019/4/17
      * @Param []
      **/
-    Result findAllUser();
+    Result findAll();
 
     /**
      * @return cc.wanshan.demo.entity.Result
@@ -39,23 +43,31 @@ public interface UserService {
      * @Date 9:29 2019/4/17
      * @Param [username]
      **/
-    Result findUserCountByUsername(String username);
+    Result findCountByUsername(String username);
 
     /**
+     * 根据userId查找用户信息
      * @return cc.wanshan.demo.entity.Result
      * @Author Li Cheng
      * @Description 根据userId查找用户信息
      * @Date 14:08 2019/4/17
      * @Param [userId]
      **/
-    Result findUserByUserId(String userId);
+    Result findByUserId(String userId);
 
-    Result updateUser(User user);
+    Result update(String userId,String roleId,String security ,Integer phoneNum,String email,String department);
 
-    Result updateUserPassword(User user);
+    Result updatePassword(String username,String password, String newPassword);
 
-    Result deleteUser(String userId);
+    Result delete(String userId);
 
-    Result updateUserStatus(User user);
+    Result updateStatus(String userId, Integer status);
+    /**
+     * description: 查找当前用户信息
+     *
+     * @param authentication 认证类
+     * @return cc.wanshan.gis.common.pojo.Result
+     **/
+    Result findCurrent(Authentication authentication);
 
 }

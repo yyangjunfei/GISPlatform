@@ -2,15 +2,15 @@ package cc.wanshan.gis.entity.authorize;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import javax.validation.constraints.NotBlank;
 import java.util.Collection;
-import java.util.Collections;
 
 @Data
 @JsonIgnoreProperties(value = {"handler"})//排除mybatis懒加载json序列化中的异常
@@ -26,9 +26,9 @@ public class UserDetailsImpl implements UserDetails {
     @NotBlank(message = "密码不可为null")
     @Length(min = 6, message = "长度最少6位")
     private String password;
-    private Role role;
+    private String role;
 
-    private Collection<? extends GrantedAuthority> authorities;
+   // private Collection<? extends GrantedAuthority> authorities;
 
     public UserDetailsImpl() {
     }
@@ -37,16 +37,15 @@ public class UserDetailsImpl implements UserDetails {
         this.id = user.getUserId();
         this.username = user.getUsername();
         this.password = user.getPassword();
-        this.role = role;
-        authorities = Collections.singleton(new SimpleGrantedAuthority(role.getRoleName()));
+        this.role = role.getRoleName();
+       // authorities = Collections.singleton(new SimpleGrantedAuthority(role.getRoleName()));
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
-//        List<GrantedAuthority> authorities = new ArrayList<>();
-//        authorities.add(new SimpleGrantedAuthority(role.getRoleName()));
-
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(role));
         return authorities;
     }
 

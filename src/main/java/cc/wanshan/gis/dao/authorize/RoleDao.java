@@ -4,6 +4,7 @@ import cc.wanshan.gis.entity.authorize.Role;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Many;
+import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Result;
@@ -48,8 +49,8 @@ public interface RoleDao {
             @Result(column = "describe", property = "describe"),
             @Result(column = "insert_time", property = "insertTime"),
             @Result(column = "insert_time", property = "updateTime"),
-            @Result(column = "role_id", property = "userList", many = @Many(select = "cc.wanshan.demo.repository.UserDao.findUsersByRoleId", fetchType = FetchType.LAZY)),
-            @Result(column = "role_id", property = "authorityList", many = @Many(select = "cc.wanshan.demo.repository.AuthorityDao.findAuthoritiesByRoleId", fetchType = FetchType.LAZY))
+            @Result(column = "role_id", property = "userList", many = @Many(select = "cc.wanshan.gis.dao.authorize.UserDao.findUsersByRoleId", fetchType = FetchType.LAZY)),
+            @Result(column = "role_id", property = "authorityList", many = @Many(select = "cc.wanshan.gis.dao.authorize.AuthorityDao.findByRoleId", fetchType = FetchType.LAZY))
     })
     Role findByRoleId(String roleId);
 
@@ -146,12 +147,13 @@ public interface RoleDao {
      *
      * @return java.util.List<cc.wanshan.gisdev.entity.security.Role>
      */
+    @MapKey("role_id")
     @Select({
             "select "
-                    + "role_id ,"
+                    + "role_id,"
                     + "role_name,"
                     + "role_name_zh,"
-                    + "describe "
+                    + "describe,"
                     + "insert_time,"
                     + "update_time "
                     + "from "
@@ -162,8 +164,8 @@ public interface RoleDao {
             @Result(column = "role_name_zh", property = "roleNameZH"),
             @Result(column = "describe", property = "describe"),
             @Result(column = "insert_time", property = "insertTime"),
-            @Result(column = "insert_time", property = "updateTime"),
-            @Result(column = "role_id", property = "userList", many = @Many(select = "cc.wanshan.demo.repository.UserDao.findUsersByRoleId", fetchType = FetchType.LAZY))
+            @Result(column = "update_time", property = "updateTime"),
+            @Result(column = "role_id", property = "userList", many = @Many(select = "cc.wanshan.gis.dao.authorize.UserDao.findUsersByRoleId",fetchType = FetchType.LAZY))
     })
     List<Role> findAllRole();
 

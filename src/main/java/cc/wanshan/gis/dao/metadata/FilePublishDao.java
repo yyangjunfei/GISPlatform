@@ -42,7 +42,7 @@ public interface FilePublishDao {
     int createLayerPropertieseTable(@Param("tableName") String tableName);
 
 
-    @Insert({"INSERT INTO shpdb.\"LAYER_PROPERTIES\" (workspace_name,store_name,layer_group,data_type,layer_name,safety_level,vector_types,style_name,attribution_department,create_time,create_by,delete,release_flag)VALUES (#{workspaceName},#{storeName},#{layerGroup},#{DataType},#{layerName},#{safetyLevel},#{vectorTypes},#{styleName},#{attributionDepartment},now(),#{createBy},0,0);"})
+    @Insert({"INSERT INTO shpdb.\"LAYER_PROPERTIES\" (workspace_name,store_name,layer_group,data_type,layer_name,safety_level,vector_types,style_name,attribution_department,create_time,create_by,delete,release_flag)VALUES (#{workspaceName},#{storeName},#{layerGroup},#{DataType},#{layerName},#{safetyLevel},#{vectorTypes},#{styleName},#{attributionDepartment},timenow(),#{createBy},0,0);"})
     int insertLayerPropertieseTableData(metadata metadata);
 
 }

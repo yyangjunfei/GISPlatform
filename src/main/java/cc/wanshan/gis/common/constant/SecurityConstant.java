@@ -1,4 +1,4 @@
-package cc.wanshan.gis.common.constants;
+package cc.wanshan.gis.common.constant;
 
 public interface SecurityConstant {
 
