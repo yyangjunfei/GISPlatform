@@ -6,7 +6,6 @@ public enum ResultCode {
      * 成功状态码
      */
     SUCCESS(200, "成功"),
-
     /**
      * 参数错误：10001-19999
      */
@@ -38,6 +37,8 @@ public enum ResultCode {
     USER_NOT_EXIST(20004, "用户不存在"),
 
     USER_HAS_EXISTED(20005, "用户已存在"),
+
+    USER_PASSWORD_ERROR(20006, "用户密码错误"),
 
     /**
      * 业务错误：30001-39999

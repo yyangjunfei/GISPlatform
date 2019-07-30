@@ -40,7 +40,7 @@ public interface StoreDao {
     @Results({
             @Result(id = true, column = "store_id", property = "storeId"),
             @Result(column = "store_name", property = "storeName"),
-            @Result(column = "user_id", property = "security.userId"),
+            @Result(column = "user_id", property = "user.userId"),
     })
     Store findStoreByStoreId(String storeId);
 
@@ -61,7 +61,7 @@ public interface StoreDao {
     })
     @Results({
             @Result(id = true, column = "store_id", property = "storeId"),
-            @Result(column = "user_id", property = "security.userId"),
+            @Result(column = "user_id", property = "user.userId"),
             @Result(column = "store_name", property = "storeName")
     })
     List<Store> findStoreByUserId(String userId);
@@ -85,7 +85,7 @@ public interface StoreDao {
                     + "values "
                     + "("
                     + "#{storeName},"
-                    + "#{security.userId},"
+                    + "#{user.userId},"
                     + "#{insertTime,jdbcType=TIMESTAMP},"
                     + "#{updateTime,jdbcType=TIMESTAMP}"
                     + ")"
@@ -105,7 +105,7 @@ public interface StoreDao {
                     + "set "
                     + "store_id=#{storeId},"
                     + "store_name=#{storeName},"
-                    + "user_id=#{security.userId}, "
+                    + "user_id=#{user.userId}, "
                     + "update_time=#{updateTime,jdbcType=TIMESTAMP} "
                     + "where "
                     + "store_id=#{storeId}"
@@ -134,13 +134,13 @@ public interface StoreDao {
      * @return java.util.List<cc.wanshan.gisdev.entity.drawlayer.Store>
      */
     @Select({
-            "select u.user_id,u.thematic_id,u.security,s.store_id,s.store_name from store as s inner join security as u on u.user_id = s.user_id where u.delete = 0 and u.status=1 and u.username=#{username}"})
+            "select u.user_id,u.thematic_id,u.user,s.store_id,s.store_name from store as s inner join user as u on u.user_id = s.user_id where u.delete = 0 and u.status=1 and u.username=#{username}"})
     @Results(value = {
             @Result(id = true, column = "store_id", property = "storeId"),
             @Result(column = "store_name", property = "storeName"),
-            @Result(column = "security", property = "security.security"),
-            @Result(column = "user_id", property = "security.userId"),
-            @Result(column = "thematic_id", property = "security.thematic", many = @Many(select = "cc.wanshan.gis.dao.layer.thematic.ThematicDao.findByThematicId")),
+            @Result(column = "user", property = "user.user"),
+            @Result(column = "user_id", property = "user.userId"),
+            @Result(column = "thematic_id", property = "user.thematic", many = @Many(select = "cc.wanshan.gis.dao.layer.thematic.ThematicDao.findByThematicId")),
             @Result(column = "store_id", property = "layerList",
                     many = @Many(select = "cc.wanshan.gis.dao.layer.LayerDao.findLayersByStoreId")),
     })

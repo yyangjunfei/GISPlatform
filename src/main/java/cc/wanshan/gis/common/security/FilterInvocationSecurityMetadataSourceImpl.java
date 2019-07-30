@@ -1,5 +1,7 @@
 package cc.wanshan.gis.common.security;
 
+import cc.wanshan.gis.dao.authorize.AuthorityDao;
+import cc.wanshan.gis.dao.authorize.RoleDao;
 import cc.wanshan.gis.entity.authorize.Authority;
 import cc.wanshan.gis.entity.authorize.Role;
 import cc.wanshan.gis.service.authorize.AuthorityService;
@@ -16,29 +18,29 @@ import javax.annotation.Resource;
 import java.util.Collection;
 import java.util.List;
 
-@Component
+@Component(value = "filterInvocationSecurityMetadataSourceImpl")
 public class FilterInvocationSecurityMetadataSourceImpl implements FilterInvocationSecurityMetadataSource {
 
     private static final Logger logger = LoggerFactory.getLogger(FilterInvocationSecurityMetadataSourceImpl.class);
 
-    @Resource(name = "authorityServiceImpl")
-    private AuthorityService authorityService;
+    @Resource
+    private AuthorityDao authorityDao;
 
-    @Resource(name = "roleServiceImpl")
-    private RoleService roleService;
+    @Resource
+    private RoleDao roleDao;
 
     @Override
     public Collection<ConfigAttribute> getAttributes(Object o) throws IllegalArgumentException {
         String requestUrl = ((FilterInvocation) o).getRequestUrl();
         logger.info("用户的请求地址为：" + requestUrl);
-        if ("/login".equals(requestUrl)) {
+        if ("/user/login".equals(requestUrl)) {
             return null;
         }
-        Authority authority = authorityService.findAuthorityByUrl(requestUrl);
+        Authority authority = authorityDao.findByUrl(requestUrl);
         if (authority == null) {
             return null;
         } else {
-            List<Role> roles = roleService.findRoleByAuthorId(authority.getAuthorId());
+            List<Role> roles = roleDao.findByAuthorId(authority.getAuthorId());
             int size = roles.size();
             String[] values = new String[size];
             for (int i = 0; i < size; i++) {
@@ -47,7 +49,6 @@ public class FilterInvocationSecurityMetadataSourceImpl implements FilterInvocat
             return SecurityConfig.createList(values);
         }
     }
-
     @Override
     public Collection<ConfigAttribute> getAllConfigAttributes() {
         return null;

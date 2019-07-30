@@ -1,8 +1,10 @@
 package cc.wanshan.gis.service.authorize;
 
+import cc.wanshan.gis.common.pojo.Result;
 import cc.wanshan.gis.entity.authorize.Authority;
 import cc.wanshan.gis.entity.authorize.Role;
 
+import java.net.URL;
 import java.util.List;
 
 public interface AuthorityService {
@@ -12,7 +14,7 @@ public interface AuthorityService {
      * @param url url
      * @return cc.wanshan.gis.entity.security.Authority
      **/
-    Authority findAuthorityByUrl(String url);
+    Result findByUrl(String url);
 
     /**
      * description:
@@ -20,5 +22,9 @@ public interface AuthorityService {
      * @param authorId 根据权限Id查询对应角色集合
      * @return java.util.List<cc.wanshan.gis.entity.security.Role>
      **/
-    List<Role> findRolesByAuthorId(String authorId);
+    Result findByAuthorId(String authorId);
+    Result insert(String authorName, String url);
+    Result update(String authorId,String authorName, String url);
+    Result delete(String authorId);
+
 }

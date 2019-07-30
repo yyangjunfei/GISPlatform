@@ -10,14 +10,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@Component
+@Component(value = "myAccessDeniedHandler")
 public class MyAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
     public void handle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AccessDeniedException accessDeniedException) throws IOException, ServletException {
 
         httpServletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
+
         ResponseUtil.out(httpServletResponse, ResponseUtil.toMap(false, HttpServletResponse.SC_FORBIDDEN, accessDeniedException.getMessage(), "权限不足，请联系管理员"));
+
 
     }
 }

@@ -29,7 +29,7 @@ public class UserTest {
     @Resource
     private RoleDao roleDao;
 
-    @Test
+   /* @Test
     public void insertUser() {
         logger.info("insertUser::");
         User user = new User();
@@ -43,7 +43,7 @@ public class UserTest {
         user.setDelete(0);
         user.setUpdateTime(new Date());
         user.setInsertTime(new Date());
-        Result i = userServiceImpl.insertUser(user);
+        Result i = userServiceImpl.insert(user);
         logger.info("userServiceImpl.insertUser::" + i);
         if (i.getCode() == 0) {
             thematic.setThematicId("72f0f0747bad11e9ac6420040ff72212");
@@ -92,5 +92,5 @@ public class UserTest {
         user.setUpdateTime(new Date());
         Result i = userServiceImpl.updateUserStatus(user);
         logger.info("updateUser::" + i);
-    }
+    }*/
 }
