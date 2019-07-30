@@ -26,13 +26,13 @@ public class AuthenticationFailHandler extends SimpleUrlAuthenticationFailureHan
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
 
+        response.setStatus(HttpStatus.SC_UNAUTHORIZED);
         if (exception instanceof UsernameNotFoundException || exception instanceof BadCredentialsException) {
-
-            ResponseUtil.out(response, ResponseUtil.resultMap(false, HttpStatus.SC_UNAUTHORIZED, "用户名或密码错误，请重试"));
+            ResponseUtil.out(response, ResponseUtil.toMap(false, HttpStatus.SC_UNAUTHORIZED, exception.getMessage(), "用户名或密码错误，请重试"));
         } else if (exception instanceof DisabledException) {
-            ResponseUtil.out(response, ResponseUtil.resultMap(false, HttpStatus.SC_UNAUTHORIZED, "账户被禁用，请联系管理员"));
+            ResponseUtil.out(response, ResponseUtil.toMap(false, HttpStatus.SC_UNAUTHORIZED, exception.getMessage(), "账户被禁用，请联系管理员"));
         } else {
-            ResponseUtil.out(response, ResponseUtil.resultMap(false, HttpStatus.SC_UNAUTHORIZED, "登录失败，未知错误"));
+            ResponseUtil.out(response, ResponseUtil.toMap(false, HttpStatus.SC_UNAUTHORIZED, exception.getMessage(), "登录失败，未知错误"));
         }
     }
 

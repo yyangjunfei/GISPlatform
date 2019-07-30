@@ -1,6 +1,6 @@
 package cc.wanshan.gis.common.filter;
 
-import cc.wanshan.gis.common.constants.SecurityConstant;
+import cc.wanshan.gis.common.constant.SecurityConstant;
 import cc.wanshan.gis.entity.authorize.User;
 import cc.wanshan.gis.entity.authorize.UserDetailsImpl;
 import cc.wanshan.gis.utils.JwtTokenUtils;

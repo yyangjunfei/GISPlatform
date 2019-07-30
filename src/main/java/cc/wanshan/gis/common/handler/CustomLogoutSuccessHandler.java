@@ -24,7 +24,7 @@ public class CustomLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler {
 
         //TODO 退出登录成功处理
 
-        ResponseUtil.out(response, ResponseUtil.resultMap(true, HttpServletResponse.SC_OK, "退出登录成功"));
+        ResponseUtil.out(response, ResponseUtil.toMap(true, HttpServletResponse.SC_OK, "退出登录成功"));
     }
 
 }
