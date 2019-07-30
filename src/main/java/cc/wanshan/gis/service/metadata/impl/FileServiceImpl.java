@@ -279,7 +279,7 @@ public class FileServiceImpl implements FileService {
      * @return
      */
     private boolean succeed(List<Map<String, String>> pathList, Result result) {
-        if (result.getCode() == 0) {
+        if (result.getCode() == 200) {
             pathList.add((Map) result.getData());
         } else {
             for (Map map : pathList) {
