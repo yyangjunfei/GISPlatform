@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,7 +30,6 @@ import org.springframework.security.web.access.intercept.FilterInvocationSecurit
 
 import javax.annotation.Resource;
 
-@Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -92,8 +90,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) {
 
-        logger.info("configure::web = [{}]", web);
-
         web.ignoring().antMatchers(
                 "/swagger_ui.html", "/doc.html"
         );
@@ -105,13 +101,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
 
-        logger.info("configure::http = [{}]", httpSecurity);
-
         httpSecurity
                 .cors().and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).accessDeniedHandler(myAccessDeniedHandler).and()
-                .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry =
                 httpSecurity.authorizeRequests();
@@ -123,24 +116,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.OPTIONS).permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .formLogin()
-                .loginPage("/user/login")
-                .successHandler(authenticationSuccessHandler)
-                .failureHandler(authenticationFailHandler).and()
+                .formLogin().loginPage("/user/login")
+                .successHandler(authenticationSuccessHandler).failureHandler(authenticationFailHandler).and()
                 .headers().frameOptions().disable().and()
-                .logout()
-                .logoutUrl("/logout")
-                .logoutSuccessHandler(customLogoutSuccessHandler).and()
-//                .authorizeRequests().anyRequest().authenticated()
-//                .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
-//                    @Override
-//                    public <O extends FilterSecurityInterceptor> O postProcess(O o) {
-//                        o.setSecurityMetadataSource(filterInvocationSecurityMetadataSource);
-//                        o.setAccessDecisionManager(accessDecisionManager);
-//                        return o;
-//                    }
-//                })
-//                .and()
+                .logout().logoutUrl("/logout").logoutSuccessHandler(customLogoutSuccessHandler).and()
                 // 添加自定义权限过滤器
                 .addFilter(new JWTAuthorizationFilter(authenticationManager(), redisTemplate))
         ;

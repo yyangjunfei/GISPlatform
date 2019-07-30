@@ -1,8 +1,6 @@
 package cc.wanshan.gis.common.security;
 
-import cc.wanshan.gis.common.pojo.Result;
-import cc.wanshan.gis.utils.base.ResultUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import cc.wanshan.gis.utils.base.ResponseUtil;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -20,11 +18,8 @@ public class JWTAuthenticationEntryPoint implements AuthenticationEntryPoint {
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException, ServletException {
 
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("application/json; charset=utf-8");
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        Result result = ResultUtil.error(HttpServletResponse.SC_FORBIDDEN, "[匿名无权限访问]");
 
-        response.getWriter().write(new ObjectMapper().writeValueAsString(result));
+        ResponseUtil.out(response, ResponseUtil.toMap(false, HttpServletResponse.SC_FORBIDDEN, authException.getMessage(), "匿名无权限访问"));
     }
 }

@@ -1,8 +1,6 @@
 package cc.wanshan.gis.config.web;
 
 import cc.wanshan.gis.common.global.CurrentUserMethodArgumentResolver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -14,8 +12,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-
-    private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Bean
     public CurrentUserMethodArgumentResolver currentUserMethodArgumentResolver() {

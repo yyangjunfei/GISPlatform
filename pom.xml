@@ -133,11 +133,6 @@
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>
-            <artifactId>gt-geojsondatastore</artifactId>
-            <version>${geotools.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.geotools</groupId>
             <artifactId>gt-jdbc</artifactId>
             <version>${geotools.version}</version>
         </dependency>

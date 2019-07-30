@@ -1,7 +1,7 @@
 package cc.wanshan.gis.common.interceptor;
 
 import cc.wanshan.gis.common.annotation.LoginRequired;
-import cc.wanshan.gis.common.constants.SecurityConstant;
+import cc.wanshan.gis.common.constant.SecurityConstant;
 import cc.wanshan.gis.utils.JwtTokenUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
