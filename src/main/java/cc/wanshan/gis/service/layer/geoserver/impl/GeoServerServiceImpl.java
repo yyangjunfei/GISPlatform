@@ -2,11 +2,11 @@ package cc.wanshan.gis.service.layer.geoserver.impl;
 
 import cc.wanshan.gis.common.pojo.Result;
 import cc.wanshan.gis.config.properties.GeoServerProperties;
+import cc.wanshan.gis.dao.authorize.UserDao;
 import cc.wanshan.gis.dao.layer.CreateSchemaDao;
 import cc.wanshan.gis.dao.layer.SearchSchemaDao;
 import cc.wanshan.gis.entity.authorize.User;
 import cc.wanshan.gis.entity.plot.of2d.Store;
-import cc.wanshan.gis.service.authorize.UserService;
 import cc.wanshan.gis.service.layer.geoserver.GeoServerService;
 import cc.wanshan.gis.service.layer.geoserver.StoreService;
 import cc.wanshan.gis.utils.base.ResultUtil;
@@ -37,8 +37,8 @@ public class GeoServerServiceImpl implements GeoServerService {
     @Resource(name = "storeServiceImpl")
     private StoreService storeService;
 
-    @Resource(name = "userServiceImpl")
-    private UserService userService;
+    @Resource
+    private UserDao userDao;
 
     @Resource(name = "createSchemaDaoImpl")
     private CreateSchemaDao createSchemaDao;
@@ -58,8 +58,7 @@ public class GeoServerServiceImpl implements GeoServerService {
                     Result newStore = createDataStore("newStore", workspace);
                     if (newStore.getCode() == 0) {
                         Store store = new Store();
-                        User user = userService.findUserByUsername(workspace);
-                        System.out.println("user为" + user.getUserId());
+                        User user = userDao.findByUsername(workspace);
                         store.setStoreName("newStore");
                         store.setUser(user);
                         Boolean save = storeService.insertStore(store);
