@@ -1,5 +1,4 @@
 package cc.wanshan.gis.controller.metadata;
-
 import cc.wanshan.gis.common.pojo.Result;
 import cc.wanshan.gis.entity.metadata.metadata;
 import cc.wanshan.gis.service.layer.geoserver.GeoServerService;
@@ -71,7 +70,6 @@ public class DataManagementController {
 
         return dataManagementService.editLayerPropertiesData(metadata);
     }
-
 
     @ApiOperation(value = "根据id查询存储数据", notes = "根据id查询存储数据")
     @GetMapping("/findLayerPropertiesDataById")

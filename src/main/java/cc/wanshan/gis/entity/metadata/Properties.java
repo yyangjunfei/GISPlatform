@@ -1,10 +1,7 @@
 package cc.wanshan.gis.entity.metadata;
-
-import lombok.Builder;
 import lombok.Data;
 
 @Data
-@Builder
 public class Properties {
 
     private String province;

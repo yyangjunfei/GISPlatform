@@ -1,5 +1,4 @@
 package cc.wanshan.gis.service.metadata.impl;
-
 import cc.wanshan.gis.common.enums.ResultCode;
 import cc.wanshan.gis.common.pojo.Result;
 import cc.wanshan.gis.dao.metadata.DataManagementDao;
@@ -15,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +36,7 @@ public class DataManagementServiceImpl implements DataManagementService {
         //本地文件上传服务器中
         Result uploadResult = fileService.upload(Arrays.asList(file), "");
 
-        List<Map<String, String>> data = (List<Map<String, String>>) uploadResult.getData();
+        List<Map<String,String>> data = (List<Map<String,String>>) uploadResult.getData();
 
         if (null == data || data.size() <= 0) {
             return ResultUtil.error(ResultCode.UPLOAD_FILE_NULL);
@@ -48,7 +46,7 @@ public class DataManagementServiceImpl implements DataManagementService {
 
         //String uuid = UUID.randomUUID().toString().replaceAll("-", "");
 
-        metadata metadata = JSON.parseObject(jsonString, cc.wanshan.gis.entity.metadata.metadata.class);
+        metadata metadata = JSON.parseObject(jsonString, metadata.class);
 
         //读取shp文件并且发布到数据库
         try {
