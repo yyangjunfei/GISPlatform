@@ -159,7 +159,7 @@ public class RoleServiceImpl implements RoleService {
     if (StringUtils.isBlank(roleId)){
       return ResultUtil.error(ResultCode.PARAM_IS_NULL);
     }
-    List<User> users = userDao.findUsersByRoleId(roleId);
+    List<User> users = userDao.findByRoleId(roleId);
     if (users.size() > 0) {
       return ResultUtil.error(1, "当前角色存在关联用户，不能被删除！");
     } else {
