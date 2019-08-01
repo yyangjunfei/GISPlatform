@@ -13,9 +13,9 @@ spring:
       request-timeout: 600000
   datasource:
     platform: postgres
-    url: jdbc:postgresql://192.168.1.133:5432/dev?useAffectedRows=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
-    username: postgres
-    password: wanshan
+    url: jdbc:postgresql://172.24.4.12:5432/gis_data?useAffectedRows=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
+    username: admin
+    password: 123456
     driver-class-name: org.postgresql.Driver
   # redis配置
   redis:
@@ -67,20 +67,20 @@ mybatis:
 
 # geoServer服务配置
 geoserver:
-  url: http://192.168.1.133:8080/geoserver
-  username: wanshan
-  passwd: wanshan@gis2019
-  postgisHost: 192.168.1.133
+  url: http://172.24.4.12/geoserver/web
+  username: admin
+  passwd: geoserver
+  postgisHost: 172.24.4.12
   postgisPort: 5432
-  postgisUser: postgres
-  postgisPassword: wanshan
-  postgisDatabase: dev
+  postgisUser: admin
+  postgisPassword: 123456
+  postgisDatabase: gis_data
 
 # postGIS数据库配置
 postgis:
-  url: jdbc:postgresql://192.168.1.133:5432/dev
-  user: postgres
-  password: wanshan
+  url: jdbc:postgresql://172.24.4.12:5432/gis_data
+  user: admin
+  password: 123456
   driver-class-name: org.postgresql.Driver
 
 # file 文件路径

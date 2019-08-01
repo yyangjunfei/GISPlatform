@@ -49,7 +49,7 @@ public interface RoleDao {
             @Result(column = "describe", property = "describe"),
             @Result(column = "insert_time", property = "insertTime"),
             @Result(column = "insert_time", property = "updateTime"),
-            @Result(column = "role_id", property = "userList", many = @Many(select = "cc.wanshan.gis.dao.authorize.UserDao.findUsersByRoleId", fetchType = FetchType.LAZY)),
+            @Result(column = "role_id", property = "userList", many = @Many(select = "cc.wanshan.gis.dao.authorize.UserDao.findByRoleId", fetchType = FetchType.LAZY)),
             @Result(column = "role_id", property = "authorityList", many = @Many(select = "cc.wanshan.gis.dao.authorize.AuthorityDao.findByRoleId", fetchType = FetchType.LAZY))
     })
     Role findByRoleId(String roleId);
@@ -165,7 +165,7 @@ public interface RoleDao {
             @Result(column = "describe", property = "describe"),
             @Result(column = "insert_time", property = "insertTime"),
             @Result(column = "update_time", property = "updateTime"),
-            @Result(column = "role_id", property = "userList", many = @Many(select = "cc.wanshan.gis.dao.authorize.UserDao.findUsersByRoleId",fetchType = FetchType.LAZY))
+            @Result(column = "role_id", property = "userList", many = @Many(select = "cc.wanshan.gis.dao.authorize.UserDao.findByRoleId",fetchType = FetchType.LAZY))
     })
     List<Role> findAllRole();
 
