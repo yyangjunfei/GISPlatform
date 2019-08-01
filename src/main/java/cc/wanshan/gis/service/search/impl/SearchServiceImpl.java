@@ -1,6 +1,6 @@
 package cc.wanshan.gis.service.search.impl;
 
-import cc.wanshan.gis.common.constants.Constant;
+import cc.wanshan.gis.common.constant.CommonConstant;
 import cc.wanshan.gis.common.enums.ResultCode;
 import cc.wanshan.gis.common.pojo.Result;
 import cc.wanshan.gis.dao.search.SearchDao;
@@ -179,15 +179,15 @@ public class SearchServiceImpl implements SearchService {
     public Result searchByPlace(JSONObject jsonObject) {
 
         //区分查询类型 1. 区域查询 2. 通用查询
-        String type = jsonObject.getString(Constant.TYPE);
+        String type = jsonObject.getString(CommonConstant.TYPE);
 
-        String keyword = jsonObject.getString(Constant.KEYWORD);
+        String keyword = jsonObject.getString(CommonConstant.KEYWORD);
         if (keyword == null || keyword.length() <= 0) {
             return ResultUtil.error(ResultCode.PARAM_IS_NULL);
         }
 
         //只传参数关键字,类型搜索匹配所有ES数据
-        if (Constant.SEARCH_COMMON.equals(type)) {
+        if (CommonConstant.SEARCH_COMMON.equals(type)) {
             List<RegionOutput> regionOutputList = elasticsearchService.findByKeyword(keyword);
 
             if (regionOutputList == null) {
@@ -198,8 +198,8 @@ public class SearchServiceImpl implements SearchService {
         }
 
         List<RegionOutput> regionOutputList = Lists.newArrayList();
-        double level = jsonObject.getDouble(Constant.SEARCH_LEVEL);
-        String rectangle = jsonObject.getString(Constant.SEARCH_RECTANGLE);
+        double level = jsonObject.getDouble(CommonConstant.SEARCH_LEVEL);
+        String rectangle = jsonObject.getString(CommonConstant.SEARCH_RECTANGLE);
 
         List<String> regionList = Lists.newArrayList();
 
@@ -211,7 +211,7 @@ public class SearchServiceImpl implements SearchService {
         }
 
         //拆分包围形字符串
-        String[] arr = rectangle.split(Constant.split);
+        String[] arr = rectangle.split(CommonConstant.split);
         double minX = Double.parseDouble(arr[0]);
         double minY = Double.parseDouble(arr[1]);
         double maxX = Double.parseDouble(arr[2]);
@@ -283,7 +283,7 @@ public class SearchServiceImpl implements SearchService {
 
         Set<String> suggestSet = elasticsearchService.getSuggestSearch(keyword);
 
-        Suggest suggest = Suggest.builder().type(Constant.SEARCH_SUGGEST).suggestSet(suggestSet).build();
+        Suggest suggest = Suggest.builder().type(CommonConstant.SEARCH_SUGGEST).suggestSet(suggestSet).build();
 
         if (suggestSet == null) {
             return ResultUtil.error(ResultCode.FIND_NULL);

@@ -16,8 +16,6 @@ public class ResponseUtil {
      */
     public static void out(HttpServletResponse response, int status, Object data) {
         try {
-//            response.setHeader("Access-Control-Allow-Origin", "*");
-//            response.setHeader("Access-Control-Allow-Methods", "*");
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json;charset=UTF-8");
             response.setStatus(status);
@@ -34,8 +32,6 @@ public class ResponseUtil {
 
         ServletOutputStream out = null;
         try {
-//            response.setHeader("Access-Control-Allow-Origin", "*");
-//            response.setHeader("Access-Control-Allow-Methods", "*");
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json;charset=UTF-8");
             out = response.getOutputStream();
@@ -54,22 +50,22 @@ public class ResponseUtil {
         }
     }
 
-    public static Map<String, Object> resultMap(boolean flag, Integer code, String msg) {
+    public static Map<String, Object> toMap(boolean flag, Integer code, String msg) {
 
-        return resultMap(flag, code, msg, null);
+        return toMap(flag, code, msg, null);
     }
 
-    public static Map<String, Object> resultMap(boolean flag, Integer code, String msg, Object data) {
+    public static Map<String, Object> toMap(boolean flag, Integer code, String msg, Object data) {
 
-        Map<String, Object> resultMap = new HashMap<String, Object>(16);
-        resultMap.put("success", flag);
-        resultMap.put("msg", msg);
-        resultMap.put("code", code);
-//        resultMap.put("timestamp", System.currentTimeMillis());
+        Map<String, Object> toMap = new HashMap<>(16);
+        toMap.put("success", flag);
+        toMap.put("code", code);
+        toMap.put("msg", msg);
+//        toMap.put("timestamp", System.currentTimeMillis());
         if (data != null) {
-            resultMap.put("data", data);
+            toMap.put("data", data);
         }
-        return resultMap;
+        return toMap;
     }
 
 }

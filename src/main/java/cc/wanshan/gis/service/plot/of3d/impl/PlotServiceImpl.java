@@ -1,6 +1,6 @@
 package cc.wanshan.gis.service.plot.of3d.impl;
 
-import cc.wanshan.gis.common.constants.Constant;
+import cc.wanshan.gis.common.constant.CommonConstant;
 import cc.wanshan.gis.common.enums.ResultCode;
 import cc.wanshan.gis.common.pojo.Result;
 import cc.wanshan.gis.dao.plot.of3d.PlotLineDao;
@@ -39,11 +39,11 @@ public class PlotServiceImpl implements PlotService {
         }
 
         JSONObject jsonObject = JSONObject.parseObject(jsonString);
-        String type = jsonObject.getString(Constant.TYPE);
+        String type = jsonObject.getString(CommonConstant.TYPE);
         int insert = 0;
 
         switch (type) {
-            case Constant.GEO_POINT:
+            case CommonConstant.GEO_POINT:
                 PlotPoint plotPoint = JSON.parseObject(jsonString, PlotPoint.class);
                 insert = plotPointMapper.insert(plotPoint);
 //            case Constant.GEO_LINESTRING:

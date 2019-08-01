@@ -1,6 +1,6 @@
 package cc.wanshan.gis.service.search.impl;
 
-import cc.wanshan.gis.common.constants.Constant;
+import cc.wanshan.gis.common.constant.CommonConstant;
 import cc.wanshan.gis.entity.search.Poi;
 import cc.wanshan.gis.entity.search.Region;
 import cc.wanshan.gis.entity.search.RegionOutput;
@@ -90,12 +90,12 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
                 .minimumShouldMatch(1);
 
         // 组装查询,发送查询请求
-        SearchResponse response = client.prepareSearch(Constant.INDEX_ES_POI)
-                .setTypes(Constant.TYPE_ES_POI)
+        SearchResponse response = client.prepareSearch(CommonConstant.INDEX_ES_POI)
+                .setTypes(CommonConstant.TYPE_ES_POI)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(boolQuery)
                 .setFrom(0)
-                .setSize(Constant.CHINA_CITY_SIZE)
+                .setSize(CommonConstant.CHINA_CITY_SIZE)
                 .addAggregation(termsBuilder)
                 .execute()
                 .actionGet();
@@ -117,7 +117,7 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
                             // 通过关键字和区域名称获取POI匹配最高的数据
                             Poi poi = findFirstPoi(keyword, region);
                             LOG.info("regionOutput name = [{}],count = [{}]", cityBucket.getKeyAsString(), cityBucket.getDocCount());
-                            RegionOutput regionOutput = RegionOutput.builder().name(cityBucket.getKeyAsString()).count(cityBucket.getDocCount()).type(Constant.SEARCH_REGION_TERMS).centroid(poi.getGeometry()).build();
+                            RegionOutput regionOutput = RegionOutput.builder().name(cityBucket.getKeyAsString()).count(cityBucket.getDocCount()).type(CommonConstant.SEARCH_REGION_TERMS).centroid(poi.getGeometry()).build();
                             regionOutputList.add(regionOutput);
                         }
                     }
@@ -145,13 +145,13 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
                 .must(QueryBuilders.termsQuery("county.keyword", regionList.toArray(new String[regionList.size()])));
 
         // 组装查询,发送查询请求
-        SearchResponse response = client.prepareSearch(Constant.INDEX_ES_POI)
-                .setTypes(Constant.TYPE_ES_POI)
+        SearchResponse response = client.prepareSearch(CommonConstant.INDEX_ES_POI)
+                .setTypes(CommonConstant.TYPE_ES_POI)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(boolQuery)
                 .setExplain(true)
                 .setFrom(0)
-                .setSize(Constant.SEARCH_POI_SIZE)
+                .setSize(CommonConstant.SEARCH_POI_SIZE)
                 .execute()
                 .actionGet();
 
@@ -163,7 +163,7 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
         }
 
         return RegionOutput.builder()
-                .type(Constant.SEARCH_EXACT_POI)
+                .type(CommonConstant.SEARCH_EXACT_POI)
                 .poiList(poiList)
                 .build();
     }
@@ -177,7 +177,7 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
         BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
 
         //增加分词筛选
-        List<String> termList = listTerms(keyword, Constant.INDEX_ES_POI, Constant.ik_smart);
+        List<String> termList = listTerms(keyword, CommonConstant.INDEX_ES_POI, CommonConstant.ik_smart);
         int termSize = termList.size();
         if (termSize > 1) {
             String lastButOneTerm = termList.get(termSize - 2);
@@ -198,12 +198,12 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
         }
 
         // 组装查询,发送查询请求
-        SearchResponse response = client.prepareSearch(Constant.INDEX_ES_POI)
-                .setTypes(Constant.TYPE_ES_POI)
+        SearchResponse response = client.prepareSearch(CommonConstant.INDEX_ES_POI)
+                .setTypes(CommonConstant.TYPE_ES_POI)
                 .setSearchType(SearchType.QUERY_THEN_FETCH)
                 .setQuery(boolQuery)
                 .setFrom(0)
-                .setSize(Constant.SEARCH_POI_SIZE)
+                .setSize(CommonConstant.SEARCH_POI_SIZE)
                 .setExplain(true)
                 .execute()
                 .actionGet();
@@ -217,7 +217,7 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
         Integer poiSize = poiList.size();
 
         return RegionOutput.builder()
-                .type(Constant.SEARCH_EXACT_POI)
+                .type(CommonConstant.SEARCH_EXACT_POI)
                 .poiList(poiList)
                 .count(poiSize.longValue())
                 .build();
@@ -238,7 +238,7 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
                 .minimumShouldMatch(1);
 
         //增加分词筛选
-        List<String> termList = listTerms(keyword, Constant.INDEX_ES_REGION, Constant.ik_smart);
+        List<String> termList = listTerms(keyword, CommonConstant.INDEX_ES_REGION, CommonConstant.ik_smart);
         if (termList.size() > 1) {
             for (String term : termList) {
                 boolQuery.should(QueryBuilders.termQuery("name.keyword", term));
@@ -247,8 +247,8 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
             }
         }
         // 组装查询,发送查询请求
-        SearchResponse response = client.prepareSearch(Constant.INDEX_ES_REGION)
-                .setTypes(Constant.TYPE_ES_REGION)
+        SearchResponse response = client.prepareSearch(CommonConstant.INDEX_ES_REGION)
+                .setTypes(CommonConstant.TYPE_ES_REGION)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(boolQuery)
                 .setFrom(0)
@@ -267,7 +267,7 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
 
             RegionOutput regionOutput = RegionOutput.builder()
                     .name(region.getName())
-                    .type(Constant.SEARCH_REGION)
+                    .type(CommonConstant.SEARCH_REGION)
                     .geometry(region.getGeometry())
                     .centroid(region.getRectangle())
                     .build();
@@ -291,13 +291,13 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
                 .minimumShouldMatch(1);
 
         // 组装查询,发送查询请求
-        SearchResponse response = client.prepareSearch(Constant.INDEX_ES_POI)
-                .setTypes(Constant.TYPE_ES_POI)
+        SearchResponse response = client.prepareSearch(CommonConstant.INDEX_ES_POI)
+                .setTypes(CommonConstant.TYPE_ES_POI)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(boolQuery)
                 .setExplain(true)
                 .setFrom(0)
-                .setSize(Constant.SEARCH_POI_SIZE)
+                .setSize(CommonConstant.SEARCH_POI_SIZE)
                 .execute()
                 .actionGet();
 
@@ -307,7 +307,7 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
         }
         Integer poiSize = poiList.size();
         return RegionOutput.builder()
-                .type(Constant.SEARCH_VAGUE_POI)
+                .type(CommonConstant.SEARCH_VAGUE_POI)
                 .count(poiSize.longValue())
                 .poiList(poiList)
                 .build();
@@ -376,13 +376,13 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
 
         Set<String> suggestSet = Sets.newLinkedHashSet();
 
-        Set<String> RegionSuggestSet = SuggestByParameter(keyword, Constant.INDEX_ES_REGION, Constant.TYPE_ES_REGION, "autocomplete.suggest", 10);
+        Set<String> RegionSuggestSet = SuggestByParameter(keyword, CommonConstant.INDEX_ES_REGION, CommonConstant.TYPE_ES_REGION, "autocomplete.suggest", 10);
         if (RegionSuggestSet != null) {
             suggestSet.addAll(RegionSuggestSet);
         }
 
         if (RegionSuggestSet.size() < 5) {
-            Set<String> PoiSuggestSet = SuggestByParameter(keyword, Constant.INDEX_ES_POI, Constant.TYPE_ES_POI, "autocomplete.suggest", 15);
+            Set<String> PoiSuggestSet = SuggestByParameter(keyword, CommonConstant.INDEX_ES_POI, CommonConstant.TYPE_ES_POI, "autocomplete.suggest", 15);
             if (PoiSuggestSet != null) {
                 suggestSet.addAll(PoiSuggestSet);
             }
@@ -455,8 +455,8 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
                 .must(QueryBuilders.matchQuery("city.keyword", regionName));
 
         // 组装查询,发送查询请求
-        SearchResponse response = client.prepareSearch(Constant.INDEX_ES_POI)
-                .setTypes(Constant.TYPE_ES_POI)
+        SearchResponse response = client.prepareSearch(CommonConstant.INDEX_ES_POI)
+                .setTypes(CommonConstant.TYPE_ES_POI)
                 .setSearchType(SearchType.QUERY_THEN_FETCH)
                 .setQuery(boolQuery)
                 .setExplain(true)

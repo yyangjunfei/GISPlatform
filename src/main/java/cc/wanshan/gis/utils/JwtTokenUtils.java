@@ -1,6 +1,6 @@
 package cc.wanshan.gis.utils;
 
-import cc.wanshan.gis.common.constants.SecurityConstant;
+import cc.wanshan.gis.common.constant.SecurityConstant;
 import com.google.common.collect.Maps;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

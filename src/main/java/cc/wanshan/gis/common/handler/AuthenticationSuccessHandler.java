@@ -1,6 +1,6 @@
 package cc.wanshan.gis.common.handler;
 
-import cc.wanshan.gis.common.constants.SecurityConstant;
+import cc.wanshan.gis.common.constant.SecurityConstant;
 import cc.wanshan.gis.entity.authorize.UserDetailsImpl;
 import cc.wanshan.gis.utils.JwtTokenUtils;
 import cc.wanshan.gis.utils.base.ResponseUtil;
@@ -57,7 +57,7 @@ public class AuthenticationSuccessHandler extends SavedRequestAwareAuthenticatio
         // 返回创建成功的token,Bearer token
         response.setHeader("token", SecurityConstant.TOKEN_PREFIX + token);
 
-        ResponseUtil.out(response, ResponseUtil.resultMap(true, HttpServletResponse.SC_OK, "登录成功", SecurityConstant.TOKEN_PREFIX + token));
+        ResponseUtil.out(response, ResponseUtil.toMap(true, HttpServletResponse.SC_OK, "登录成功", SecurityConstant.TOKEN_PREFIX + token));
 
     }
 

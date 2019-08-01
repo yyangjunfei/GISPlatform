@@ -1,16 +1,12 @@
 package cc.wanshan.gis.entity.metadata;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Builder;
 import lombok.Data;
-
 import java.io.Serializable;
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Data
-@Builder
 @ApiModel(value = "元数据", description = "metadata")
 public class metadata implements Serializable {
 
@@ -47,7 +43,7 @@ public class metadata implements Serializable {
     private String styleName;
 
     @ApiModelProperty(value = "创建日期")
-    private Date createTime;
+    private Timestamp createTime;
 
     @ApiModelProperty(value = "归属单位/创建者")
     private String createBy;
