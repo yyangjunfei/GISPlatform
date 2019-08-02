@@ -5,9 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.Date;
 import lombok.Data;
-import org.hibernate.validator.constraints.Length;
-
-import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.List;
 
@@ -27,9 +24,7 @@ public class Authority implements Serializable {
   public Authority() {
   }
 
-  public Authority(
-      @NotBlank(message = "权限名不为null") String authorName,
-      @NotBlank(message = "url不为null") @Length(max = 32, message = "url最大长度不可超过32位") String url,Date insertTime,Date updateTime
+  public Authority(String authorName, String url,Date insertTime,Date updateTime
   ) {
     this.authorName = authorName;
     this.url = url;
@@ -37,10 +32,7 @@ public class Authority implements Serializable {
     this.updateTime=updateTime;
   }
 
-  public Authority(
-      @NotBlank(message = "权限id不为null") @Length(max = 32, message = "权限id长度不可超过32字节") String authorId,
-      @NotBlank(message = "url不为null") @Length(max = 32, message = "url最大长度不可超过32位") String url,
-      @NotBlank(message = "权限名不为null") String authorName,Date insertTime,Date updateTime) {
+  public Authority(String authorId, String url, String authorName,Date insertTime,Date updateTime) {
     this.authorId = authorId;
     this.url = url;
     this.authorName = authorName;
@@ -48,13 +40,10 @@ public class Authority implements Serializable {
     this.updateTime=updateTime;
   }
 
-  @NotBlank(message = "权限id不为null")
-  @Length(max = 32, message = "权限id长度不可超过32字节")
+
   private String authorId;
-  @NotBlank(message = "url不为null")
-  @Length(max = 32, message = "url最大长度不可超过32位")
+
   private String url;
-  @NotBlank(message = "权限名不为null")
   private String authorName;
   private Date insertTime;
   private Date updateTime;
