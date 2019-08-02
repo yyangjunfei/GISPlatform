@@ -1,4 +1,4 @@
-package cc.wanshan.gis.utils;
+package cc.wanshan.gis.utils.token;
 
 import cc.wanshan.gis.common.constant.SecurityConstant;
 import com.google.common.collect.Maps;

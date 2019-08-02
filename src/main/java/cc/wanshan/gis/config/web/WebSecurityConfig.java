@@ -8,7 +8,9 @@ import cc.wanshan.gis.common.handler.MyAccessDeniedHandler;
 import cc.wanshan.gis.common.security.AccessDecisionManagerImpl;
 import cc.wanshan.gis.common.security.JWTAuthenticationEntryPoint;
 import cc.wanshan.gis.config.properties.IgnoredUrlsProperties;
+import cc.wanshan.gis.config.properties.TokenProperties;
 import cc.wanshan.gis.service.authorize.impl.UserServiceImpl;
+import cc.wanshan.gis.utils.token.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,22 +56,28 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private MyAccessDeniedHandler myAccessDeniedHandler;
 
     @Autowired
-    JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Autowired
-    IgnoredUrlsProperties ignoredUrlsProperties;
+    private IgnoredUrlsProperties ignoredUrlsProperties;
 
     @Autowired
-    AuthenticationSuccessHandler authenticationSuccessHandler;
+    private AuthenticationSuccessHandler authenticationSuccessHandler;
 
     @Autowired
-    AuthenticationFailHandler authenticationFailHandler;
+    private AuthenticationFailHandler authenticationFailHandler;
 
     @Autowired
-    CustomLogoutSuccessHandler customLogoutSuccessHandler;
+    private CustomLogoutSuccessHandler customLogoutSuccessHandler;
 
     @Autowired
     private RedisTemplate redisTemplate;
+
+    @Autowired
+    private TokenProperties tokenProperties;
+
+    @Autowired
+    private SecurityUtils securityUtils;
 
     @Value("${gis.token.enable}")
     private Boolean enable;
@@ -102,7 +110,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-
 
         httpSecurity
                 .cors().and()
@@ -140,7 +147,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests().anyRequest().authenticated()
                 .and()
                 //添加自定义权限过滤器
-                .addFilter(new JWTAuthorizationFilter(authenticationManager(), redisTemplate))
+                .addFilter(new JWTAuthorizationFilter(authenticationManager(), redisTemplate, tokenProperties, securityUtils))
         ;
     }
 

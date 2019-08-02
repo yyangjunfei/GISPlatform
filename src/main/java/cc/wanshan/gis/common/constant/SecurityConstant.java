@@ -37,6 +37,6 @@ public interface SecurityConstant {
     /**
      * 交互token前缀key
      */
-    String TOKEN_PRE = "TOKEN_PRE:";
+    String TOKEN_USER = "TOKEN_USER:";
 
 }
