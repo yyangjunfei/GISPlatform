@@ -30,7 +30,7 @@ import java.util.List;
 @Api(value = "StyleController", tags = "风格文件接口")
 @Controller
 @ResponseBody
-@RequestMapping(value = "/style")
+@RequestMapping(value = "/rest/style")
 public class StyleController {
 
     private static Logger LOG = LoggerFactory.getLogger(StyleController.class);
