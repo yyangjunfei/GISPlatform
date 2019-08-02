@@ -18,7 +18,7 @@ import javax.annotation.Resource;
 import java.util.Collection;
 import java.util.List;
 
-@Component(value = "filterInvocationSecurityMetadataSourceImpl")
+@Component
 public class FilterInvocationSecurityMetadataSourceImpl implements FilterInvocationSecurityMetadataSource {
 
     private static final Logger logger = LoggerFactory.getLogger(FilterInvocationSecurityMetadataSourceImpl.class);
@@ -30,16 +30,13 @@ public class FilterInvocationSecurityMetadataSourceImpl implements FilterInvocat
     private RoleDao roleDao;
 
     @Override
-    public Collection<ConfigAttribute> getAttributes(Object o) throws IllegalArgumentException {
+    public Collection<ConfigAttribute> getAttributes(Object o) {
         String requestUrl = ((FilterInvocation) o).getRequestUrl();
         logger.info("用户的请求地址为：" + requestUrl);
-        if ("/user/login".equals(requestUrl)) {
-            return null;
-        }
-        Authority authority = authorityDao.findByUrl(requestUrl);
-        if (authority == null) {
-            return null;
-        } else {
+        String[] split = requestUrl.split("\\?");
+        Authority authority = authorityDao.findByUrl(split[0]);
+        logger.info("authorityDao.findByUrl(requestUrl)"+authority);
+        if (authority !=null) {
             List<Role> roles = roleDao.findByAuthorId(authority.getAuthorId());
             int size = roles.size();
             String[] values = new String[size];
@@ -48,6 +45,7 @@ public class FilterInvocationSecurityMetadataSourceImpl implements FilterInvocat
             }
             return SecurityConfig.createList(values);
         }
+        return SecurityConfig.createList("ROLE_USER");
     }
     @Override
     public Collection<ConfigAttribute> getAllConfigAttributes() {
