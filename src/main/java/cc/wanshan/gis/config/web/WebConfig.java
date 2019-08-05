@@ -37,9 +37,9 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
 
-        registry.addResourceHandler("/static/")
+        registry.addResourceHandler("/static/**")
                 .addResourceLocations("classpath:/static/");
-        registry.addResourceHandler("/templates/")
+        registry.addResourceHandler("/templates/**")
                 .addResourceLocations("classpath:/templates/");
 
         //过滤swagger

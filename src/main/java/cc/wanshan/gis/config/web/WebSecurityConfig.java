@@ -83,6 +83,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+
     /**
      * 定义认证用户信息获取来源，密码校验规则等
      */
@@ -90,13 +91,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userServiceImpl).passwordEncoder(new BCryptPasswordEncoder());
     }
-
     //在这里配置哪些页面不需要认证
     @Override
     public void configure(WebSecurity web) {
 
-        web.ignoring().antMatchers(
-                "/swagger_ui.html", "/doc.html"
+            web.ignoring().antMatchers(
+                "/swagger_ui.html",
+                "/doc.html",
+                "/static/**",
+                "/templates/**",
+                "/webjars/**",
+                "/swagger/**",
+                "/swagger-resources/**",
+                "/**/v2/api-docs",
+                "/**/*.js",
+                "/**/*.css",
+                "/**/*.png",
+                "/**/*.ico"
         );
     }
 
