@@ -4,6 +4,7 @@ import cc.wanshan.gis.common.enums.ResultCode;
 import cc.wanshan.gis.common.pojo.Result;
 import cc.wanshan.gis.service.search.SearchService;
 import cc.wanshan.gis.utils.base.ResultUtil;
+import cc.wanshan.gis.utils.token.SecurityUtils;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -30,6 +31,9 @@ public class SearchController {
 
     @Autowired
     private SearchService searchService;
+
+    @Autowired
+    private SecurityUtils securityUtils;
 
     @ApiOperation(value = "位置搜索", notes = "位置搜索")
     @GetMapping("/location")
@@ -76,16 +80,4 @@ public class SearchController {
 
         return searchService.getSuggestSearch(keyword);
     }
-
-
-    @ApiOperation(value = "test", notes = "test")
-    @GetMapping("/test")
-    public Result test() {
-
-        LOG.info("SearchController::test");
-        redisTemplate.opsForValue().set("af", "afsg");
-
-        return searchService.test();
-    }
-
 }

@@ -21,7 +21,7 @@ spring:
   redis:
     host: 172.24.4.11
     password: ENC(BgTB/HJz4yROF14Mf3Se5Q==)
-    database: 1
+    database: 3
     port: 6379
     timeout: 3S
   data:
@@ -93,7 +93,8 @@ gis:
     enable: true
     # token 使用判断
   token:
-    enable: false
+    jwt: false
+    redis: true
 
 # 忽略鉴权url
 ignored:
