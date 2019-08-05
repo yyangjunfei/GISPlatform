@@ -56,17 +56,6 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                                     HttpServletResponse response,
                                     FilterChain chain) throws IOException, ServletException {
 
-
-        StringBuffer requestURL = request.getRequestURL();
-
-        String requestURI = request.getRequestURI();
-
-
-        System.out.println("=======requestURL=========" + requestURL);
-        System.out.println("=======requestURI=========" + requestURI);
-//        String[] split = requestURL.split("\\?");
-
-
         String header = request.getHeader(SecurityConstant.TOKEN_HEADER);
         if (header == null || StringUtils.isEmpty(header)) {
             header = request.getParameter(SecurityConstant.TOKEN_HEADER);
