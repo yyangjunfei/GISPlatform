@@ -8,11 +8,12 @@ import cc.wanshan.gis.common.handler.MyAccessDeniedHandler;
 import cc.wanshan.gis.common.security.AccessDecisionManagerImpl;
 import cc.wanshan.gis.common.security.JWTAuthenticationEntryPoint;
 import cc.wanshan.gis.config.properties.IgnoredUrlsProperties;
+import cc.wanshan.gis.config.properties.TokenProperties;
 import cc.wanshan.gis.service.authorize.impl.UserServiceImpl;
+import cc.wanshan.gis.utils.token.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
@@ -36,112 +37,113 @@ import javax.annotation.Resource;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-  private static final Logger logger = LoggerFactory.getLogger(WebSecurityConfig.class);
+    private static final Logger logger = LoggerFactory.getLogger(WebSecurityConfig.class);
 
-  @Resource
-  private UserServiceImpl userServiceImpl;
+    @Resource
+    private UserServiceImpl userServiceImpl;
 
-  //根据一个url请求，获得访问它所需要的roles权限
-  @Resource
-  private FilterInvocationSecurityMetadataSource filterInvocationSecurityMetadataSourceImpl;
+    //根据一个url请求，获得访问它所需要的roles权限
+    @Resource
+    private FilterInvocationSecurityMetadataSource filterInvocationSecurityMetadataSourceImpl;
 
-  //接收一个用户的信息和访问一个url所需要的权限，判断该用户是否可以访问
-  @Resource
-  private AccessDecisionManagerImpl accessDecisionManagerImpl;
+    //接收一个用户的信息和访问一个url所需要的权限，判断该用户是否可以访问
+    @Resource
+    private AccessDecisionManagerImpl accessDecisionManagerImpl;
 
-  //403页面
-  @Resource
-  private MyAccessDeniedHandler myAccessDeniedHandler;
+    @Resource
+    private MyAccessDeniedHandler myAccessDeniedHandler;
 
-  @Autowired
-  JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    @Autowired
+    private JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-  @Autowired
-  IgnoredUrlsProperties ignoredUrlsProperties;
+    @Autowired
+    private IgnoredUrlsProperties ignoredUrlsProperties;
 
-  @Autowired
-  AuthenticationSuccessHandler authenticationSuccessHandler;
+    @Autowired
+    private AuthenticationSuccessHandler authenticationSuccessHandler;
 
-  @Autowired
-  AuthenticationFailHandler authenticationFailHandler;
+    @Autowired
+    private AuthenticationFailHandler authenticationFailHandler;
 
-  @Autowired
-  CustomLogoutSuccessHandler customLogoutSuccessHandler;
+    @Autowired
+    private CustomLogoutSuccessHandler customLogoutSuccessHandler;
 
-  @Autowired
-  private RedisTemplate redisTemplate;
+    @Autowired
+    private RedisTemplate redisTemplate;
 
-  @Value("${gis.token.enable}")
-  private Boolean enable;
+    @Autowired
+    private TokenProperties tokenProperties;
 
-  @Bean
-  @Override
-  public AuthenticationManager authenticationManagerBean() throws Exception {
-    return super.authenticationManagerBean();
-  }
+    @Autowired
+    private SecurityUtils securityUtils;
 
-  /**
-   * 定义认证用户信息获取来源，密码校验规则等
-   */
-  @Override
-  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    auth.userDetailsService(userServiceImpl).passwordEncoder(new BCryptPasswordEncoder());
-  }
-
-  //在这里配置哪些页面不需要认证
-  @Override
-  public void configure(WebSecurity web) {
-
-    web.ignoring().antMatchers(
-        "/swagger_ui.html", "/doc.html"
-    );
-  }
-
-  /**
-   * 定义安全策略
-   */
-  @Override
-  protected void configure(HttpSecurity httpSecurity) throws Exception {
-
-
-    httpSecurity
-        .cors().and()
-        .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
-        .accessDeniedHandler(myAccessDeniedHandler)
-        .and()
-        .csrf().disable()
-        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-    ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry = httpSecurity.authorizeRequests();
-    for (String url : ignoredUrlsProperties.getUrls()) {
-      registry.antMatchers(url).permitAll();
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
-    registry.antMatchers(HttpMethod.POST, "/user/login", "/**").permitAll()
-        .antMatchers(HttpMethod.OPTIONS).permitAll()
-        .anyRequest().authenticated()
-        .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
-          @Override
-          public <O extends FilterSecurityInterceptor> O postProcess(O o) {
-            o.setSecurityMetadataSource(filterInvocationSecurityMetadataSourceImpl);
-            o.setAccessDecisionManager(accessDecisionManagerImpl);
-            return o;
-          }
-        })
-        .and()
-        .formLogin()
-        .loginPage("/user/login")
-        .successHandler(authenticationSuccessHandler)
-        .failureHandler(authenticationFailHandler).and()
-        .headers().frameOptions().disable()
-        .and()
-        .logout()
-        .logoutUrl("/logout")
-        .logoutSuccessHandler(customLogoutSuccessHandler)
-        .and()
-        .authorizeRequests().anyRequest().authenticated()
-        .and()
-        //添加自定义权限过滤器
-        .addFilter(new JWTAuthorizationFilter(authenticationManager(), redisTemplate))
-    ;
-  }
+
+    /**
+     * 定义认证用户信息获取来源，密码校验规则等
+     */
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userServiceImpl).passwordEncoder(new BCryptPasswordEncoder());
+    }
+
+    //在这里配置哪些页面不需要认证
+    @Override
+    public void configure(WebSecurity web) {
+
+        web.ignoring().antMatchers(
+                "/swagger_ui.html", "/doc.html"
+        );
+    }
+
+    /**
+     * 定义安全策略
+     */
+    @Override
+    protected void configure(HttpSecurity httpSecurity) throws Exception {
+
+        httpSecurity
+                .cors().and()
+                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .accessDeniedHandler(myAccessDeniedHandler)
+                .and()
+                .csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry = httpSecurity.authorizeRequests();
+        for (String url : ignoredUrlsProperties.getUrls()) {
+            registry.antMatchers(url).permitAll();
+        }
+        registry.antMatchers(HttpMethod.POST, "/user/login", "/**").permitAll()
+                .antMatchers(HttpMethod.OPTIONS).permitAll()
+                .anyRequest().authenticated()
+                .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
+                    @Override
+                    public <O extends FilterSecurityInterceptor> O postProcess(O o) {
+                        o.setSecurityMetadataSource(filterInvocationSecurityMetadataSourceImpl);
+                        o.setAccessDecisionManager(accessDecisionManagerImpl);
+                        return o;
+                    }
+                })
+                .and()
+                .formLogin()
+                .loginPage("/user/login")
+                .successHandler(authenticationSuccessHandler)
+                .failureHandler(authenticationFailHandler).and()
+                .headers().frameOptions().disable()
+                .and()
+                .logout()
+                .logoutUrl("/logout")
+                .logoutSuccessHandler(customLogoutSuccessHandler)
+                .and()
+                .authorizeRequests().anyRequest().authenticated()
+                .and()
+                //添加自定义权限过滤器
+                .addFilter(new JWTAuthorizationFilter(authenticationManager(), redisTemplate, tokenProperties, securityUtils))
+        ;
+    }
 
 }

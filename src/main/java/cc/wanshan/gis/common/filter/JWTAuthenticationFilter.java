@@ -3,7 +3,7 @@ package cc.wanshan.gis.common.filter;
 import cc.wanshan.gis.common.constant.SecurityConstant;
 import cc.wanshan.gis.entity.authorize.User;
 import cc.wanshan.gis.entity.authorize.UserDetailsImpl;
-import cc.wanshan.gis.utils.JwtTokenUtils;
+import cc.wanshan.gis.utils.token.JwtTokenUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,9 +53,9 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest request,
                                             HttpServletResponse response,
                                             FilterChain chain,
-                                            Authentication authResult) throws IOException, ServletException {
+                                            Authentication authentication) throws IOException, ServletException {
 
-        UserDetailsImpl userDetails = (UserDetailsImpl) authResult.getPrincipal();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
         String role = "";
         Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
@@ -74,7 +74,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request,
                                               HttpServletResponse response,
-                                              AuthenticationException failed) throws IOException, ServletException {
-        response.getWriter().write("authentication failed, reason: " + failed.getMessage());
+                                              AuthenticationException exception) throws IOException, ServletException {
+        response.getWriter().write("authentication failed, reason: " + exception.getMessage());
     }
 }
