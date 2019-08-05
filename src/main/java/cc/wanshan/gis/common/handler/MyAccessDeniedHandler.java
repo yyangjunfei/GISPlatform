@@ -20,6 +20,5 @@ public class MyAccessDeniedHandler implements AccessDeniedHandler {
 
         ResponseUtil.out(httpServletResponse, ResponseUtil.toMap(false, HttpServletResponse.SC_FORBIDDEN, accessDeniedException.getMessage(), "权限不足，请联系管理员"));
 
-
     }
 }

@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import java.util.Collection;
 import java.util.Iterator;
 
-@Component(value = "accessDecisionManagerImpl")
+@Component
 public class AccessDecisionManagerImpl implements AccessDecisionManager {
 private static final Logger logger= LoggerFactory.getLogger(AccessDecisionManagerImpl.class);
     @Override
