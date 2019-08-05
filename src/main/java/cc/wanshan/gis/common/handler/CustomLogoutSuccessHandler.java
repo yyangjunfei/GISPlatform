@@ -20,6 +20,7 @@ import java.io.IOException;
 @Component
 public class CustomLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler {
 
+    @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
         //TODO 退出登录成功处理

@@ -8,11 +8,12 @@ import cc.wanshan.gis.common.handler.MyAccessDeniedHandler;
 import cc.wanshan.gis.common.security.AccessDecisionManagerImpl;
 import cc.wanshan.gis.common.security.JWTAuthenticationEntryPoint;
 import cc.wanshan.gis.config.properties.IgnoredUrlsProperties;
+import cc.wanshan.gis.config.properties.TokenProperties;
 import cc.wanshan.gis.service.authorize.impl.UserServiceImpl;
+import cc.wanshan.gis.utils.token.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
@@ -42,43 +43,46 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserServiceImpl userServiceImpl;
 
     //根据一个url请求，获得访问它所需要的roles权限
-    @Resource(name = "filterInvocationSecurityMetadataSourceImpl")
+    @Resource
     private FilterInvocationSecurityMetadataSource filterInvocationSecurityMetadataSourceImpl;
 
     //接收一个用户的信息和访问一个url所需要的权限，判断该用户是否可以访问
-    @Resource(name = "accessDecisionManagerImpl")
+    @Resource
     private AccessDecisionManagerImpl accessDecisionManagerImpl;
 
-    //403页面
-    @Resource(name = "myAccessDeniedHandler")
+    @Resource
     private MyAccessDeniedHandler myAccessDeniedHandler;
 
     @Autowired
-    JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Autowired
-    IgnoredUrlsProperties ignoredUrlsProperties;
+    private IgnoredUrlsProperties ignoredUrlsProperties;
 
     @Autowired
-    AuthenticationSuccessHandler authenticationSuccessHandler;
+    private AuthenticationSuccessHandler authenticationSuccessHandler;
 
     @Autowired
-    AuthenticationFailHandler authenticationFailHandler;
+    private AuthenticationFailHandler authenticationFailHandler;
 
     @Autowired
-    CustomLogoutSuccessHandler customLogoutSuccessHandler;
+    private CustomLogoutSuccessHandler customLogoutSuccessHandler;
 
     @Autowired
     private RedisTemplate redisTemplate;
 
-    @Value("${gis.token.enable}")
-    private Boolean enable;
+    @Autowired
+    private TokenProperties tokenProperties;
+
+    @Autowired
+    private SecurityUtils securityUtils;
 
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
+
 
     /**
      * 定义认证用户信息获取来源，密码校验规则等
@@ -87,13 +91,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userServiceImpl).passwordEncoder(new BCryptPasswordEncoder());
     }
-
     //在这里配置哪些页面不需要认证
     @Override
     public void configure(WebSecurity web) {
 
-        web.ignoring().antMatchers(
-                "/swagger_ui.html", "/doc.html"
+            web.ignoring().antMatchers(
+                "/swagger_ui.html",
+                "/doc.html",
+                "/static/**",
+                "/templates/**",
+                "/webjars/**",
+                "/swagger/**",
+                "/swagger-resources/**",
+                "/**/v2/api-docs",
+                "/**/*.js",
+                "/**/*.css",
+                "/**/*.png",
+                "/**/*.ico"
         );
     }
 
@@ -102,7 +116,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-
 
         httpSecurity
                 .cors().and()
@@ -140,7 +153,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests().anyRequest().authenticated()
                 .and()
                 //添加自定义权限过滤器
-                .addFilter(new JWTAuthorizationFilter(authenticationManager(), redisTemplate))
+                .addFilter(new JWTAuthorizationFilter(authenticationManager(), redisTemplate, tokenProperties, securityUtils))
         ;
     }
 

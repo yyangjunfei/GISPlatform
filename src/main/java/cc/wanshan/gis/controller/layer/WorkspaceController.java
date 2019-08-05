@@ -22,7 +22,7 @@ import java.util.List;
 @Api(value = "WorkspaceController", tags = "工作空间接口")
 @Controller
 @ResponseBody
-@RequestMapping(value = "/workspace")
+@RequestMapping(value = "/rest/workspace")
 public class WorkspaceController {
 
     private static Logger LOG = LoggerFactory.getLogger(WorkspaceController.class);

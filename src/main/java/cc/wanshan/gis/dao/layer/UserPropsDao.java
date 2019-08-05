@@ -99,4 +99,7 @@ public interface UserPropsDao {
      */
     int deleteUserProps(String username, String propName);
 
+    @Select("select * from user_props where propvalue=#{propValue}")
+    UserProps findUsersPropsByPropValue(String propValue);
+
 }
