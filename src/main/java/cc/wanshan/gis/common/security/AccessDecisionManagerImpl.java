@@ -43,7 +43,7 @@ public class AccessDecisionManagerImpl implements AccessDecisionManager {
             }
         }
         //执行到这里说明没有匹配到应有权限
-//        throw new AccessDeniedException("抱歉，您没有访问权限");
+        throw new AccessDeniedException("抱歉，您没有访问权限");
     }
 
     @Override
