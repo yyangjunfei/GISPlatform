@@ -6,10 +6,10 @@ import cc.wanshan.gis.dao.layer.UserPropsDao;
 import cc.wanshan.gis.entity.authorize.User;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -37,8 +37,21 @@ public class SecurityUtils {
      * @return
      */
     public User getCurrentUser() {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return userDao.findByUsername(userDetails.getUsername());
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+
+        System.out.println("authentication");
+        System.out.println("==========" + authentication);
+
+        String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+
+//        System.out.println(userDetails);
+//        System.out.println(userDetails.getUsername());
+//        System.out.println(userDetails.toString());
+        return userDao.findByUsername(username);
+
     }
 
     /**
@@ -53,6 +66,17 @@ public class SecurityUtils {
     }
 
     /**
+     * 获取当前用户的角色名称
+     *
+     * @param username
+     * @return
+     */
+    public String getCurrentUserRoleName(String username) {
+
+        return roleDao.findRoleByUserName(username).getRoleName();
+    }
+
+    /**
      * 通过token获取当前用户
      *
      * @param token
@@ -62,5 +86,6 @@ public class SecurityUtils {
 
         return userPropsDao.findUsersPropsByPropValue(token).getUsername();
     }
+
 
 }

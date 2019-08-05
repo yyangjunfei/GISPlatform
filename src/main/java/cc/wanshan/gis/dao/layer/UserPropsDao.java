@@ -99,19 +99,7 @@ public interface UserPropsDao {
      */
     int deleteUserProps(String username, String propName);
 
-
-    @Select({
-            "select * "
-                    + "from "
-                    + "user_props "
-                    + "where "
-                    + "propvalue=#{propValue} "
-    })
-    @Results({
-            @Result(id = true, column = "username", property = "username"),
-            @Result(column = "propname", property = "propName"),
-            @Result(column = "propvalue", property = "propValue"),
-    })
+    @Select("select * from user_props where propvalue=#{propValue}")
     UserProps findUsersPropsByPropValue(String propValue);
 
 }

@@ -14,7 +14,6 @@ import cc.wanshan.gis.utils.token.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
@@ -51,8 +50,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Resource(name = "accessDecisionManagerImpl")
     private AccessDecisionManagerImpl accessDecisionManagerImpl;
 
-    //403页面
-    @Resource(name = "myAccessDeniedHandler")
+    @Resource
     private MyAccessDeniedHandler myAccessDeniedHandler;
 
     @Autowired
@@ -78,9 +76,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private SecurityUtils securityUtils;
-
-    @Value("${gis.token.enable}")
-    private Boolean enable;
 
     @Bean
     @Override

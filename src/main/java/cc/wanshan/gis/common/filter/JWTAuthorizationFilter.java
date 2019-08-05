@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
@@ -55,13 +56,25 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                                     HttpServletResponse response,
                                     FilterChain chain) throws IOException, ServletException {
 
+
+        StringBuffer requestURL = request.getRequestURL();
+
+        String requestURI = request.getRequestURI();
+
+
+        System.out.println("=======requestURL=========" + requestURL);
+        System.out.println("=======requestURI=========" + requestURI);
+//        String[] split = requestURL.split("\\?");
+
+
         String header = request.getHeader(SecurityConstant.TOKEN_HEADER);
         if (header == null || StringUtils.isEmpty(header)) {
             header = request.getParameter(SecurityConstant.TOKEN_HEADER);
         }
 
-        // 如果请求头中没有Authorization信息则直接放行了
-        if (header == null || StringUtils.isEmpty(header) || (!tokenProperties.getJwt() && !header.startsWith(SecurityConstant.TOKEN_PREFIX))) {
+        // 如果请求头中没有token信息则直接放行了
+        if (header == null || StringUtils.isEmpty(header) || (tokenProperties.getJwt() && !header.startsWith(SecurityConstant.TOKEN_PREFIX))) {
+
             chain.doFilter(request, response);
             return;
         }
@@ -87,7 +100,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                 username = JwtTokenUtils.getUsername(token);
                 String role = JwtTokenUtils.getUserRole(token);
 
-                logger.info("header::[{}],username;;[{}]", header, username);
+                logger.info("header::[{}],username::[{}]", header, username);
 
                 String tokenByRedis = (String) redisTemplate.opsForValue().get(SecurityConstant.USER_TOKEN + username);
 
@@ -100,6 +113,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                     response.setStatus(HttpStatus.SC_FORBIDDEN);
                     ResponseUtil.out(response, ResponseUtil.toMap(false, HttpStatus.SC_FORBIDDEN, "token错误，请重新登录"));
                 }
+
                 authorities.add(new SimpleGrantedAuthority(role));
             } catch (ExpiredJwtException e) {
                 response.setStatus(HttpStatus.SC_FORBIDDEN);
@@ -109,9 +123,8 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                 ResponseUtil.out(response, ResponseUtil.toMap(false, HttpStatus.SC_FORBIDDEN, e.getMessage(), "解析token错误,非法token"));
             } catch (Exception e) {
                 response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
-                ResponseUtil.out(response, ResponseUtil.toMap(false, HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage(), "未知错误"));
+                ResponseUtil.out(response, ResponseUtil.toMap(false, HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage(), "内部错误"));
             }
-            return null;
         } else {
 
             if (tokenProperties.getRedis()) {
@@ -119,13 +132,34 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                 String redisTokenUser = (String) redisTemplate.opsForValue().get(SecurityConstant.TOKEN_USER + header);
 
                 if (redisTokenUser == null || redisTokenUser.isEmpty()) {
-                    response.setStatus(HttpStatus.SC_UNAUTHORIZED);
-                    ResponseUtil.out(response, ResponseUtil.toMap(false, HttpStatus.SC_UNAUTHORIZED, "登录已失效，请重新登录"));
-                    return null;
+//                    response.setStatus(HttpStatus.SC_UNAUTHORIZED);
+//                    ResponseUtil.out(response, ResponseUtil.toMap(false, HttpStatus.SC_UNAUTHORIZED, "登录已失效，请重新登录"));
+
+                    try {
+                        username = securityUtils.getUserProps(header);
+                    } catch (NullPointerException e) {
+                        response.setStatus(HttpStatus.SC_FORBIDDEN);
+                        ResponseUtil.out(response, ResponseUtil.toMap(false, HttpStatus.SC_FORBIDDEN, "token错误，请重新登录"));
+                    } catch (Exception e) {
+                        response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+                        ResponseUtil.out(response, ResponseUtil.toMap(false, HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage(), "内部错误"));
+                    }
+
+                    authorities = securityUtils.getCurrentUserRole(username);
+                    String roleName = securityUtils.getCurrentUserRoleName(username);
+
+                    TokenUser tokenUser = new TokenUser();
+                    tokenUser.setUsername(username);
+                    tokenUser.setRole(roleName);
+
+                    redisTemplate.opsForValue().set(SecurityConstant.USER_TOKEN + username, header, SecurityConstant.EXPIRATION, TimeUnit.MINUTES);
+                    redisTemplate.opsForValue().set(SecurityConstant.TOKEN_USER + header, new Gson().toJson(tokenUser), SecurityConstant.EXPIRATION, TimeUnit.MINUTES);
+                } else {
+
+                    TokenUser tokenUser = new Gson().fromJson(redisTokenUser, TokenUser.class);
+                    username = tokenUser.getUsername();
+                    authorities.add(new SimpleGrantedAuthority(tokenUser.getRole()));
                 }
-                TokenUser tokenUser = new Gson().fromJson(redisTokenUser, TokenUser.class);
-                username = tokenUser.getUsername();
-                authorities.add(new SimpleGrantedAuthority(tokenUser.getRole()));
             } else {
                 username = securityUtils.getUserProps(header);
                 authorities = securityUtils.getCurrentUserRole(username);
@@ -136,6 +170,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             return new UsernamePasswordAuthenticationToken(username, null, authorities);
         }
         return null;
-
     }
+
+
 }

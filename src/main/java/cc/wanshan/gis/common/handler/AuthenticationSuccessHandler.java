@@ -12,7 +12,6 @@ import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -40,9 +39,6 @@ public class AuthenticationSuccessHandler extends SavedRequestAwareAuthenticatio
     @Autowired
     private RedisTemplate redisTemplate;
 
-    @Value("${gis.token.enable}")
-    private Boolean enable;
-
     @Autowired
     private TokenProperties tokenProperties;
 
@@ -54,8 +50,6 @@ public class AuthenticationSuccessHandler extends SavedRequestAwareAuthenticatio
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        log.info("AuthenticationSuccessHandler::onAuthenticationSuccess::UserDetailsImpl==【{}】", userDetails);
-
         String role = userDetails.getRole();
         List<String> list = Lists.newArrayList();
         Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
@@ -65,6 +59,7 @@ public class AuthenticationSuccessHandler extends SavedRequestAwareAuthenticatio
 
         //登录生成token
         String token;
+
         if (tokenProperties.getJwt()) {
 
             String jwt = JwtTokenUtils.createToken(userDetails.getUsername(), new Gson().toJson(list));
@@ -78,15 +73,13 @@ public class AuthenticationSuccessHandler extends SavedRequestAwareAuthenticatio
         } else {
 
             token = (String) redisTemplate.opsForValue().get(SecurityConstant.USER_TOKEN + userDetails.getUsername());
-
             TokenUser tokenUser = new TokenUser();
             tokenUser.setUsername(userDetails.getUsername());
-//            tokenUser.setRole(role);
+            tokenUser.setRole(role);
 
             if (token == null || token.isEmpty()) {
                 UserProps userProps = userPropsDao.findUsersPropsByUsername(userDetails.getUsername());
                 token = userProps.getPropValue();
-
                 if (tokenProperties.getRedis()) {
                     redisTemplate.opsForValue().set(SecurityConstant.USER_TOKEN + userDetails.getUsername(), token, SecurityConstant.EXPIRATION, TimeUnit.MINUTES);
                     redisTemplate.opsForValue().set(SecurityConstant.TOKEN_USER + token, new Gson().toJson(tokenUser), SecurityConstant.EXPIRATION, TimeUnit.MINUTES);
