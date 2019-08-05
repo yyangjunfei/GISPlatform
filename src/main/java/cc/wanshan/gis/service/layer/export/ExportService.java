@@ -1,14 +1,24 @@
 package cc.wanshan.gis.service.layer.export;
 
+import cc.wanshan.gis.common.pojo.Result;
 import cc.wanshan.gis.entity.plot.of2d.Layer;
 
 import java.io.IOException;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Li Cheng
  * @date 2019/6/14 16:25
  */
 public interface ExportService {
+    /**
+     * description:
+     *
+     * @param layerId 图层Id
+    	* @param suffix 导出类型
+     * @return cc.wanshan.gis.common.pojo.Result
+     **/
+    void export(String layerId,String suffix, HttpServletResponse response) throws Exception;
 
     /**
      * description: 将layer的shp格式导出

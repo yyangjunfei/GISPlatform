@@ -45,7 +45,7 @@ public class FilterInvocationSecurityMetadataSourceImpl implements FilterInvocat
             }
             return SecurityConfig.createList(values);
         }
-        return SecurityConfig.createList("ROLE_USER");
+        return SecurityConfig.createList("ROLE_ADMIN","ROLE_USER");
     }
     @Override
     public Collection<ConfigAttribute> getAllConfigAttributes() {
