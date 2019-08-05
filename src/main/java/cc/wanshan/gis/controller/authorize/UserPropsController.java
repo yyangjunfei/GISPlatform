@@ -1,4 +1,4 @@
-package cc.wanshan.gis.controller.layer;
+package cc.wanshan.gis.controller.authorize;
 
 import cc.wanshan.gis.common.pojo.Result;
 import cc.wanshan.gis.service.layer.geoserver.UserPropsService;
