@@ -129,10 +129,13 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                     } catch (NullPointerException e) {
                         response.setStatus(HttpStatus.SC_FORBIDDEN);
                         ResponseUtil.out(response, ResponseUtil.toMap(false, HttpStatus.SC_FORBIDDEN, "token错误，请重新登录"));
+                        return null;
                     } catch (Exception e) {
                         response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
                         ResponseUtil.out(response, ResponseUtil.toMap(false, HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage(), "内部错误"));
+                        return null;
                     }
+
 
                     authorities = securityUtils.getCurrentUserRole(username);
                     String roleName = securityUtils.getCurrentUserRoleName(username);
