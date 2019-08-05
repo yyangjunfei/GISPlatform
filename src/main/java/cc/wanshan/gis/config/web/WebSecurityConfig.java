@@ -43,11 +43,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserServiceImpl userServiceImpl;
 
     //根据一个url请求，获得访问它所需要的roles权限
-    @Resource(name = "filterInvocationSecurityMetadataSourceImpl")
+    @Resource
     private FilterInvocationSecurityMetadataSource filterInvocationSecurityMetadataSourceImpl;
 
     //接收一个用户的信息和访问一个url所需要的权限，判断该用户是否可以访问
-    @Resource(name = "accessDecisionManagerImpl")
+    @Resource
     private AccessDecisionManagerImpl accessDecisionManagerImpl;
 
     @Resource
