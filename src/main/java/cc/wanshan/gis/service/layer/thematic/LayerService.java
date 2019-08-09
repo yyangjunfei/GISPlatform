@@ -4,7 +4,9 @@ import cc.wanshan.gis.common.pojo.Result;
 import cc.wanshan.gis.entity.layer.thematic.FirstClassification;
 import cc.wanshan.gis.entity.plot.of2d.Feature;
 import cc.wanshan.gis.entity.plot.of2d.Layer;
-
+import cc.wanshan.gis.entity.plot.of2d.LineString;
+import cc.wanshan.gis.entity.plot.of2d.Point;
+import cc.wanshan.gis.entity.plot.of2d.Polygon;
 import java.io.IOException;
 import java.util.List;
 
@@ -19,14 +21,6 @@ public interface LayerService {
 
     Result newLayer(String workspace, String layerName, String type, String epsg);
 
-    /**
-     * @return cc.wanshan.demo.entity.Result
-     * @Author Li Cheng
-     * @Description 保存图层
-     * @Date 8:44 2019/4/1
-     * @Param layer图层实体类
-     **/
-    Result insertLayer(Layer layer);
 
     /**
      * @return cc.wanshan.demo.entity.Result
@@ -35,7 +29,7 @@ public interface LayerService {
      * @Date 8:44 2019/4/1
      * @Param [jsonObject] 封装了layer信息的json对象
      **/
-    Result deleteLayer(List<Layer> layers);
+    Result delete(List<Layer> layerIdList);
 
     /**
      * @return cc.wanshan.demo.entity.Result
@@ -55,10 +49,6 @@ public interface LayerService {
      **/
     Result insertFeatures(String layerName, String type, List<Feature> features) throws IOException;
 
-    /**
-     * description: 根据thematicId和nullUserId查询layer
-     */
-    List<FirstClassification> findLayerByThematicIdAndNullUserId(String thematicId);
 
     /**
      * description: 修改图层属性信息
@@ -66,24 +56,24 @@ public interface LayerService {
      * @param layer 图层对象
      * @return java.lang.Boolean
      **/
-    Boolean updateLayer(Layer layer);
+    Result update(Layer layer);
 
-    /**
-     * description: 根据图层id查询图层
-     *
-     * @param layerId 图层id
-     * @return cc.wanshan.gis.entity.drawlayer.Layer
-     **/
-    Layer findLayerByLayerId(String layerId);
 
     /**
      * description: 根据用户名和图层名查询图层是否存在
      *
-     * @param userId    用户名
+     * @param userId    用户Id
      * @param layerName 图层名
      * @return java.lang.Boolean
      **/
-    Layer findLayer(String userId, String layerName);
+    Result findByUserIdAndLayerName(String userId, String layerName);
+    /**
+     * description: 根据Id查找图层
+     *
+     * @param layerId 图层Id
+     * @return cc.wanshan.gis.common.pojo.Result
+     **/
+    Result findByLayerId(String layerId);
 
     /**
      * description: 根据featuresId批量删除feature
@@ -92,7 +82,7 @@ public interface LayerService {
      * @param type     元素类型
      * @return int
      **/
-    Boolean deleteFeature(List features, String type);
+    Result deleteFeature(List features, String type);
 
     /**
      * description: 根据用户Id查询所有图层
@@ -100,13 +90,12 @@ public interface LayerService {
      * @param userId 用户Id
      * @return java.util.List<cc.wanshan.gis.entity.drawlayer.Layer>
      **/
-    List<Layer> findByUserId(String userId);
+    Result findByUserId(String userId);
 
     /**
      * description: 保存图层
-     *
      * @param layer 图层对象
-     * @return java.lang.Boolean
+     * @return cc.wanshan.gis.common.pojo.Result
      **/
-    Result saveLayer(Layer layer);
+    Result save(Layer layer);
 }

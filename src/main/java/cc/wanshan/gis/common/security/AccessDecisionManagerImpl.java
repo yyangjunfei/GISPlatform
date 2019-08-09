@@ -11,14 +11,12 @@ import org.springframework.security.authentication.InsufficientAuthenticationExc
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
-
 import java.util.Collection;
 import java.util.Iterator;
 
 @Component
 public class AccessDecisionManagerImpl implements AccessDecisionManager {
     private static final Logger logger = LoggerFactory.getLogger(AccessDecisionManagerImpl.class);
-
     @Override
     public void decide(Authentication authentication, Object o, Collection<ConfigAttribute> collection) throws AccessDeniedException, InsufficientAuthenticationException {
         logger.info("decide::authentication = [{}], o = [{}], collection = [{}]", authentication, o, collection);

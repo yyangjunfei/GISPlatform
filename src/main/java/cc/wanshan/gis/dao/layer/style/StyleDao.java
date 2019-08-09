@@ -204,11 +204,11 @@ public interface StyleDao {
     int findCountByStyleName(String styleName);
 
 
-    /**
+  /*  *//**
      * description:根据styleNameZh查询style
      *
      * @return cc.wanshan.gisdev.entity.security.style
-     */
+     *//*
     @Select({
             "select "
                     + "style_id,"
@@ -230,7 +230,7 @@ public interface StyleDao {
             @Result(column = "insert_time", property = "updateTime"),
             @Result(column = "describe", property = "describe")
     })
-    Style findStyleByStyleNameZH(String styleNameZH);
+    Style findStyleByStyleNameZH(String styleNameZH);*/
 
 
     /**
