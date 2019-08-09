@@ -84,7 +84,7 @@ public interface LayerDao {
                     + ")"
     })
     @Options(useGeneratedKeys = true, keyColumn = "layer_id", keyProperty = "layerId")
-    int insertLayer(Layer layer);
+    int insert(Layer layer);
 
 
     /**
