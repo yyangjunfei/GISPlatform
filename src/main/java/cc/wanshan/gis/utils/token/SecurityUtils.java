@@ -5,8 +5,8 @@ import cc.wanshan.gis.dao.authorize.UserDao;
 import cc.wanshan.gis.dao.layer.UserPropsDao;
 import cc.wanshan.gis.entity.authorize.User;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +19,7 @@ import java.util.List;
  * @date 2019/8/1
  * @description TODO
  */
+@Slf4j
 @Component
 public class SecurityUtils {
 
@@ -38,20 +39,9 @@ public class SecurityUtils {
      */
     public User getCurrentUser() {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-
-        System.out.println("authentication");
-        System.out.println("==========" + authentication);
-
         String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-
-//        System.out.println(userDetails);
-//        System.out.println(userDetails.getUsername());
-//        System.out.println(userDetails.toString());
         return userDao.findByUsername(username);
-
     }
 
     /**
