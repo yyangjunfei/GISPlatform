@@ -1,3 +1,4 @@
+/*
 package cc.wanshan.gis;
 
 import cc.wanshan.gis.entity.plot.of2d.Layer;
@@ -15,10 +16,12 @@ import java.io.IOException;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+*/
 /**
  * @author Li Cheng
  * @date 2019/6/14 16:37
- */
+ *//*
+
 public class ShapeTest {
     private static final Logger logger = LoggerFactory.getLogger(ShapeTest.class);
 
@@ -51,3 +54,4 @@ public class ShapeTest {
         logger.info("writeXml::" + xxx);
     }
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package cc.wanshan.gis;
 
 import cc.wanshan.gis.dao.layer.style.StyleDao;
@@ -104,3 +105,4 @@ public class StyleTest {
         }
     }
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package cc.wanshan.gis;
 
 import cc.wanshan.gis.common.pojo.Result;
@@ -21,10 +22,12 @@ import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
+*/
 /**
  * @Author Li Cheng
  * @Date 15:07 2019/5/23
- **/
+ **//*
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class LayerTest {
@@ -107,3 +110,4 @@ public class LayerTest {
         logger.info("findLayerByLayerId::" + o);
     }
 }
+*/
