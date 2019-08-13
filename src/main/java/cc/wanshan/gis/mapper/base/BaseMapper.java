@@ -3,6 +3,7 @@ package cc.wanshan.gis.mapper.base;
 /**
  * 通用  Mapper 接口
  */
+
 public interface BaseMapper<T, ID> {
 
     int deleteByPrimaryKey(ID id);
