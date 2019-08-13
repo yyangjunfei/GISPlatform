@@ -67,7 +67,7 @@ mybatis:
 
 # geoServer服务配置
 geoserver:
-  url: http://172.24.4.12/geoserver/web
+  url: http://172.24.4.12/geoserver/
   username: admin
   passwd: geoserver
   postgisHost: 172.24.4.12
