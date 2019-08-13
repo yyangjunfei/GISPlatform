@@ -99,22 +99,23 @@ public class GeoServerServiceImpl implements GeoServerService {
 
     /**
      * 创建工作空间
-     *
      * @param workSpaceName 工作空间名称
      * @param uri           工作空间uri，可为空
-     * @return
      * @throws URISyntaxException
      */
     @Override
-    public boolean createWorkSpace(String workSpaceName, String uri) throws URISyntaxException {
-
+    public boolean createWorkSpace(String workSpaceName, String uri){
         //判断工作空间是否存在
         List<String> workspaces = GeoServerUtils.manager.getReader().getWorkspaceNames();
         if (!workspaces.contains(workSpaceName)) {
             if (uri == null || uri.isEmpty()) {
                 return GeoServerUtils.publisher.createWorkspace(workSpaceName);
             } else {
-                return GeoServerUtils.publisher.createWorkspace(workSpaceName, new URI(uri));
+                try {
+                    return GeoServerUtils.publisher.createWorkspace(workSpaceName, new URI(uri));
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
             }
         } else {
             LOG.warn("workspace已经存在了,ws :" + workSpaceName);
@@ -124,7 +125,6 @@ public class GeoServerServiceImpl implements GeoServerService {
 
     /**
      * 创建存储名称
-     *
      * @param storeName 存储名称
      * @param workspace 工作空间
      * @return
@@ -132,10 +132,10 @@ public class GeoServerServiceImpl implements GeoServerService {
     @Override
     public Result createDataStore(String storeName, String workspace) {
         LOG.info("已进入createDataStore::manager = [{}], storeName = [{}], workspace = [{}]", GeoServerUtils.manager, storeName, workspace);
-        //判断数据存储（datastore）是否已经存在，不存在则创建
-        if (GeoServerUtils.manager != null && storeName != null && !"".equals(storeName)) {
+        if (storeName != null && !"".equals(storeName)) {
             RESTDataStoreList restDataStoreList = GeoServerUtils.manager.getReader().getDatastores(workspace);
             List<String> listStoreName = restDataStoreList.getNames();
+            //判断数据存储（datastore）是否已经存在，不存在则创建
             if (!listStoreName.contains(storeName)) {
                 GSPostGISDatastoreEncoder store = new GSPostGISDatastoreEncoder(storeName);
                 //设置url
@@ -158,12 +158,13 @@ public class GeoServerServiceImpl implements GeoServerService {
                 store.setMinConnections(1);
                 store.setExposePrimaryKeys(true);
                 if (GeoServerUtils.manager.getStoreManager().create(workspace, store)) {
-                    return ResultUtil.success();
+                    return ResultUtil.success(200,"创建存储点成功");
                 } else {
                     LOG.warn("存储点创建失败：createDataStore::manager = [{}], storeName = [{}], workspace = [{}]", storeName, workspace);
                     return ResultUtil.error(3, "存储点" + storeName + "创建失败");
                 }
-            } else {
+            }
+            else {
                 LOG.warn("存储点已存在:createDataStore::manager = [{}], storeName = [{}], workspace = [{}]", storeName, workspace);
                 return ResultUtil.error(1, "存储点" + storeName + "已存在");
             }
@@ -175,7 +176,6 @@ public class GeoServerServiceImpl implements GeoServerService {
 
     /**
      * 发布图层
-     *
      * @param ws        工作空间
      * @param storeName 存储名称
      * @param tableName 数据库表名称
@@ -183,19 +183,16 @@ public class GeoServerServiceImpl implements GeoServerService {
      */
     @Override
     public Result publishLayer(String ws, String storeName, String tableName, String defaultStyle) {
-        LOG.info("已进入：publishLayer::manager = [{}], ws = [{}], storeName = [{}], tableName = [{}]", ws, storeName, tableName);
+        LOG.info("已进入：publishLayer:: ws = [{}], storeName = [{}], tableName = [{}]", ws, storeName, tableName);
         if (ws != null && !"".equals(ws) && storeName != null && !"".equals(storeName) && tableName != null && !"".equals(tableName)) {
-
-            try {
                 createWorkSpace(ws, "");
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
-
-            Result dataStore = createDataStore(storeName, ws);
-            if (dataStore.getCode() == 0 || dataStore.getCode() == 1) {
-                RESTLayer layer = GeoServerUtils.reader.getLayer(ws, tableName);
-                if (layer == null) {
+                createDataStore(storeName, ws);
+                RESTLayer layer = GeoServerUtils.reader.getLayer(ws,tableName);
+                if (layer != null) {
+                    LOG.info("发布的图层：tableName = [{}] 已经存在",tableName);
+                    return ResultUtil.error(500, "发布的图层:"+tableName+"已经存在");
+                } else {
+                    //发布图层
                     GSFeatureTypeEncoder pds = new GSFeatureTypeEncoder();
                     pds.setTitle(tableName);
                     pds.setName(tableName);
@@ -204,20 +201,13 @@ public class GeoServerServiceImpl implements GeoServerService {
                     //设置发布风格
                     layerEncoder.setDefaultStyle(defaultStyle);
                     boolean publishDBLayer = GeoServerUtils.publisher.publishDBLayer(ws, storeName, pds, layerEncoder);
-
                     if (publishDBLayer) {
-                        return ResultUtil.success("图层发布成功");
+                        return ResultUtil.success(200,"图层发布成功");
                     } else {
                         LOG.warn("publishLayer::manager = [{}], ws = [{}], storeName = [{}], tableName = [{}]", GeoServerUtils.manager, ws, storeName, tableName);
                         return ResultUtil.error(3, "发布失败");
                     }
-                } else {
-                    LOG.warn("图层已存在：publishLayer::manager = [{}], ws = [{}], storeName = [{}], tableName = [{}]", GeoServerUtils.manager, ws, storeName, tableName);
-                    return ResultUtil.error(1, "图层已存在");
                 }
-            } else {
-                return dataStore;
-            }
         } else {
             LOG.warn("空指针异常：publishLayer::manager = [{}], ws = [{}], storeName = [{}], tableName = [{}]", GeoServerUtils.manager, ws, storeName, tableName);
             return ResultUtil.error(2, "空指针异常");

@@ -1,5 +1,7 @@
 package cc.wanshan.gis.controller.plot;
 
+import cc.wanshan.gis.common.annotation.SystemLog;
+import cc.wanshan.gis.common.enums.LogType;
 import cc.wanshan.gis.common.pojo.Result;
 import cc.wanshan.gis.service.plot.of3d.PlotService;
 import io.swagger.annotations.Api;
@@ -30,6 +32,7 @@ public class PlotController {
     @Resource
     private PlotService plotService;
 
+    @SystemLog(description = "增加标绘", type = LogType.OPERATION)
     @ApiOperation(value = "增加标绘", notes = "增加标绘")
     @PostMapping
     public Result add(@RequestBody String jsonString) {
@@ -38,6 +41,7 @@ public class PlotController {
         return plotService.save(jsonString);
     }
 
+    @SystemLog(description = "修改标绘", type = LogType.OPERATION)
     @ApiOperation(value = "修改标绘", notes = "修改标绘")
     @PutMapping
     public Result upload(@RequestBody String jsonString) {
@@ -46,6 +50,7 @@ public class PlotController {
         return plotService.update(jsonString);
     }
 
+    @SystemLog(description = "删除标绘", type = LogType.OPERATION)
     @ApiOperation(value = "删除标绘", notes = "删除标绘")
     @DeleteMapping("/{type}/{id}")
     public Result deleteById(@PathVariable String type, @PathVariable String id) {
@@ -53,6 +58,7 @@ public class PlotController {
         return plotService.deleteById(type, id);
     }
 
+    @SystemLog(description = "查询标绘", type = LogType.OPERATION)
     @ApiOperation(value = "查询标绘", notes = "查询标绘")
     @ApiImplicitParams(@ApiImplicitParam(name = "type", value = "数据类型", required = false))
     @GetMapping("/findAll")

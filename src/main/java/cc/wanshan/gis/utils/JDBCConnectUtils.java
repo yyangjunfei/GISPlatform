@@ -29,6 +29,7 @@ public class JDBCConnectUtils {
             Class.forName("org.postgresql.Driver");
             connection = DriverManager.getConnection(postgis.getUrl(), postgis.getUser(), postgis.getPassword());
         } catch (Exception e) {
+
             logger.warn("获取连接失败：getDBConnection::", e.getMessage());
             e.printStackTrace();
         }

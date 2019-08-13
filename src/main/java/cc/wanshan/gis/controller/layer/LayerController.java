@@ -1,7 +1,6 @@
 package cc.wanshan.gis.controller.layer;
 
 import cc.wanshan.gis.common.pojo.Result;
-import cc.wanshan.gis.entity.layer.style.Style;
 import cc.wanshan.gis.entity.layer.thematic.Thematic;
 import cc.wanshan.gis.entity.plot.of2d.Layer;
 import cc.wanshan.gis.entity.plot.of2d.LineString;
@@ -13,7 +12,6 @@ import cc.wanshan.gis.service.layer.thematic.LayerService;
 import cc.wanshan.gis.service.layer.thematic.ThematicService;
 import cc.wanshan.gis.service.layer.thematic.ThematicUserService;
 import cc.wanshan.gis.utils.base.ResultUtil;
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
@@ -35,7 +33,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -62,63 +59,33 @@ public class LayerController {
   private ExportService exportServiceImpl;
 
   @ApiOperation(value = "保存标绘图层", notes = "新增标绘图层或者根据图层Id更新图层")
-  @ApiImplicitParam(name = "layer", value = "实体类对象", required = true)
+  @ApiImplicitParam(name = "layer", value = "layer实体类对象", required = true)
   @PostMapping("/savelayer")
   @ResponseBody
   public Result saveLayer(@RequestBody Layer layer) {
     logger.info("saveLayer::layer = [{}]", layer);
-    return layerService.saveLayer(layer);
+    return layerService.save(layer);
   }
 
-  @ApiOperation(value = "删除标绘图层", notes = "根据图层集合批量删除图层,只需要封装layerId即可")
-  @ApiImplicitParam(name = "layerList", value = "封装了layerId的layer集合", required = true)
-  @PostMapping("/deletelayer")
+  @ApiOperation(value = "删除标绘图层", notes = "根据图层集合批量删除图层,只需要封装layerId和type即可")
+  @ApiImplicitParam(name = "layerList", value = "封装了layerId和type的layer集合", required = true)
+  @DeleteMapping("/deletelayer")
   @ResponseBody
   public Result deleteLayer(@RequestBody List<Layer> layerList) {
     logger.info("deleteLayer::layerList = [{}]", layerList);
-    if (layerList != null && layerList.size() > 0
-    ) {
-      return layerService.deleteLayer(layerList);
-    }
-    logger.error("deleteLayer::jsonObject = [{}]", layerList + "参数为null");
-    return ResultUtil.error("参数为null");
+      return layerService.delete(layerList);
   }
-
   @ApiOperation(value = "删除标绘要素", notes = "根据featureId集合批量删除feature")
-  @ApiImplicitParam(name = "jsonObject", value = "封装了type类型和featureId集合的features", required = true)
+  @ApiImplicitParams({
+      @ApiImplicitParam(name = "featureIds", value = "封装了featureId的集合", required =  true),
+      @ApiImplicitParam(name = "type", value = "features的类型", required =  true)
+  })
   @DeleteMapping("/deletefeature")
   @ResponseBody
-  public Result deleteFeature(@RequestBody JSONObject jsonObject) {
-    logger.info("deleteFeature::jsonObject = [{}]", jsonObject);
-    if (jsonObject != null && jsonObject.getJSONArray("features").size() > 0 && StringUtils
-        .isNotBlank(jsonObject.getString("type"))) {
-      String type = jsonObject.getString("type");
-      if ("point".equals(type.toLowerCase())) {
-        List<Point> points = JSON
-            .parseArray(jsonObject.getJSONArray("features").toJSONString(), Point.class);
-        Boolean aBoolean = layerService.deleteFeature(points, type);
-        if (aBoolean) {
-          return ResultUtil.success();
-        }
-      }
-      if ("linestring".equals(type.toLowerCase())) {
-        List<LineString> lineStrings = JSON
-            .parseArray(jsonObject.getJSONArray("features").toJSONString(), LineString.class);
-        Boolean aBoolean = layerService.deleteFeature(lineStrings, type);
-        if (aBoolean) {
-          return ResultUtil.success();
-        }
-      }
-      if ("polygon".equals(type.toLowerCase())) {
-        List<Polygon> polygons = JSON
-            .parseArray(jsonObject.getJSONArray("features").toJSONString(), Polygon.class);
-        Boolean aBoolean = layerService.deleteFeature(polygons, type);
-        if (aBoolean) {
-          return ResultUtil.success();
-        }
-      }
-    }
-    return ResultUtil.error(4, "参数为null");
+  public Result deleteFeature(@RequestParam(value = "featureIds") List featureIds,
+      @RequestParam("type") String type) {
+    logger.info("deleteFeature::featureIds = [{}], type = [{}]", featureIds, type);
+    return layerService.deleteFeature(featureIds, type);
   }
 
   @ApiOperation(value = "查询图层", notes = "根据userId和layerName查询图层")
@@ -129,38 +96,15 @@ public class LayerController {
   public Result findLayerCountByLayerName(@PathVariable String userId,
       @PathVariable String layerName) {
     logger.info("findLayerCountByLayerName::userId = [{}], layerName = [{}]", userId, layerName);
-    if (StringUtils.isNotBlank(userId) && StringUtils.isNotBlank(layerName)) {
-      Layer layer = layerService.findLayer(userId, layerName);
-      if (layer != null) {
-        return ResultUtil.success(layer);
-      } else {
-        return ResultUtil.error(1, "图层不存在");
-      }
-    } else {
-      logger.warn("警告！传入参数存在null值");
-      return ResultUtil.error(1, "传入参数存在null值");
-    }
+    return layerService.findByUserIdAndLayerName(userId, layerName);
   }
 
   @PostMapping("/searchlayer")
   @ResponseBody
-  public Result searchLayer(@RequestBody JSONObject jsonObject) {
-    logger.info("searchLayer::jsonObject = [{}]", jsonObject);
-    if (jsonObject != null && StringUtils.isNotBlank(jsonObject.getString("thematicName"))
-        && StringUtils.isNotBlank(jsonObject.getString("layerName"))) {
-      String thematicName = jsonObject.getString("thematicName");
-      String layerName = jsonObject.getString("layerName");
-      Result result = layerService.searchLayer(thematicName, layerName);
-      if (result.getCode() == 0) {
-        return result;
-      } else {
-        logger.warn("警告!" + result.getMsg());
-        return result;
-      }
-    } else {
-      logger.error("searchLayer::jsonObject = [{}]", jsonObject + "参数为null");
-      return ResultUtil.error("参数为null");
-    }
+  public Result searchLayer(@RequestParam(value = "thematicName") String thematicName,
+      @RequestParam(value = "layerName") String layerName) {
+    logger.info("searchLayer::thematicName = [{}], layerName = [{}]", thematicName, layerName);
+    return layerService.searchLayer(thematicName, layerName);
   }
 
   @ApiOperation(value = "查询专题图层", notes = "根据userId查询所属专题图层")
@@ -185,32 +129,15 @@ public class LayerController {
   @ResponseBody
   public Result updateLayer(@RequestBody Layer layer) {
     logger.info("updateLayer::layer = [{}]", layer);
-    if (layer != null) {
-      layer.setUpdateTime(new Date());
-      Boolean updateLayer = layerService.updateLayer(layer);
-      if (updateLayer) {
-        return ResultUtil.success();
-      } else {
-        logger.error("更新失败" + updateLayer);
-        return ResultUtil.error(1, "操作异常");
-      }
-    }
-    logger.error("参数为null", layer);
-    return ResultUtil.error(2, "参数为null");
+    return layerService.update(layer);
   }
 
   @ApiOperation(value = "查询图层", notes = "根据layerId查询图层信息")
   @ApiImplicitParam(name = "layerId", value = "图层 Id", required = true)
   @GetMapping("/findlayerbylayerid/{layerId}")
   @ResponseBody
-  public Result findLayerByLayerId(@PathVariable String layerId) {
-    logger.info("findLayerByLayerId::layerId = [{}]", layerId);
-    if (StringUtils.isNotBlank(layerId)) {
-      Layer layer = layerService.findLayerByLayerId(layerId);
-      return ResultUtil.success(layer);
-    }
-    logger.error("参数为null", layerId);
-    return ResultUtil.error(2, "参数为null");
+  public Result findByLayerId(@PathVariable String layerId) {
+    return layerService.findByLayerId(layerId);
   }
 
   @ApiOperation(value = "查询风格列表", notes = "根据专题Id查询风格列表")
@@ -237,16 +164,7 @@ public class LayerController {
   @ResponseBody
   public Result findStyleByStyleName(@PathVariable String styleName) {
     logger.info("findStyleByStyleName::styleName = [{}]", styleName);
-    if (StringUtils.isNotBlank(styleName)) {
-      List<Style> style = styleServiceImpl
-          .findStyleByStyleName(styleName);
-      if (style.size() > 0) {
-        JSONArray jsonArray = (JSONArray) JSONArray.toJSON(style);
-        return ResultUtil.success(jsonArray);
-      }
-    }
-    logger.error("参数为null", styleName);
-    return ResultUtil.error(1, "参数为null");
+    return styleServiceImpl.findByStyleName(styleName);
   }
 
   @ApiOperation(value = "查询图层列表", notes = "根据userId查询图层列表")
@@ -255,12 +173,7 @@ public class LayerController {
   @ResponseBody
   public Result findLayerByUserId(@PathVariable String userId) {
     logger.info("findLayerByUserId::userId = [{}]", userId);
-    if (StringUtils.isNotBlank(userId)) {
-      List<Layer> layerList = layerService.findByUserId(userId);
-      return ResultUtil.success(layerList);
-    }
-    logger.error("参数为null", userId);
-    return ResultUtil.error(4, "参数为null");
+    return layerService.findByUserId(userId);
   }
 
   @ApiOperation(value = "导出图层", notes = "根据图层Id和文件类型导出图层数据")
