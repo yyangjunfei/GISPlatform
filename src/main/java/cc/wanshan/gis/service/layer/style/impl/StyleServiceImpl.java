@@ -1,5 +1,6 @@
 package cc.wanshan.gis.service.layer.style.impl;
 
+import cc.wanshan.gis.common.enums.ResultCode;
 import cc.wanshan.gis.common.pojo.Result;
 import cc.wanshan.gis.dao.layer.style.StyleDao;
 import cc.wanshan.gis.entity.layer.style.Style;
@@ -8,6 +9,7 @@ import cc.wanshan.gis.service.metadata.FileService;
 import cc.wanshan.gis.utils.LanguageUtils;
 import cc.wanshan.gis.utils.base.ResultUtil;
 import cc.wanshan.gis.utils.geo.GeoServerUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,18 +36,39 @@ public class StyleServiceImpl implements StyleService {
     private FileService fileService;
 
     @Override
-    public List<Style> findAllStyle() {
-        return styleDao.findAllStyle();
+    public Result findAll() {
+        LOG.info("findAll::");
+        List<Style> styles = styleDao.findAllStyle();
+        if (styles!=null){
+            return ResultUtil.success(styles);
+        }
+        return ResultUtil.error(ResultCode.FIND_NULL);
     }
 
     @Override
-    public List<Style> findByLayerId(String layerId) {
-        return styleDao.findByLayerId(layerId);
+    public Result findByLayerId(String layerId) {
+        LOG.info("findByLayerId::layerId = [{}]",layerId);
+        if (StringUtils.isBlank(layerId)){
+            return ResultUtil.error(ResultCode.PARAM_IS_NULL);
+        }
+        List<Style> styles = styleDao.findByLayerId(layerId);
+        if (styles.size()>0){
+            return ResultUtil.success(styles);
+        }
+        return ResultUtil.error(ResultCode.FIND_NULL);
     }
 
     @Override
-    public List<Style> findStyleByStyleName(String styleName) {
-        return styleDao.findStyleByStyleName(styleName);
+    public Result findByStyleName(String styleName) {
+        LOG.info("findByLayerId::layerId = [{}]",styleName);
+        if (StringUtils.isBlank(styleName)){
+            return ResultUtil.error(ResultCode.PARAM_IS_NULL);
+        }
+        List<Style> styles = styleDao.findStyleByStyleName(styleName);
+        if (styles.size()>0){
+            return ResultUtil.success(styles);
+        }
+        return ResultUtil.error(ResultCode.FIND_NULL);
     }
 
     @Override

@@ -1,5 +1,4 @@
 package cc.wanshan.gis.common.exception;
-
 import org.springframework.security.access.AccessDeniedException;
 
 /**

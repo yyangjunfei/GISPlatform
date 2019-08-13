@@ -15,7 +15,7 @@ public interface StyleService {
     /**
      * description:查询所有的style
      */
-    List<Style> findAllStyle();
+    Result findAll();
 
     /**
      * description: 根据图层Id查询style
@@ -23,7 +23,7 @@ public interface StyleService {
      * @param layerId 图层Id
      * @return java.util.List<cc.wanshan.gis.entity.style.Style>
      **/
-    List<Style> findByLayerId(String layerId);
+    Result findByLayerId(String layerId);
 
     /**
      * description:  根据风格名查询风格列表
@@ -31,7 +31,7 @@ public interface StyleService {
      * @param styleName 风格名
      * @return java.util.List<cc.wanshan.gis.entity.style.Style>
      **/
-    List<Style> findStyleByStyleName(String styleName);
+    Result findByStyleName(String styleName);
 
 
     /***
