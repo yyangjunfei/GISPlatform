@@ -7,12 +7,14 @@ import cc.wanshan.gis.utils.base.ResultUtil;
 import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
+@Order(-1)
 public class MyControllerAdvice {
 
     private static final Logger logger = LoggerFactory.getLogger(MyControllerAdvice.class);

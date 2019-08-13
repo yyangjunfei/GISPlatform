@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -39,9 +40,19 @@ public class SecurityUtils {
      */
     public User getCurrentUser() {
 
-        String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userDao.findByUsername(userDetails.getUsername());
+    }
 
-        return userDao.findByUsername(username);
+    /**
+     * 获取当前用户名
+     *
+     * @return
+     */
+    public String getCurrentUsername() {
+
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userDetails.getUsername();
     }
 
     /**

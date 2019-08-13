@@ -1,6 +1,8 @@
 package cc.wanshan.gis.common.handler;
 
+import cc.wanshan.gis.common.annotation.SystemLog;
 import cc.wanshan.gis.common.constant.SecurityConstant;
+import cc.wanshan.gis.common.enums.LogType;
 import cc.wanshan.gis.config.properties.TokenProperties;
 import cc.wanshan.gis.dao.layer.UserPropsDao;
 import cc.wanshan.gis.entity.authorize.TokenUser;
@@ -45,6 +47,7 @@ public class AuthenticationSuccessHandler extends SavedRequestAwareAuthenticatio
     @Autowired
     private UserPropsDao userPropsDao;
 
+    @SystemLog(description = "登录", type = LogType.LOGIN)
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
 
