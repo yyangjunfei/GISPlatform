@@ -22,6 +22,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -136,7 +137,6 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                         return null;
                     }
 
-
                     authorities = securityUtils.getCurrentUserRole(username);
                     String roleName = securityUtils.getCurrentUserRoleName(username);
 
@@ -159,7 +159,8 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         }
 
         if (username != null && StringUtils.isNotEmpty(username)) {
-            return new UsernamePasswordAuthenticationToken(username, null, authorities);
+            User principal = new User(username, "", authorities);
+            return new UsernamePasswordAuthenticationToken(principal, null, authorities);
         }
         return null;
     }

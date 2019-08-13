@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.wanshan.gis.mapper.system.LogInfoMapper">
+    <resultMap id="BaseResultMap" type="cc.wanshan.gis.entity.system.LogInfo">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="log_type" jdbcType="INTEGER" property="logType"/>
+        <result column="request_url" jdbcType="VARCHAR" property="requestUrl"/>
+        <result column="request_type" jdbcType="VARCHAR" property="requestType"/>
+        <result column="request_param" jdbcType="VARCHAR" property="requestParam"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="ip" jdbcType="VARCHAR" property="ip"/>
+        <result column="ip_info" jdbcType="VARCHAR" property="ipInfo"/>
+        <result column="cost_time" jdbcType="INTEGER" property="costTime"/>
+        <result column="browser" jdbcType="VARCHAR" property="browser"/>
+        <result column="os" jdbcType="VARCHAR" property="os"/>
+        <result column="access_time" jdbcType="TIMESTAMP" property="accessTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, name, log_type, request_url, request_type, request_param, username, ip, ip_info, 
+    cost_time, browser, os, access_time
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from log_info
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from log_info
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+    <insert id="insert" parameterType="cc.wanshan.gis.entity.system.LogInfo">
+    insert into log_info (id, name, log_type, 
+      request_url, request_type, request_param, 
+      username, ip, ip_info, 
+      cost_time, browser, os, 
+      access_time)
+    values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{logType,jdbcType=INTEGER}, 
+      #{requestUrl,jdbcType=VARCHAR}, #{requestType,jdbcType=VARCHAR}, #{requestParam,jdbcType=VARCHAR}, 
+      #{username,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, #{ipInfo,jdbcType=VARCHAR}, 
+      #{costTime,jdbcType=INTEGER}, #{browser,jdbcType=VARCHAR}, #{os,jdbcType=VARCHAR}, 
+      #{accessTime,jdbcType=TIMESTAMP})
+  </insert>
+    <insert id="insertSelective" parameterType="cc.wanshan.gis.entity.system.LogInfo">
+        insert into log_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="logType != null">
+                log_type,
+            </if>
+            <if test="requestUrl != null">
+                request_url,
+            </if>
+            <if test="requestType != null">
+                request_type,
+            </if>
+            <if test="requestParam != null">
+                request_param,
+            </if>
+            <if test="username != null">
+                username,
+            </if>
+            <if test="ip != null">
+                ip,
+            </if>
+            <if test="ipInfo != null">
+                ip_info,
+            </if>
+            <if test="costTime != null">
+                cost_time,
+            </if>
+            <if test="browser != null">
+                browser,
+            </if>
+            <if test="os != null">
+                os,
+            </if>
+            <if test="accessTime != null">
+                access_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="logType != null">
+                #{logType,jdbcType=INTEGER},
+            </if>
+            <if test="requestUrl != null">
+                #{requestUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="requestType != null">
+                #{requestType,jdbcType=VARCHAR},
+            </if>
+            <if test="requestParam != null">
+                #{requestParam,jdbcType=VARCHAR},
+            </if>
+            <if test="username != null">
+                #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="ip != null">
+                #{ip,jdbcType=VARCHAR},
+            </if>
+            <if test="ipInfo != null">
+                #{ipInfo,jdbcType=VARCHAR},
+            </if>
+            <if test="costTime != null">
+                #{costTime,jdbcType=INTEGER},
+            </if>
+            <if test="browser != null">
+                #{browser,jdbcType=VARCHAR},
+            </if>
+            <if test="os != null">
+                #{os,jdbcType=VARCHAR},
+            </if>
+            <if test="accessTime != null">
+                #{accessTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cc.wanshan.gis.entity.system.LogInfo">
+        update log_info
+        <set>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="logType != null">
+                log_type = #{logType,jdbcType=INTEGER},
+            </if>
+            <if test="requestUrl != null">
+                request_url = #{requestUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="requestType != null">
+                request_type = #{requestType,jdbcType=VARCHAR},
+            </if>
+            <if test="requestParam != null">
+                request_param = #{requestParam,jdbcType=VARCHAR},
+            </if>
+            <if test="username != null">
+                username = #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="ip != null">
+                ip = #{ip,jdbcType=VARCHAR},
+            </if>
+            <if test="ipInfo != null">
+                ip_info = #{ipInfo,jdbcType=VARCHAR},
+            </if>
+            <if test="costTime != null">
+                cost_time = #{costTime,jdbcType=INTEGER},
+            </if>
+            <if test="browser != null">
+                browser = #{browser,jdbcType=VARCHAR},
+            </if>
+            <if test="os != null">
+                os = #{os,jdbcType=VARCHAR},
+            </if>
+            <if test="accessTime != null">
+                access_time = #{accessTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="cc.wanshan.gis.entity.system.LogInfo">
+    update log_info
+    set name = #{name,jdbcType=VARCHAR},
+      log_type = #{logType,jdbcType=INTEGER},
+      request_url = #{requestUrl,jdbcType=VARCHAR},
+      request_type = #{requestType,jdbcType=VARCHAR},
+      request_param = #{requestParam,jdbcType=VARCHAR},
+      username = #{username,jdbcType=VARCHAR},
+      ip = #{ip,jdbcType=VARCHAR},
+      ip_info = #{ipInfo,jdbcType=VARCHAR},
+      cost_time = #{costTime,jdbcType=INTEGER},
+      browser = #{browser,jdbcType=VARCHAR},
+      os = #{os,jdbcType=VARCHAR},
+      access_time = #{accessTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
