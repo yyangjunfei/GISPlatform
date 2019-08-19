@@ -1,9 +1,10 @@
 package cc.wanshan.gis;
 
-import cc.wanshan.gis.dao.bus.NanJingLines2Dao;
-import cc.wanshan.gis.dao.bus.NanJingStationsDao;
-import cc.wanshan.gis.entity.bus.NanJingLines2;
-import cc.wanshan.gis.entity.bus.NanJingStations;
+import cc.wanshan.gis.dao.road.NanJingLines2Dao;
+import cc.wanshan.gis.dao.road.NanJingStationsDao;
+import cc.wanshan.gis.dao.road.RoadDao;
+import cc.wanshan.gis.entity.road.Road;
+import cc.wanshan.gis.entity.road.Stations;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -25,25 +26,46 @@ public class BusTest {
     private NanJingLines2Dao nanJingLines2Dao;
     @Resource
     private NanJingStationsDao nanJingStationsDao;
-
+    @Resource
+    private RoadDao roadDao;
     @Test
     public void findSource() {
         logger.info("findSource::");
-        NanJingLines2 source = nanJingLines2Dao.findSource("point(118.7917 32.05777)");
+        Road source = nanJingLines2Dao.findSource("point(118.7917 32.05777)");
         logger.info("findSource::" + source.toString());
     }
 
     @Test
     public void findTarget() {
         logger.info("findTarget::");
-        NanJingLines2 target = nanJingLines2Dao.findTarget("point(118.7917 32.05777)");
+        Road target = nanJingLines2Dao.findTarget("point(118.7917 32.05777)");
         logger.info("findTarget::" + target.toString());
     }
 
     @Test
     public void findStation() {
         logger.info("findStation::");
-        NanJingStations station = nanJingStationsDao.findStation("point(118.7917 32.05777)");
+        Stations station = nanJingStationsDao.findStation("point(118.7917 32.05777)");
         logger.info("findStation::" + station.toString());
+    }
+    @Test
+    public void split() {
+        logger.info("split::");
+        String url="/find/road/point(111 111)";
+        String[] split = url.split("/");
+        System.out.println(split);
+    }
+    @Test
+    public void findRoad() {
+        logger.info("findRoad::");
+        String road = roadDao.findRoad();
+        System.out.println("road::"+road);
+    }
+
+    @Test
+    public void update() {
+        logger.info("findRoad::");
+        int road = roadDao.update(123, 456);
+        System.out.println("road::"+road);
     }
 }

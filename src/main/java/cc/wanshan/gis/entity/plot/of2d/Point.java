@@ -20,7 +20,6 @@ import java.util.Date;
 public class Point {
 
     private static final long serialVersionUID = 1L;
-
     private String featureId;
     private String featureName;
     private Object geom;
