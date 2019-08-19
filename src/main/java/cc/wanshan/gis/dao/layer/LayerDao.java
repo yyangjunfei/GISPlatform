@@ -15,7 +15,6 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.mapping.FetchType;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 
 /**
@@ -85,8 +84,6 @@ public interface LayerDao {
     })
     @Options(useGeneratedKeys = true, keyColumn = "layer_id", keyProperty = "layerId")
     int insert(Layer layer);
-
-
     /**
      * description: 根据storeId和图层名删除图层
      *
@@ -100,8 +97,6 @@ public interface LayerDao {
                     + "store_id=#{storeId}"
     })
     int deleteLayerByLayerNameAndStoreId(String layerName, String storeId);
-
-
     /**
      * description: 根据layerId批量删除
      *
@@ -110,8 +105,6 @@ public interface LayerDao {
      **/
     @DeleteProvider(type = LayerDaoProvider.class, method = "deleteAll")
     int deleteAll(@Param("list") List<Layer> layers);
-
-
     /**
      * description: 更新图层信息
      *
@@ -143,8 +136,6 @@ public interface LayerDao {
                     + "layer_id=#{layerId}"
     })
     int updateLayer(Layer layer);
-
-
     /**
      * description: 删除layer
      *
@@ -156,8 +147,6 @@ public interface LayerDao {
             + "layer_id=#{layerId}"
     })
     int deleteLayer(String layerId);
-
-
     /**
      * description: 根据storeId查询图层
      *
@@ -196,8 +185,6 @@ public interface LayerDao {
             @Result(column = "opacity", property = "opacity"),
     })
     List<Layer> findLayersByStoreId(String storeId);
-
-
     /**
      * description: 根据layerId查询Layer
      */

@@ -1,4 +1,4 @@
-package cc.wanshan.gis.entity.bus;
+package cc.wanshan.gis.entity.road;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -9,11 +9,13 @@ import lombok.Data;
 @JsonInclude(JsonInclude.Include.NON_NULL)  //注解控制null不序列化
 /**
  * @author Li Cheng
- * @date 2019/6/13 9:11
+ * @date 2019/6/12 16:59
  */
-public class NanJingStations {
+public class Road {
+
   private static final long serialVersionUID = 1L;
   private Integer gid;
-  private String name;
+  private Integer source;
+  private Integer target;
   private String geom;
 }

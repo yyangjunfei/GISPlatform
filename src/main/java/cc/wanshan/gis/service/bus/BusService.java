@@ -1,6 +1,6 @@
 package cc.wanshan.gis.service.bus;
 
-import cc.wanshan.gis.entity.bus.NanJingStations;
+import cc.wanshan.gis.entity.road.Stations;
 
 /**
  * @author Li Cheng
@@ -25,7 +25,7 @@ public interface BusService {
    * description: 根据坐标点查询公交站
    *
    * @param point 坐标点
-   * @return cc.wanshan.gis.entity.bus.NanJingStations
+   * @return cc.wanshan.gis.entity.road.Stations
    **/
-  NanJingStations findStation(String point);
+  Stations findStation(String point);
 }
