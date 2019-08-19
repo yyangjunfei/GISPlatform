@@ -355,8 +355,7 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
     }
 
     @Override
-    public ResponseEntity postGisDb2es(String dbURL, String dbUserName, String dbPassword, String
-            driverClassName, String sql, String esindexName, String esTypeName) {
+    public ResponseEntity postGisDb2es(String dbURL, String dbUserName, String dbPassword, String driverClassName, String sql, String esindexName, String esTypeName) {
         ResponseEntity responseEntity = null;
         importDB2Es.transportClient = client;
         long count;
