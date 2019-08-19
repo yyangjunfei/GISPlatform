@@ -1,4 +1,5 @@
 package cc.wanshan.gis.entity.metadata;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -43,6 +44,7 @@ public class metadata implements Serializable {
     private String styleName;
 
     @ApiModelProperty(value = "创建日期")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Timestamp createTime;
 
     @ApiModelProperty(value = "归属单位/创建者")

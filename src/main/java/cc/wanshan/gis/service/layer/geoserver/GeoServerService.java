@@ -31,7 +31,7 @@ public interface GeoServerService {
      * @param workSpaceName 工作空间名称
      * @param uri           工作空间uri，可为空
      */
-    boolean createWorkSpace(String workSpaceName, String uri) throws URISyntaxException;
+    boolean createWorkSpace(String workSpaceName, String uri);
 
     /**
      * 创建存储名称

@@ -1,5 +1,6 @@
 package cc.wanshan.gis.controller.metadata;
 import cc.wanshan.gis.common.pojo.Result;
+import cc.wanshan.gis.entity.common.PageBean;
 import cc.wanshan.gis.entity.metadata.metadata;
 import cc.wanshan.gis.service.layer.geoserver.GeoServerService;
 import cc.wanshan.gis.service.metadata.DataManagementService;
@@ -48,10 +49,10 @@ public class DataManagementController {
 
     @ApiOperation(value = "查询显示存储数据", notes = "查询显示存储数据")
     @GetMapping("/findLayerProperties")
-    public List<metadata> findLayerProperties() {
+    public PageBean<metadata> findLayerProperties(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,@RequestParam(value = "pageSize",defaultValue = "3") Integer pageSize) {
         //查询存储的数据
-        List<metadata> meta = dataManagementService.findLayerProperties();
-        return meta;
+        PageBean<metadata> pageBean = dataManagementService.findLayerProperties(pageNum,pageSize);
+        return pageBean;
     }
 
     @ApiOperation(value = "根据id删除存储数据", notes = "根据id删除存储数据")

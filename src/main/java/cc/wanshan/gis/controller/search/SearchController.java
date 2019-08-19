@@ -1,5 +1,7 @@
 package cc.wanshan.gis.controller.search;
 
+import cc.wanshan.gis.common.annotation.SystemLog;
+import cc.wanshan.gis.common.enums.LogType;
 import cc.wanshan.gis.common.enums.ResultCode;
 import cc.wanshan.gis.common.pojo.Result;
 import cc.wanshan.gis.service.search.SearchService;
@@ -35,6 +37,7 @@ public class SearchController {
     @Autowired
     private SecurityUtils securityUtils;
 
+    @SystemLog(description = "位置搜索", type = LogType.OPERATION)
     @ApiOperation(value = "位置搜索", notes = "位置搜索")
     @GetMapping("/location")
     public Result searchByLocation(@RequestParam double longitude, @RequestParam double latitude, @RequestParam double level) {
@@ -44,6 +47,7 @@ public class SearchController {
         return searchService.searchByLocation(longitude, latitude, level);
     }
 
+    @SystemLog(description = "名称搜索", type = LogType.OPERATION)
     @ApiOperation(value = "名称搜索", notes = "名称搜索")
     @GetMapping("/name")
     public Result searchByName(@RequestParam String name) {
@@ -58,6 +62,7 @@ public class SearchController {
         return searchService.searchByName(name);
     }
 
+    @SystemLog(description = "搜索POI", type = LogType.OPERATION)
     @ApiOperation(value = "搜索POI", notes = "搜索POI")
     @PostMapping("/place")
     public Result searchByPlace(@RequestBody JSONObject jsonObject) {
@@ -67,6 +72,7 @@ public class SearchController {
         return searchService.searchByPlace(jsonObject);
     }
 
+    @SystemLog(description = "联想搜索", type = LogType.OPERATION)
     @ApiOperation(value = "联想suggest", notes = "搜索联想suggest自动补全")
     @GetMapping("/suggest")
     public Result suggest(@RequestParam String keyword) {

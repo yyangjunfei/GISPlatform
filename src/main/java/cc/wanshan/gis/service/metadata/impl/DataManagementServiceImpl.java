@@ -2,6 +2,7 @@ package cc.wanshan.gis.service.metadata.impl;
 import cc.wanshan.gis.common.enums.ResultCode;
 import cc.wanshan.gis.common.pojo.Result;
 import cc.wanshan.gis.dao.metadata.DataManagementDao;
+import cc.wanshan.gis.entity.common.PageBean;
 import cc.wanshan.gis.entity.metadata.ShpInfo;
 import cc.wanshan.gis.entity.metadata.metadata;
 import cc.wanshan.gis.service.metadata.DataManagementService;
@@ -9,10 +10,13 @@ import cc.wanshan.gis.service.metadata.FileService;
 import cc.wanshan.gis.utils.LanguageUtils;
 import cc.wanshan.gis.utils.base.ResultUtil;
 import com.alibaba.fastjson.JSON;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.Arrays;
 import java.util.List;
@@ -80,9 +84,17 @@ public class DataManagementServiceImpl implements DataManagementService {
     }
 
     @Override
-    public List<metadata> findLayerProperties() {
+    public PageBean<metadata> findLayerProperties(Integer pageNum,Integer pageSize) {
 
-        return dataManagementDao.findLayerProperties();
+        PageHelper.startPage(pageNum,pageSize);
+        List<metadata> metadataList = dataManagementDao.findLayerProperties();
+
+        PageInfo info = new PageInfo(metadataList);   //1、PageInfo 是 pagehelper中内值的分页的信息类
+        PageBean pageBean = new PageBean(pageNum,pageSize,Integer.valueOf(new Long(info.getTotal()).intValue()));
+
+        pageBean.setItems(metadataList);
+
+        return pageBean;
     }
 
     @Override

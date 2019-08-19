@@ -15,8 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
 
 /**
- * @Auther renmaoyan
- * @Date 2019/7/17 15:34
+ * @author renmaoyan
+ * @date 2019/7/17 15:34
  */
 @Component
 public class AuthenticationInterceptor extends HandlerInterceptorAdapter implements HandlerInterceptor {

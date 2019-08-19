@@ -93,7 +93,8 @@ gis:
     enable: true
     # token 使用判断
   token:
-    enable: false
+    jwt: false
+    redis: true
 
 # 忽略鉴权url
 ignored:

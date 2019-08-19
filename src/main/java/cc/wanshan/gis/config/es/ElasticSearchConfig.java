@@ -1,5 +1,4 @@
 package cc.wanshan.gis.config.es;
-
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.TransportAddress;
@@ -7,7 +6,6 @@ import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import java.net.InetAddress;
 
 @Configuration
@@ -36,4 +34,3 @@ public class ElasticSearchConfig {
         return new PreBuiltTransportClient(settings).addTransportAddress(transportAddress);
     }
 }
-

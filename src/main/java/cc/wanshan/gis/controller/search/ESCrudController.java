@@ -1,5 +1,4 @@
 package cc.wanshan.gis.controller.search;
-
 import cc.wanshan.gis.service.search.ElasticsearchService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -18,6 +17,7 @@ public class ESCrudController {
 
     @Autowired
     private ElasticsearchService elasticsearchService;
+
 
     @ApiOperation(value = "ID搜索查询", notes = "ID搜索查询")
     @GetMapping("/findDataByID")
@@ -43,7 +43,6 @@ public class ESCrudController {
     @ApiOperation(value = "导入postGis数据到ES", notes = "导入postGis数据到ES")
     @GetMapping("postGisDb2es")
     public ResponseEntity postGisDb2es(@RequestParam(value = "dbURL") String dbURL, @RequestParam(value = "dbUserName") String dbUserName, @RequestParam(value = "dbPassword") String dbPassword, @RequestParam(value = "driverClassName") String driverClassName, @RequestParam(value = "sql") String sql, @RequestParam(value = "esindexName") String esindexName, @RequestParam(value = "esTypeName") String esTypeName) {
-
 
         return elasticsearchService.postGisDb2es(dbURL, dbUserName, dbPassword, driverClassName, sql, esindexName, esTypeName);
     }

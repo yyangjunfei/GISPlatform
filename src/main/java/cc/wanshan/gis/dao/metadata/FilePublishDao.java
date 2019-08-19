@@ -21,7 +21,7 @@ public interface FilePublishDao {
 
 
     //mybatis 单个对象插入
-/*  @Insert({"INSERT INTO shpdb.${layerName} (fid,type,geo_type,geom,province,city,second_cla,county,first_clas,name,lon,lat,baidu_firs,baidu_seco,telephone,addr) VALUES (#{shpInfo.id},#{shpInfo.type},#{shpInfo.geometry.type},st_geomfromgeojson(#{geometryJson}),#{shpInfo.properties.province},#{shpInfo.properties.city},#{shpInfo.properties.second_cla},#{shpInfo.properties.county},#{shpInfo.properties.first_clas},#{shpInfo.properties.name},#{shpInfo.properties.lon},#{shpInfo.properties.lat},#{shpInfo.properties.baidu_firs},#{shpInfo.properties.baidu_seco},#{shpInfo.properties.telephone},#{shpInfo.properties.addr});"})
+    /*  @Insert({"INSERT INTO shpdb.${layerName} (fid,type,geo_type,geom,province,city,second_cla,county,first_clas,name,lon,lat,baidu_firs,baidu_seco,telephone,addr) VALUES (#{shpInfo.id},#{shpInfo.type},#{shpInfo.geometry.type},st_geomfromgeojson(#{geometryJson}),#{shpInfo.properties.province},#{shpInfo.properties.city},#{shpInfo.properties.second_cla},#{shpInfo.properties.county},#{shpInfo.properties.first_clas},#{shpInfo.properties.name},#{shpInfo.properties.lon},#{shpInfo.properties.lat},#{shpInfo.properties.baidu_firs},#{shpInfo.properties.baidu_seco},#{shpInfo.properties.telephone},#{shpInfo.properties.addr});"})
     int insertTableData(metadata metadata);*/
 
     //mybatis 批量插入

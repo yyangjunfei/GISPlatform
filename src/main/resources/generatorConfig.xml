@@ -17,9 +17,9 @@
 
         <!-- 数据库连接 -->
         <jdbcConnection driverClass="org.postgresql.Driver"
-                        connectionURL="jdbc:postgresql://192.168.1.133:5432/dev?characterEncoding=utf8"
-                        userId="postgres"
-                        password="wanshan">
+                        connectionURL="jdbc:postgresql://172.24.4.12:5432/gis_data?characterEncoding=utf8"
+                        userId="admin"
+                        password="123456">
         </jdbcConnection>
 
         <javaTypeResolver>
@@ -42,25 +42,7 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <table tableName="province" domainObjectName="Province"
-               enableCountByExample="false" enableUpdateByExample="false"
-               enableDeleteByExample="false" enableSelectByExample="false"
-               selectByExampleQueryId="false">
-        </table>
-
-        <table tableName="town" domainObjectName="Town"
-               enableCountByExample="false" enableUpdateByExample="false"
-               enableDeleteByExample="false" enableSelectByExample="false"
-               selectByExampleQueryId="false">
-        </table>
-
-        <table tableName="country" domainObjectName="Country"
-               enableCountByExample="false" enableUpdateByExample="false"
-               enableDeleteByExample="false" enableSelectByExample="false"
-               selectByExampleQueryId="false">
-        </table>
-
-        <table tableName="city" domainObjectName="City"
+        <table tableName="log_info" domainObjectName="LogInfo"
                enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false">
