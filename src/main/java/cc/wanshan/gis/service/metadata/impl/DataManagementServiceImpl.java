@@ -38,7 +38,7 @@ public class DataManagementServiceImpl implements DataManagementService {
 
         LOG.info("metadataImport...");
         //本地文件上传服务器中
-        Result uploadResult = fileService.upload(Arrays.asList(file), "");
+        Result uploadResult = fileService.upload(Arrays.asList(file));
 
         List<Map<String,String>> data = (List<Map<String,String>>) uploadResult.getData();
 
@@ -56,12 +56,6 @@ public class DataManagementServiceImpl implements DataManagementService {
         try {
 
             List<ShpInfo> shpInfoList = fileService.readSHP(filePath);
-
-            //删除文件
-            for (Map<String, String> map : data) {
-
-                fileService.delFile(map.get("filePath"));
-            }
 
             //将中文图层名转换为拼音字符作为数据库中的表名
             metadata.setLayerName(LanguageUtils.getPinYin(metadata.getLayerName()));
