@@ -27,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.net.MalformedURLException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -53,20 +54,9 @@ public class FileServiceImpl implements FileService {
      */
     @Override
     public Result upload(MultipartFile file) {
-        return uploadFile(file, uploadFilePath);
+        return uploadFile(file);
     }
 
-    /**
-     * 上传单文件，带文件夹路径
-     *
-     * @param file
-     * @param folderPath
-     * @return
-     */
-    @Override
-    public Result upload(MultipartFile file, String folderPath) {
-        return uploadFile(file, uploadFilePath + File.separator + folderPath);
-    }
 
     /**
      * 上传多文件
@@ -77,6 +67,14 @@ public class FileServiceImpl implements FileService {
     @Override
     public Result upload(List<MultipartFile> fileList) {
         ArrayList<Map<String, String>> list = Lists.newArrayList();
+        File targetFile = new File(uploadFilePath);
+        // 检测是否存在目录
+        if (!targetFile.exists()) {
+            targetFile.mkdirs();
+        }else {
+            delAllFile(targetFile.getPath());
+        }
+
         for (MultipartFile file : fileList) {
             // 调用单文件
             Result result = upload(file);
@@ -87,25 +85,6 @@ public class FileServiceImpl implements FileService {
         return ResultUtil.success(list);
     }
 
-    /**
-     * 上传多文件,带文件夹路径
-     *
-     * @param fileList
-     * @param folderPath
-     * @return
-     */
-    @Override
-    public Result upload(List<MultipartFile> fileList, String folderPath) {
-        List<Map<String, String>> pathList = Lists.newArrayList();
-        for (MultipartFile file : fileList) {
-            // 调用单文件
-            Result result = upload(file, folderPath);
-            if (succeed(pathList, result)) {
-                return result;
-            }
-        }
-        return ResultUtil.success(pathList);
-    }
 
     /***
      * 删除文件夹和文件
@@ -123,6 +102,37 @@ public class FileServiceImpl implements FileService {
             }
             file.delete();
         }
+    }
+
+    //删除指定文件夹下所有文件
+    //param path 文件夹完整绝对路径
+    public  boolean delAllFile(String path) {
+        boolean flag = false;
+        File file = new File(path);
+        if (!file.exists()) {
+            return flag;
+        }
+        if (!file.isDirectory()) {
+            return flag;
+        }
+        String[] tempList = file.list();
+        File temp = null;
+        for (int i = 0; i < tempList.length; i++) {
+            if (path.endsWith(File.separator)) {
+                temp = new File(path + tempList[i]);
+            } else {
+                temp = new File(path + File.separator + tempList[i]);
+            }
+            if (temp.isFile()) {
+                temp.delete();
+            }
+            if (temp.isDirectory()) {
+                delAllFile(path + "/" + tempList[i]);//先删除文件夹里面的文件
+                deleteFile(new File(path + "/" + tempList[i]));//再删除空文件夹
+                flag = true;
+            }
+        }
+        return flag;
     }
 
     public boolean delFile(String filePath) {
@@ -144,7 +154,7 @@ public class FileServiceImpl implements FileService {
 
 
     @Override
-    public List<ShpInfo> readSHP(String publishPath) {
+    public List<ShpInfo> readSHP(String publishPath){
 
         // 一个数据存储实现，允许从Shapefiles读取和写入
         ShapefileDataStore shpDataStore = null;
@@ -239,32 +249,23 @@ public class FileServiceImpl implements FileService {
     /**
      * 上传文件
      *
-     * @param file     文件
-     * @param filePath 上传的目标路径
+     * @param file 文件
      * @return
      */
-    private Result uploadFile(MultipartFile file, String filePath) {
+    private Result uploadFile(MultipartFile file) {
         if (file.isEmpty()) {
             return ResultUtil.error(ResultCode.UPLOAD_FILE_NULL);
         }
-
         HashMap<String, Object> map = Maps.newHashMap();
         try {
             String filename = file.getOriginalFilename();
-
-            map.put("filename", filename);
-
-            File targetFile = new File(filePath + File.separator + filename);
-            // 检测是否存在目录
-            if (!targetFile.getParentFile().exists()) {
-                targetFile.getParentFile().mkdirs();
-            }
+            File targetFile = new File(uploadFilePath + File.separator + filename);
             // 将上传文件保存到目标文件目录
             file.transferTo(targetFile);
-
+            map.put("filename", filename);
             map.put("filePath", targetFile.getAbsolutePath());
-            return ResultUtil.success(map);
 
+            return ResultUtil.success(map);
         } catch (IOException e) {
             e.printStackTrace();
             return ResultUtil.error(ResultCode.UPLOAD_FAIL);

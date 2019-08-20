@@ -12,11 +12,7 @@ public interface FileService {
 
     Result upload(MultipartFile file);
 
-    Result upload(MultipartFile file, String folderPath);
-
     Result upload(List<MultipartFile> fileList);
-
-    Result upload(List<MultipartFile> fileList, String folderPath);
 
     void deleteFile(File file);
 
