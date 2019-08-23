@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 /**
- * 权限管理决断器
+ * 决策管理器
  * 判断用户拥有的权限或角色是否有资源访问权限
  *
  * @Auther renmaoyan

@@ -261,7 +261,7 @@ public interface RoleDao {
 
 
     /**
-     * description: 根据authorId查询store
+     * description: 根据authorId查询Role
      *
      * @return java.util.List<cc.wanshan.gisdev.entity.security.Role>
      */

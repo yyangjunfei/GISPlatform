@@ -1,11 +1,8 @@
 package cc.wanshan.gis.common.security;
-
 import cc.wanshan.gis.dao.authorize.AuthorityDao;
 import cc.wanshan.gis.dao.authorize.RoleDao;
 import cc.wanshan.gis.entity.authorize.Authority;
 import cc.wanshan.gis.entity.authorize.Role;
-import cc.wanshan.gis.service.authorize.AuthorityService;
-import cc.wanshan.gis.service.authorize.RoleService;
 import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,12 +16,11 @@ import javax.annotation.Resource;
 import java.util.Collection;
 import java.util.List;
 
+//读取资源与所属角色
 @Component
-public class FilterInvocationSecurityMetadataSourceImpl implements
-    FilterInvocationSecurityMetadataSource {
+public class FilterInvocationSecurityMetadataSourceImpl implements FilterInvocationSecurityMetadataSource {
 
-  private static final Logger logger = LoggerFactory
-      .getLogger(FilterInvocationSecurityMetadataSourceImpl.class);
+  private static final Logger logger = LoggerFactory.getLogger(FilterInvocationSecurityMetadataSourceImpl.class);
 
   @Resource
   private AuthorityDao authorityDao;

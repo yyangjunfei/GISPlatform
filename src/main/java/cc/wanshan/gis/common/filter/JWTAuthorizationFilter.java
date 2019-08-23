@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+//BasicAuthenticationFilter负责处理HTTPHeader中的基本认证信息。
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
