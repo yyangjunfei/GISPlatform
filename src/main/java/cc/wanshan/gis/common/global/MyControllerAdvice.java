@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 @Order(-1)
+@ResponseBody
 public class MyControllerAdvice {
 
     private static final Logger logger = LoggerFactory.getLogger(MyControllerAdvice.class);
@@ -25,9 +26,10 @@ public class MyControllerAdvice {
      * @param e
      * @return
      */
-    @ResponseBody
+
     @ExceptionHandler(value = Exception.class)
     public Result errorHandler(Exception e) {
+
         logger.error("errorHandler::e = [{}]", e);
         return ResultUtil.error(HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage());
     }
@@ -38,14 +40,12 @@ public class MyControllerAdvice {
      * @param ex
      * @return
      */
-    @ResponseBody
     @ExceptionHandler(value = BaseException.class)
     public Result myErrorHandler(BaseException ex) {
         logger.error("myErrorHandler::ex = [{}]", ex);
         return ResultUtil.error(HttpStatus.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
     }
 
-    @ResponseBody
     @ExceptionHandler(value = CustomAccessDeniedException.class)
     public Result myErrorHandler(CustomAccessDeniedException ex) {
         logger.error("myErrorHandler::ex = [{}]", ex);

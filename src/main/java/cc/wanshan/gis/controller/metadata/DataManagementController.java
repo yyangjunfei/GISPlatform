@@ -15,20 +15,14 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 
 @Api(value = "DataManagementController", tags = "shp数据发布接口")
 @RestController
 @RequestMapping("/rest/publish")
+@CrossOrigin
 public class DataManagementController {
 
     private static Logger LOG = LoggerFactory.getLogger(DataManagementController.class);
@@ -43,6 +37,11 @@ public class DataManagementController {
     @PostMapping("/import")
     @ApiImplicitParams(@ApiImplicitParam(name = "jsonString", value = "页面输入的属性数据", required = false))
     public Result metadataImport(String jsonString, @RequestParam MultipartFile[] file) {
+
+        if (file.length == 0) {
+            LOG.error("文件为空");
+            return ResultUtil.error("文件为空，请重新上传");
+        }
 
         return dataManagementService.metadataImportPublication(jsonString, file);
     }
