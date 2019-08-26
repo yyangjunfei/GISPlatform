@@ -1,7 +1,9 @@
 package cc.wanshan.gis.service.metadata;
 
 import cc.wanshan.gis.common.pojo.Result;
+import cc.wanshan.gis.entity.common.PageBean;
 import cc.wanshan.gis.entity.metadata.metadata;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -12,7 +14,7 @@ public interface DataManagementService {
 
     metadata shpData2Geoserver(int id);
 
-    List<metadata> findLayerProperties();
+    PageBean<metadata> findLayerProperties(Integer pageNum, Integer pageSize);
 
     Result deleteLayerPropertiesData(int id);
 

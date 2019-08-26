@@ -12,9 +12,9 @@ import java.util.Collection;
 import java.util.Iterator;
 
 /**
- * 权限管理决断器
+ * 决策管理器
  * 判断用户拥有的权限或角色是否有资源访问权限
- *
+ *自定义一个决策管理器MyAccessDecisionManager实现AccessDecisionManager接口。其中的decide方法，决定某一个用户是否有权限访问某个url
  * @Auther renmaoyan
  * @Date 2019/7/18 11:13
  */

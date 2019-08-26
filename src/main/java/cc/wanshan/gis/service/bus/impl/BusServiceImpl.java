@@ -1,9 +1,9 @@
 package cc.wanshan.gis.service.bus.impl;
 
-import cc.wanshan.gis.dao.bus.NanJingLines2Dao;
-import cc.wanshan.gis.dao.bus.NanJingStationsDao;
-import cc.wanshan.gis.entity.bus.NanJingLines2;
-import cc.wanshan.gis.entity.bus.NanJingStations;
+import cc.wanshan.gis.dao.road.NanJingLines2Dao;
+import cc.wanshan.gis.dao.road.NanJingStationsDao;
+import cc.wanshan.gis.entity.road.Road;
+import cc.wanshan.gis.entity.road.Stations;
 import cc.wanshan.gis.service.bus.BusService;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +23,7 @@ public class BusServiceImpl implements BusService {
 
     @Override
     public Integer findSource(String sourcePoint) {
-        NanJingLines2 source = nanJingLines2Dao.findSource(sourcePoint);
+        Road source = nanJingLines2Dao.findSource(sourcePoint);
         if (source != null) {
             return source.getSource();
         }
@@ -32,7 +32,7 @@ public class BusServiceImpl implements BusService {
 
     @Override
     public Integer findTarget(String targetPoint) {
-        NanJingLines2 target = nanJingLines2Dao.findTarget(targetPoint);
+        Road target = nanJingLines2Dao.findTarget(targetPoint);
         if (target != null) {
             return target.getTarget();
         }
@@ -40,8 +40,8 @@ public class BusServiceImpl implements BusService {
     }
 
     @Override
-    public NanJingStations findStation(String point) {
-        NanJingStations station = nanJingStationsDao.findStation(point);
+    public Stations findStation(String point) {
+        Stations station = nanJingStationsDao.findStation(point);
         if (station != null) {
             return station;
         }

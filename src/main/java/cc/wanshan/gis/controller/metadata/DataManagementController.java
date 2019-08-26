@@ -1,5 +1,6 @@
 package cc.wanshan.gis.controller.metadata;
 import cc.wanshan.gis.common.pojo.Result;
+import cc.wanshan.gis.entity.common.PageBean;
 import cc.wanshan.gis.entity.metadata.metadata;
 import cc.wanshan.gis.service.layer.geoserver.GeoServerService;
 import cc.wanshan.gis.service.metadata.DataManagementService;
@@ -14,20 +15,14 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 
 @Api(value = "DataManagementController", tags = "shp数据发布接口")
 @RestController
 @RequestMapping("/rest/publish")
+@CrossOrigin
 public class DataManagementController {
 
     private static Logger LOG = LoggerFactory.getLogger(DataManagementController.class);
@@ -43,15 +38,20 @@ public class DataManagementController {
     @ApiImplicitParams(@ApiImplicitParam(name = "jsonString", value = "页面输入的属性数据", required = false))
     public Result metadataImport(String jsonString, @RequestParam MultipartFile[] file) {
 
+        if (file.length == 0) {
+            LOG.error("文件为空");
+            return ResultUtil.error("文件为空，请重新上传");
+        }
+
         return dataManagementService.metadataImportPublication(jsonString, file);
     }
 
     @ApiOperation(value = "查询显示存储数据", notes = "查询显示存储数据")
     @GetMapping("/findLayerProperties")
-    public List<metadata> findLayerProperties() {
+    public PageBean<metadata> findLayerProperties(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,@RequestParam(value = "pageSize",defaultValue = "3") Integer pageSize) {
         //查询存储的数据
-        List<metadata> meta = dataManagementService.findLayerProperties();
-        return meta;
+        PageBean<metadata> pageBean = dataManagementService.findLayerProperties(pageNum,pageSize);
+        return pageBean;
     }
 
     @ApiOperation(value = "根据id删除存储数据", notes = "根据id删除存储数据")

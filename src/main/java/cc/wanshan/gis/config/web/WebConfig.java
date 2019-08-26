@@ -10,6 +10,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 /**
  * 静态资源配置，拦截器增加
  */
+
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 

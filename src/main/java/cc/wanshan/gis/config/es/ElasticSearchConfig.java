@@ -19,7 +19,9 @@ public class ElasticSearchConfig {
 
     @Value("${spring.data.elasticsearch.cluster-name}")
     private String clusterName;
-
+    static {
+        System.setProperty("es.set.netty.runtime.available.processors", "false");
+    }
     @Bean
     public TransportClient getClient() throws Exception {
 
