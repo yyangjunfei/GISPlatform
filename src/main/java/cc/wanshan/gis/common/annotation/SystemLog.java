@@ -1,7 +1,5 @@
 package cc.wanshan.gis.common.annotation;
-
 import cc.wanshan.gis.common.enums.LogType;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
