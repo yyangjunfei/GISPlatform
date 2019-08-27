@@ -40,9 +40,13 @@ public class SearchServiceImpl implements SearchService {
 
     private Logger LOG = LoggerFactory.getLogger(this.getClass());
 
+    //行政区--国家
     private List<Country> countryList;
+    //行政区--省
     private List<Province> provinceList;
+    //行政区--市
     private List<City> cityList;
+    //行政区--县
     private List<Town> townList;
 
     @Autowired
