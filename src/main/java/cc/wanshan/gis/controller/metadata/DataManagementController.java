@@ -1,4 +1,6 @@
 package cc.wanshan.gis.controller.metadata;
+import cc.wanshan.gis.common.annotation.SystemLog;
+import cc.wanshan.gis.common.enums.LogType;
 import cc.wanshan.gis.common.pojo.Result;
 import cc.wanshan.gis.entity.common.PageBean;
 import cc.wanshan.gis.entity.metadata.metadata;
@@ -33,6 +35,7 @@ public class DataManagementController {
     @Autowired
     private GeoServerService geoServerService;
 
+    @SystemLog(description = "存储shp数据到DB", type = LogType.OPERATION)
     @ApiOperation(value = "存储shp数据到DB", notes = "metadataImport,jsonString字段（type类型）")
     @PostMapping("/import")
     @ApiImplicitParams(@ApiImplicitParam(name = "jsonString", value = "页面输入的属性数据", required = false))
@@ -46,34 +49,43 @@ public class DataManagementController {
         return dataManagementService.metadataImportPublication(jsonString, file);
     }
 
+    @SystemLog(description = "查询显示存储数据", type = LogType.OPERATION)
     @ApiOperation(value = "查询显示存储数据", notes = "查询显示存储数据")
     @GetMapping("/findLayerProperties")
-    public PageBean<metadata> findLayerProperties(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,@RequestParam(value = "pageSize",defaultValue = "3") Integer pageSize) {
+    public Result findLayerProperties(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,@RequestParam(value = "pageSize",defaultValue = "3") Integer pageSize) {
         //查询存储的数据
         PageBean<metadata> pageBean = dataManagementService.findLayerProperties(pageNum,pageSize);
-        return pageBean;
+        if (pageBean!=null){
+            return ResultUtil.success(pageBean);
+        }else {
+            return ResultUtil.error("查询错误!");
+        }
     }
 
+    @SystemLog(description = "根据id删除存储数据", type = LogType.OPERATION)
     @ApiOperation(value = "根据id删除存储数据", notes = "根据id删除存储数据")
     @DeleteMapping("/deleteLayerPropertiesData")
     public Result deleteLayerPropertiesData(@RequestParam("id") int id) {
-
+        LOG.info("查询显示存储数据");
         return dataManagementService.deleteLayerPropertiesData(id);
     }
 
+    @SystemLog(description = "根据id编辑存储数据", type = LogType.OPERATION)
     @ApiOperation(value = "根据id编辑存储数据", notes = "根据id编辑存储数据")
     @PutMapping("/editLayerPropertiesData")
     public Result editLayerPropertiesData(@RequestParam("metadataJson") String metadataJson) {
-
+        LOG.info("根据id编辑存储数据");
         // 构建实体
         metadata metadata = JSONObject.parseObject(metadataJson, cc.wanshan.gis.entity.metadata.metadata.class);
 
         return dataManagementService.editLayerPropertiesData(metadata);
     }
 
+    @SystemLog(description = "根据id查询存储数据", type = LogType.OPERATION)
     @ApiOperation(value = "根据id查询存储数据", notes = "根据id查询存储数据")
     @GetMapping("/findLayerPropertiesDataById")
     public Result findLayerPropertiesDataById(@RequestParam("id") int id) {
+        LOG.info("根据id查询存储数据");
         metadata met = dataManagementService.shpData2Geoserver(id);
         return ResultUtil.success(met);
     }
@@ -84,10 +96,11 @@ public class DataManagementController {
      * @return
      */
 
+    @SystemLog(description = "复合查询数据", type = LogType.OPERATION)
     @ApiOperation(value = "复合查询数据", notes = "复合查询数据")
     @GetMapping("/findLayerPropertiesData")
     public Result findLayerPropertiesData(String metadataJson) {
-
+        LOG.info("复合查询数据");
         // 构建实体
         metadata metadata = JSONObject.parseObject(metadataJson, cc.wanshan.gis.entity.metadata.metadata.class);
 
@@ -97,10 +110,11 @@ public class DataManagementController {
     }
 
 
+    @SystemLog(description = "根据ID将存储的shp数据发布到geoServer", type = LogType.OPERATION)
     @ApiOperation(value = "根据ID将存储的shp数据发布到geoServer", notes = "根据ID将存储的shp数据发布到geoServer")
     @PostMapping("/shpData2Geoserver")
     public Result shpData2Geoserver(@RequestParam("id") int id) {
-
+        LOG.info("根据ID将存储的shp数据发布到geoServer");
         //1.前端传入id ，根据id 查询到要发布的,工作空间，存储名称，图层名
 
         metadata met = dataManagementService.shpData2Geoserver(id);
@@ -118,11 +132,12 @@ public class DataManagementController {
         return rest;
     }
 
-
+    @SystemLog(description = "删除geoserver发布的图层", type = LogType.OPERATION)
     @ApiOperation(value = "删除geoserver发布的图层", notes = "删除geoserver发布的图层")
     @DeleteMapping ("/deleteShpData2Geoserver")
     public Result deleteShpData2Geoserver(@RequestParam("id") int id){
 
+        LOG.info("删除geoserver发布的图层");
         //1.前端传入id ，根据id 查询到已经发布的,工作空间，存储名称，图层名
         metadata met =dataManagementService.shpData2Geoserver(id);
         String storeName = LanguageUtils.getPinYin(met.getStoreName());
@@ -136,10 +151,12 @@ public class DataManagementController {
          }
     }
 
-
+    @SystemLog(description = "预览显示发布geoServer图层数据", type = LogType.OPERATION)
     @ApiOperation(value = "预览显示发布geoServer图层数据", notes = "预览显示发布geoServer图层数据")
     @GetMapping("/publishPreviewLayer")
     public Result publishPreviewLayer(@RequestParam("id") int id) {
+
+        LOG.info("预览显示发布geoServer图层数据");
         metadata met = dataManagementService.shpData2Geoserver(id);
 
         String layerName = met.getLayerName();
