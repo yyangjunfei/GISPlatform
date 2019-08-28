@@ -46,25 +46,30 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Resource
     private FilterInvocationSecurityMetadataSource filterInvocationSecurityMetadataSourceImpl;
 
-    //接收一个用户的信息和访问一个url所需要的权限，判断该用户是否可以访问
+    //决策管理器 决定某一个用户是否有权限访问某个url
     @Resource
     private AccessDecisionManagerImpl accessDecisionManagerImpl;
 
+    //AccessDeineHandler 用来解决认证过的用户访问无权限资源时的异常
     @Resource
     private MyAccessDeniedHandler myAccessDeniedHandler;
 
+    //AuthenticationEntryPoint 用来解决匿名用户访问无权限资源时的异常
     @Autowired
     private JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Autowired
     private IgnoredUrlsProperties ignoredUrlsProperties;
 
+    //登陆认账成功处理器
     @Autowired
     private AuthenticationSuccessHandler authenticationSuccessHandler;
 
+    //登陆认账失败处理器
     @Autowired
     private AuthenticationFailHandler authenticationFailHandler;
 
+    //处理 用户退出Handler
     @Autowired
     private CustomLogoutSuccessHandler customLogoutSuccessHandler;
 
@@ -76,6 +81,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private SecurityUtils securityUtils;
+
 
     @Bean
     @Override

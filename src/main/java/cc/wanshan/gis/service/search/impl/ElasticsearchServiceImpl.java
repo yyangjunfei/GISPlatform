@@ -401,8 +401,7 @@ public class ElasticsearchServiceImpl implements ElasticsearchService {
      */
     private Set<String> SuggestByParameter(String keyword, String index, String type, String fieldName, int size) {
 
-        CompletionSuggestionBuilder completionSuggestionBuilder = SuggestBuilders.completionSuggestion(fieldName)
-                .prefix(keyword).size(size);
+        CompletionSuggestionBuilder completionSuggestionBuilder = SuggestBuilders.completionSuggestion(fieldName).prefix(keyword).size(size);
         SuggestBuilder suggestBuilder = new SuggestBuilder();
         suggestBuilder.addSuggestion("name_suggest", completionSuggestionBuilder);
 
