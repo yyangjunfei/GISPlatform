@@ -2,7 +2,6 @@ package cc.wanshan.gis.dao.road;
 
 import cc.wanshan.gis.entity.road.Road;
 import cc.wanshan.gis.entity.road.Stations;
-import io.swagger.models.auth.In;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Result;
@@ -75,13 +74,13 @@ public interface RoadDao {
 
   @Select({
       //"select ns.id,st_AsText(ns.the_geom) from xianyang_roads_vertices_pgr ns order by ns.the_geom <-> ST_geometryfromtext(#{point},4326) limit 1;"
-      "select ST_AsText(st_union) from table_sgt"
+      "select ST_AsText(st_linemerge) from table_sgt"
   })
   @Options(statementType = StatementType.STATEMENT)
   @Results({
       //@Result( column = "gid", property = "seq"),
       //@Result(column = "name", property = "name"),
-      @Result(column = "ST_AsText", property = "st_union")
+      @Result(column = "ST_AsText", property = "st_linemerge")
   })
   /**
    * description: 查询规划路线
@@ -95,7 +94,7 @@ public interface RoadDao {
   @Update({
       "create OR REPLACE VIEW "
           + "table_sgt "
-          + "as(SELECT ST_Union(l.geom) from (select seq,geom  from pgr_dijkstra('"
+          + "as(SELECT st_linemerge(st_union(l.geom)) from (select seq,geom  from pgr_dijkstra('"
           + "select gid as id,"
           + "source::integer,"
           + "target::integer,"
@@ -104,7 +103,7 @@ public interface RoadDao {
           + "from roads ',"
           + "${source},${target},true,true) as di "
           + "join roads pt "
-          + "on di.id2 = pt.gid GROUP BY seq,geom) l where 1=1);"
+          + "on di.id2 = pt.gid ORDER BY seq,geom) l where 1=1);"
   })
   //@Options(statementType = StatementType.STATEMENT)
   int update(Integer source, Integer target);
