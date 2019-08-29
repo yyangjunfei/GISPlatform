@@ -29,14 +29,19 @@
     where id = #{id,jdbcType=VARCHAR}
   </delete>
     <insert id="insert" parameterType="cc.wanshan.gis.entity.plot.of3d.PlotPoint">
+
+    <selectKey keyProperty="id" resultType="java.lang.String" order="BEFORE">
+        select uuid_generate_v4()
+    </selectKey>
+
     insert into plot_point (id, name, type, 
-      layer_id, color, style, 
-      width, opacity, symbol, 
+      layer_id, color,
+     opacity,
       geom, create_time, create_by, 
       update_time, update_by)
     values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, 
-      #{layerId,jdbcType=VARCHAR}, #{color,jdbcType=VARCHAR}, #{style,jdbcType=VARCHAR}, 
-      #{width,jdbcType=INTEGER}, #{opacity,jdbcType=INTEGER}, #{symbol,jdbcType=VARCHAR}, 
+      #{layerId,jdbcType=VARCHAR}, #{color,jdbcType=VARCHAR},
+       #{opacity,jdbcType=INTEGER},
       #{geom,jdbcType=VARCHAR}, #{createTime,jdbcType=DATE}, #{createBy,jdbcType=VARCHAR}, 
       #{updateTime,jdbcType=DATE}, #{updateBy,jdbcType=VARCHAR})
   </insert>
@@ -58,9 +63,7 @@
             <if test="color != null">
                 color,
             </if>
-            <if test="style != null">
-                style,
-            </if>
+
             <if test="width != null">
                 width,
             </if>
@@ -102,9 +105,7 @@
             <if test="color != null">
                 #{color,jdbcType=VARCHAR},
             </if>
-            <if test="style != null">
-                #{style,jdbcType=VARCHAR},
-            </if>
+
             <if test="width != null">
                 #{width,jdbcType=INTEGER},
             </if>
@@ -146,9 +147,7 @@
             <if test="color != null">
                 color = #{color,jdbcType=VARCHAR},
             </if>
-            <if test="style != null">
-                style = #{style,jdbcType=VARCHAR},
-            </if>
+
             <if test="width != null">
                 width = #{width,jdbcType=INTEGER},
             </if>
@@ -182,8 +181,6 @@
       type = #{type,jdbcType=VARCHAR},
       layer_id = #{layerId,jdbcType=VARCHAR},
       color = #{color,jdbcType=VARCHAR},
-      style = #{style,jdbcType=VARCHAR},
-      width = #{width,jdbcType=INTEGER},
       opacity = #{opacity,jdbcType=INTEGER},
       symbol = #{symbol,jdbcType=VARCHAR},
       geom = #{geom,jdbcType=VARCHAR},

@@ -9,7 +9,6 @@ import java.io.Serializable;
 import java.sql.Date;
 
 @Data
-@Builder
 @ApiModel(value = "标绘--点", description = "PlotPoint")
 public class PlotPoint implements Serializable {
 

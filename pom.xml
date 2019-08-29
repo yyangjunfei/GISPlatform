@@ -447,6 +447,8 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- 添加mybatis 自动生成插件-->
             <plugin>
                 <groupId>org.mybatis.generator</groupId>
                 <artifactId>mybatis-generator-maven-plugin</artifactId>
