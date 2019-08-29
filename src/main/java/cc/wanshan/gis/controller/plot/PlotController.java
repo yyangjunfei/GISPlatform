@@ -35,7 +35,7 @@ public class PlotController {
     @SystemLog(description = "增加标绘", type = LogType.OPERATION)
     @ApiOperation(value = "增加标绘", notes = "增加标绘")
     @PostMapping
-    public Result add(@RequestBody String jsonString) {
+    public Result add(@RequestParam String jsonString) {
 
         LOG.info("增加标绘");
         return plotService.save(jsonString);
