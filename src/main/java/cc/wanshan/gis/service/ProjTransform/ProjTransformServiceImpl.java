@@ -241,7 +241,6 @@ public class ProjTransformServiceImpl implements ProjTransformService {
             }
 
             //写入目标shp文件
-            log.info("写入目标路径shp文件!");
             try {
                 SimpleFeature fNew = writer.next();
                 fNew.setAttributes(feature.getAttributes());  //转换到文件
@@ -251,6 +250,8 @@ public class ProjTransformServiceImpl implements ProjTransformService {
                 e.printStackTrace();
             }
           }
+
+        log.info("写入目标路径shp文件完毕!");
 
         //关闭资源
         log.info("关闭IO资源!");
