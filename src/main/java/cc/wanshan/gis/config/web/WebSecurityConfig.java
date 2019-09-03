@@ -1,5 +1,4 @@
 package cc.wanshan.gis.config.web;
-
 import cc.wanshan.gis.common.filter.JWTAuthorizationFilter;
 import cc.wanshan.gis.common.handler.AuthenticationFailHandler;
 import cc.wanshan.gis.common.handler.AuthenticationSuccessHandler;
@@ -30,7 +29,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
-
 import javax.annotation.Resource;
 
 @EnableWebSecurity
@@ -162,5 +160,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(new JWTAuthorizationFilter(authenticationManager(), redisTemplate, tokenProperties, securityUtils))
         ;
     }
-
 }

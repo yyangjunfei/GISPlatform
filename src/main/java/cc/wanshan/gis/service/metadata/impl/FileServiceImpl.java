@@ -3,13 +3,17 @@ package cc.wanshan.gis.service.metadata.impl;
 import cc.wanshan.gis.common.enums.ResultCode;
 import cc.wanshan.gis.common.pojo.Result;
 import cc.wanshan.gis.dao.metadata.FilePublishDao;
+import cc.wanshan.gis.entity.metadata.Properties;
 import cc.wanshan.gis.entity.metadata.ShpInfo;
 import cc.wanshan.gis.entity.metadata.metadata;
 import cc.wanshan.gis.service.metadata.FileService;
 import cc.wanshan.gis.utils.base.ResultUtil;
+import cc.wanshan.gis.utils.transform.ProjTransform;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.vividsolutions.jts.geom.*;
+import lombok.extern.slf4j.Slf4j;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.feature.FeatureCollection;
@@ -36,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class FileServiceImpl implements FileService {
 
     private Logger LOG = LoggerFactory.getLogger(this.getClass());
@@ -159,7 +164,7 @@ public class FileServiceImpl implements FileService {
         // 一个数据存储实现，允许从Shapefiles读取和写入
         ShapefileDataStore shpDataStore = null;
         File file = new File(publishPath);
-        List<ShpInfo> geolist = new ArrayList<ShpInfo>();
+        List<ShpInfo> geolist =Lists.newArrayList();
         try {
             shpDataStore = new ShapefileDataStore(file.toURI().toURL());
             shpDataStore.setCharset(Charset.forName("GBK"));
@@ -175,20 +180,42 @@ public class FileServiceImpl implements FileService {
             FeatureCollection<SimpleFeatureType, SimpleFeature> result = featureSource.getFeatures();
             FeatureIterator<SimpleFeature> iterator = result.features();
             FeatureJSON fjson = new FeatureJSON();
+            Coordinate coor =null;
+            StringWriter writer = null;
             while (iterator.hasNext()) {
                 SimpleFeature feature = iterator.next();
-                StringWriter writer = new StringWriter();
+                List<Object> list = feature.getAttributes();
+                Object obj = list.get(0);
+                if (obj instanceof LineString || obj instanceof MultiLineString) {
+                    Geometry line = ((Geometry) obj);
+                    int parts = line.getNumGeometries();
+                    for (int i = 0; i < parts; i++) {
+                        LineString l = (LineString) line.getGeometryN(i);
+                        for (int j = 0, num = l.getNumPoints(); j < num; j++) {
+                            coor = l.getCoordinateN(j);
+                        }
+                    }
+                } else if (obj instanceof Point) {
+                    Point pt = (Point) obj;
+                    coor = pt.getCoordinate();
+                }
+
+                writer = new StringWriter();
                 fjson.writeFeature(feature, writer);
                 // 构建实体
                 ShpInfo shpInfo = JSONObject.parseObject(writer.toString(), ShpInfo.class);
-
+                Properties properties = new Properties();
+                properties.setLon(String.valueOf(coor.x));
+                properties.setLat(String.valueOf(coor.y));
                 //单独封装geometryJson
                 shpInfo.setGeometryJson(JSONObject.toJSONString(shpInfo.getGeometry()));
-
+                //单独封装properties
+                shpInfo.setProperties(properties);
                 geolist.add(shpInfo);
 
             } // end 最外层 while
-
+            iterator.close();
+            shpDataStore.dispose();
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {

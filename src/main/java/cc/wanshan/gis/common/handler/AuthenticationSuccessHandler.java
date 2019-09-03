@@ -91,5 +91,4 @@ public class AuthenticationSuccessHandler extends SavedRequestAwareAuthenticatio
 
         ResponseUtil.out(response, ResponseUtil.toMap(true, HttpServletResponse.SC_OK, "登录成功", token));
     }
-
 }

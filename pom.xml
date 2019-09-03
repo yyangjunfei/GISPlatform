@@ -162,6 +162,12 @@
             <version>${geotools.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-epsg-hsql</artifactId>
+            <version>14.0</version>
+        </dependency>
+
         <!--GIS相关依赖-->
         <dependency>
             <groupId>com.vividsolutions</groupId>
