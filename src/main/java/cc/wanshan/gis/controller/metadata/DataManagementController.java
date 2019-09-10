@@ -10,10 +10,7 @@ import cc.wanshan.gis.utils.LanguageUtils;
 import cc.wanshan.gis.utils.base.ResultUtil;
 import cc.wanshan.gis.utils.geo.GeoServerUtils;
 import com.alibaba.fastjson.JSONObject;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +20,8 @@ import java.util.List;
 
 @Api(value = "DataManagementController", tags = "shp数据发布接口")
 @RestController
-@RequestMapping("/rest/publish")
 @CrossOrigin
+@RequestMapping("/rest/publish")
 public class DataManagementController {
 
     private static Logger LOG = LoggerFactory.getLogger(DataManagementController.class);
@@ -35,7 +32,6 @@ public class DataManagementController {
     @Autowired
     private GeoServerService geoServerService;
 
-    @SystemLog(description = "存储shp数据到DB", type = LogType.OPERATION)
     @ApiOperation(value = "存储shp数据到DB", notes = "metadataImport,jsonString字段（type类型）")
     @PostMapping("/import")
     @ApiImplicitParams(@ApiImplicitParam(name = "jsonString", value = "页面输入的属性数据", required = false))
@@ -52,7 +48,7 @@ public class DataManagementController {
     @SystemLog(description = "查询显示存储数据", type = LogType.OPERATION)
     @ApiOperation(value = "查询显示存储数据", notes = "查询显示存储数据")
     @GetMapping("/findLayerProperties")
-    public Result findLayerProperties(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,@RequestParam(value = "pageSize",defaultValue = "3") Integer pageSize) {
+        public Result findLayerProperties(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,@RequestParam(value = "pageSize",defaultValue = "3") Integer pageSize) {
         //查询存储的数据
         PageBean<metadata> pageBean = dataManagementService.findLayerProperties(pageNum,pageSize);
         if (pageBean!=null){
@@ -65,9 +61,11 @@ public class DataManagementController {
     @SystemLog(description = "根据id删除存储数据", type = LogType.OPERATION)
     @ApiOperation(value = "根据id删除存储数据", notes = "根据id删除存储数据")
     @DeleteMapping("/deleteLayerPropertiesData")
-    public Result deleteLayerPropertiesData(@RequestParam("id") int id) {
-        LOG.info("查询显示存储数据");
-        return dataManagementService.deleteLayerPropertiesData(id);
+    public Result deleteLayerPropertiesData(@RequestParam("layerIds") Integer [] layerIds) {
+        LOG.info("根据id删除存储数据");
+
+        return dataManagementService.deleteLayerPropertiesData(layerIds);
+
     }
 
     @SystemLog(description = "根据id编辑存储数据", type = LogType.OPERATION)
@@ -90,11 +88,6 @@ public class DataManagementController {
         return ResultUtil.success(met);
     }
 
-    /***
-     * 封装参数 : workspaceName,storeName,DataType,layerName,safetyLevel,vectorTypes,styleName,createBy
-     * @param metadataJson
-     * @return
-     */
 
     @SystemLog(description = "复合查询数据", type = LogType.OPERATION)
     @ApiOperation(value = "复合查询数据", notes = "复合查询数据")
@@ -116,14 +109,11 @@ public class DataManagementController {
     public Result shpData2Geoserver(@RequestParam("id") int id) {
         LOG.info("根据ID将存储的shp数据发布到geoServer");
         //1.前端传入id ，根据id 查询到要发布的,工作空间，存储名称，图层名
-
         metadata met = dataManagementService.shpData2Geoserver(id);
-
         String storeName = LanguageUtils.getPinYin(met.getStoreName());
 
         //获取风格
         String defaultStyle = met.getStyleName();
-
         Result rest = geoServerService.publishLayer("shpdb", storeName, met.getLayerName(), defaultStyle);
 
         //发布成功之后 更改数据库中的发布状态为1
@@ -158,13 +148,9 @@ public class DataManagementController {
 
         LOG.info("预览显示发布geoServer图层数据");
         metadata met = dataManagementService.shpData2Geoserver(id);
-
         String layerName = met.getLayerName();
-
         String layerNames = "shpdb:" + layerName;
-
-        String url = GeoServerUtils.url.toString() + "/shpdb/wms?service=WMS&version=1.1.0&request=GetMap&layers=" + layerNames + "&bbox=105.4952,32.1507,108.2567,33.8539&width=768&height=473&srs=EPSG:4326&format=application/openlayers";
-
+        String url = GeoServerUtils.url.toString() + "shpdb/wms?service=WMS&version=1.1.0&request=GetMap&layers=" + layerNames + "&bbox=105.4952,32.1507,108.2567,33.8539&width=768&height=473&srs=EPSG:4326&format=application/openlayers";
         return ResultUtil.success(url);
 
     }

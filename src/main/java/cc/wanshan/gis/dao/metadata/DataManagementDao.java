@@ -30,9 +30,13 @@ public interface DataManagementDao {
     List<metadata> findLayerProperties();
 
     @Update({
-            "update shpdb.\"LAYER_PROPERTIES\" set delete =1 where shpdb.\"LAYER_PROPERTIES\".\"id\"= #{id}"
+            "<script>"
+            +"<foreach collection=\"layerIds\" item=\"id\" index=\"index\" open=\"\" close=\"\" separator=\";\">"
+            +"update shpdb.\"LAYER_PROPERTIES\" set delete =1 where shpdb.\"LAYER_PROPERTIES\".\"id\"= #{id}"
+            +"</foreach>"
+            + "</script>"
     })
-    int deleteLayerPropertiesData(int id);
+    int deleteLayerPropertiesData(@Param(value = "layerIds") Integer [] layerIds);
 
     @Update({
             "update shpdb.\"LAYER_PROPERTIES\" set workspace_name =#{workspaceName},store_name= #{storeName},layer_group=#{layerGroup},data_type=#{DataType}, layer_name=#{layerName},safety_level =#{safetyLevel},attribution_department=#{attributionDepartment},vector_types= #{vectorTypes},style_name =#{styleName} where shpdb.\"LAYER_PROPERTIES\".\"id\" = #{id}"

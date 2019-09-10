@@ -31,10 +31,8 @@ import org.opengis.filter.Filter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
-import java.io.StringWriter;
+
+import java.io.*;
 import java.net.MalformedURLException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
@@ -176,7 +174,6 @@ public class ProjTransformServiceImpl implements ProjTransformService {
         //读取源shp文件
         log.info("读取源shp文件内容!");
         ShapefileDataStore shpDataStore =null;
-        SimpleFeature feature =null;
         FeatureIterator<SimpleFeature> features =null;
         try {
             shpDataStore = new ShapefileDataStore(new File(originshppath).toURI().toURL());
@@ -195,11 +192,12 @@ public class ProjTransformServiceImpl implements ProjTransformService {
         Map<String, Serializable> params = Maps.newHashMap();
         FileDataStoreFactorySpi factory = new ShapefileDataStoreFactory();
         FeatureWriter<SimpleFeatureType, SimpleFeature> writer =null;
+        ShapefileDataStore ds =null;
         try {
             params.put(ShapefileDataStoreFactory.URLP.key, targetFile.toURI().toURL());
-            ShapefileDataStore ds = (ShapefileDataStore) factory.createNewDataStore(params);
+            ds = (ShapefileDataStore) factory.createNewDataStore(params);
             ds.setCharset(shpDataStore.getCharset());
-            // 设置属性
+            // 获取源shp属性
             SimpleFeatureSource fs = shpDataStore.getFeatureSource(shpDataStore.getTypeNames()[0]);
             //下面这行还有其他写法，根据源shape文件的simpleFeatureType可以不用retype，而直接用fs.getSchema设置
             ds.createSchema(SimpleFeatureTypeBuilder.retype(fs.getSchema(), DefaultGeographicCRS.WGS84));
@@ -214,7 +212,7 @@ public class ProjTransformServiceImpl implements ProjTransformService {
         //转换shp文件坐标并输出文件
         log.info("转换shp文件坐标并输出文件!");
         while (features.hasNext()) {
-            feature = features.next();
+            SimpleFeature feature  = features.next();
             List<Object> list = feature.getAttributes();
             Object obj = list.get(0);
             if (obj instanceof LineString || obj instanceof MultiLineString) {
@@ -245,24 +243,24 @@ public class ProjTransformServiceImpl implements ProjTransformService {
                 SimpleFeature fNew = writer.next();
                 fNew.setAttributes(feature.getAttributes());  //转换到文件
                 writer.write();   //写入文件
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
-          }
+        }
 
         log.info("写入目标路径shp文件完毕!");
-
         //关闭资源
         log.info("关闭IO资源!");
-            try {
-                writer.close();
-                features.close();
-                shpDataStore.dispose();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        try {
+            features.close();
+            writer.close();
+            ds.dispose();
+            shpDataStore.dispose();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         log.info("shp文件转换完毕!");
+
         return ResultUtil.success("转换文件成功!");
     }
 

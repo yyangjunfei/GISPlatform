@@ -36,10 +36,9 @@ public class DataManagementServiceImpl implements DataManagementService {
     @Override
     public Result metadataImportPublication(String jsonString, MultipartFile[] file) {
 
-        LOG.info("metadataImport...");
+        LOG.info("开始上传shp文件");
         //本地文件上传服务器中
         Result uploadResult = fileService.upload(Arrays.asList(file));
-
         List<Map<String,String>> data = (List<Map<String,String>>) uploadResult.getData();
 
         if (null == data || data.size() <= 0) {
@@ -49,23 +48,22 @@ public class DataManagementServiceImpl implements DataManagementService {
         String filePath = data.get(0).get("filePath");
 
         //String uuid = UUID.randomUUID().toString().replaceAll("-", "");
-
         metadata metadata = JSON.parseObject(jsonString, metadata.class);
 
         //读取shp文件并且发布到数据库
+        LOG.info("读取shp文件并且发布到数据库");
         try {
 
             List<ShpInfo> shpInfoList = fileService.readSHP(filePath);
-
             //将中文图层名转换为拼音字符作为数据库中的表名
             metadata.setLayerName(LanguageUtils.getPinYin(metadata.getLayerName()));
-
             //设置geometryType
             metadata.setGeoType(shpInfoList.get(0).getGeometry().getType());
 
             //shp数据存储到数据库
+            LOG.info("将shp数据存储到数据库");
             fileService.publishShpData2DB(shpInfoList, metadata);
-
+            LOG.info("完成shp数据存储");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -92,11 +90,10 @@ public class DataManagementServiceImpl implements DataManagementService {
     }
 
     @Override
-    public Result deleteLayerPropertiesData(int id) {
+    public Result deleteLayerPropertiesData(Integer [] layerIds) {
 
-        int i = dataManagementDao.deleteLayerPropertiesData(id);
-
-        if (i > 0) {
+        int i = dataManagementDao.deleteLayerPropertiesData(layerIds);
+        if (i== 0) {
             return ResultUtil.success("删除数据成功");
         } else {
             return ResultUtil.error("删除数据失败！");
@@ -114,6 +111,12 @@ public class DataManagementServiceImpl implements DataManagementService {
             return ResultUtil.error("更新数据失败！");
         }
     }
+
+    /***
+     * 封装参数 : workspaceName,storeName,DataType,layerName,safetyLevel,vectorTypes,styleName,createBy
+     * @param metadata
+     * @return
+     */
 
     @Override
     public List<metadata> findLayerPropertiesData(metadata metadata) {

@@ -16,7 +16,7 @@ public interface DataManagementService {
 
     PageBean<metadata> findLayerProperties(Integer pageNum, Integer pageSize);
 
-    Result deleteLayerPropertiesData(int id);
+    Result deleteLayerPropertiesData(Integer [] layerIds);
 
     Result editLayerPropertiesData(metadata metadata);
 
